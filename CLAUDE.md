@@ -12,6 +12,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run build:win` - Build Windows executable
 - `npm run build:mac` - Build macOS executable
 - `npm run build:linux` - Build Linux executable
+- `pnpm test` - Run Vitest unit tests (`tests/unit/`)
+
+Docs: user guide `docs/usage.md`, roadmap `docs/ROADMAP.md`, changelog `CHANGELOG.md`, archived planning docs in `docs/dev/`. Brand assets and their sources live in `docs/assets/brand/`.
+
+Experimental modules (MCP, Skill, vector/knowledge graph, templates, AI image generation) are only registered when the `experimental_features_enabled` store key is true (`src/main/config/experimental.ts`). Publishing is honest: only WeChat (clipboard) and Markdown export are implemented (`src/main/publish/`).
 
 ## Project Architecture
 
