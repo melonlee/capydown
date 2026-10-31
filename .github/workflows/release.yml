@@ -1,0 +1,58 @@
+name: Release
+
+# 推送 v* 标签时，构建 macOS / Windows / Linux 安装包并上传到 GitHub Release（草稿）
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  npm_config_registry: https://registry.npmjs.org/
+  npm_config_electron_mirror: https://github.com/electron/electron/releases/download/
+
+jobs:
+  release:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            target: --mac
+          - os: windows-latest
+            target: --win
+          - os: ubuntu-latest
+            target: --linux
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+      - name: Package and upload
+        run: pnpm exec electron-builder ${{ matrix.target }} --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 还没有 Apple Developer 证书：跳过签名。拿到证书后配置 CSC_LINK / CSC_KEY_PASSWORD /
+          # APPLE_ID / APPLE_APP_SPECIFIC_PASSWORD / APPLE_TEAM_ID，并在 electron-builder.yml 中开启 notarize
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'

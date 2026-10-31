@@ -29,6 +29,7 @@ nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
 mac:
+  artifactName: ${productName}-${version}-mac-${arch}.${ext}
   category: public.app-category.productivity
   entitlementsInherit: build/entitlements.mac.plist
   target:
@@ -55,8 +56,6 @@ appImage:
   artifactName: ${productName}-${version}-linux-${arch}.${ext}
 deb:
   artifactName: ${productName}-${version}-linux-${arch}.${ext}
-zip:
-  artifactName: ${productName}-${version}-mac-${arch}.${ext}
 npmRebuild: false
 # electron-updater 读取的发布源（应用内目前尚未启用自动更新）
 publish:
@@ -64,5 +63,3 @@ publish:
   owner: melonlee
   repo: LazyBox
   releaseType: draft
-electronDownload:
-  mirror: https://github.com/electron/electron/releases/download/

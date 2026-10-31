@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # 仓库的 .npmrc 指向国内镜像，CI 在海外机房，直接用官方源更快
+  npm_config_registry: https://registry.npmjs.org/
+  npm_config_electron_mirror: https://github.com/electron/electron/releases/download/
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+      # 说明：`pnpm lint` 和 `pnpm typecheck` 目前在历史代码（主要是默认关闭的实验模块）上仍有存量问题，
+      # 清理完成后再加入 CI。
