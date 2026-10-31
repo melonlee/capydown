@@ -4,6 +4,7 @@ import DEFAULT_CSS_CONTENT from '@renderer/assets/example/theme-css.txt?raw'
 import { altKey, codeBlockThemeOptions, colorOptions, fontFamilyOptions, fontSizeOptions, legendOptions, shiftKey, themeMap, themeOptions } from '@renderer/config'
 import { addPrefix, css2json, customCssWithTemplate, customizeTheme, downloadMD, exportHTML, formatDoc } from '@renderer/utils'
 
+import type { MarkdownEditor } from '@renderer/editor'
 import { initRenderer } from '@renderer/utils/renderer'
 import CodeMirror from 'codemirror'
 import { marked } from 'marked'
@@ -55,8 +56,8 @@ export const useStore = defineStore(`store`, () => {
 
   const fontSizeNumber = computed(() => Number(fontSize.value.replace(`px`, ``)))
 
-  // 内容编辑器编辑器
-  const editor = ref<CodeMirror.EditorFromTextArea | null>(null)
+  // 主编辑器（CodeMirror 6，见 editor/index.ts；必须 markRaw 后再赋值）
+  const editor = shallowRef<MarkdownEditor | null>(null)
   // 编辑区域内容
   // 预备弃用
   const editorContent = useStorage(`__editor_content`, '')
@@ -117,14 +118,12 @@ export const useStore = defineStore(`store`, () => {
 
   watch(currentPostIndex, async () => {
     const c = await window.$api.getPost(posts.value[currentPostIndex.value].title)
-    toRaw(editor.value!).setValue(c)
+    toRaw(editor.value)?.setValue(c)
   })
 
-  // 格式化文档
+  // 格式化文档（结果写回编辑器，由自动保存写入当前文件）
   const formatContent = () => {
-    formatDoc((editor.value!).getValue()).then(async (doc) => {
-      // posts.value[currentPostIndex.value].content = doc
-      await window.$api.updatePost(posts.value[currentPostIndex.value].title, doc);
+    formatDoc((editor.value!).getValue()).then((doc) => {
       toRaw(editor.value!).setValue(doc)
     })
   }
@@ -211,6 +210,8 @@ export const useStore = defineStore(`store`, () => {
 
   // 更新编辑器
   const editorRefresh = () => {
+    if (!editor.value)
+      return
     codeThemeChange()
     renderer.reset({ citeStatus: isCiteStatus.value, legend: legend.value, isUseIndent: isUseIndent.value, countStatus: isCountStatus.value })
 

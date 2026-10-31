@@ -15,6 +15,10 @@ const {
 
 const handleMessageAction = (action: string, payload: any) => {
   switch (action) {
+    // 菜单命令统一交给工作台处理（见 src/shared/commands.ts）
+    case 'command':
+      emitter.emit('command', payload);
+      break;
     case 'new-file':
     case 'about':
     case 'settings':
@@ -37,8 +41,10 @@ const handleMessageAction = (action: string, payload: any) => {
   }
 }
 
-// 更新窗口标题
+// 更新窗口标题（打开工作区后由工作台按当前文档名设置）
 const updateWindowTitle = () => {
+  if (workspaceStore.currentWorkspace)
+    return
   const workspace = workspaceStore.currentWorkspace
   if (workspace) {
     window.$api.setWindowTitle(`${workspace.name} - LazyBox`)
@@ -89,19 +95,20 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-  background-color: #ffffff;
+  width: 8px;
+  height: 8px;
+  background-color: transparent;
 }
 
 ::-webkit-scrollbar-track {
-  border-radius: 6px;
-  background-color: rgba(200, 200, 200, 0.3);
+  background-color: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 6px;
-  background-color: rgba(144, 146, 152, 0.5);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  background-color: rgba(128, 128, 128, 0.35);
 }
 
 /* CSS-hints */

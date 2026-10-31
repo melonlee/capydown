@@ -29,6 +29,24 @@ const isSearching = computed(() => searchQuery.value.trim() !== '')
 // 展开状态管理
 const expandedIds = ref<Set<string>>(new Set())
 
+// 选中的文件（例如从快速打开进入）所在的文件夹自动展开
+function expandAncestors(nodes: FileNode[], targetId: string, trail: string[] = []): boolean {
+  for (const n of nodes) {
+    if (n.id === targetId) {
+      trail.forEach(id => expandedIds.value.add(id))
+      return true
+    }
+    if (n.children && expandAncestors(n.children, targetId, [...trail, n.id]))
+      return true
+  }
+  return false
+}
+
+watch(() => [props.selectedId, props.nodes] as const, ([id]) => {
+  if (id)
+    expandAncestors(props.nodes, id)
+}, { immediate: true })
+
 // 拖拽状态
 const draggingId = ref<string | null>(null)
 const dragOverId = ref<string | null>(null)
@@ -289,11 +307,10 @@ defineExpose({
   flex-direction: column;
   height: 100%;
   background-color: transparent;
-  border-radius: 6px;
 }
 
 .search-bar {
-  padding: 8px 12px;
+  padding: 4px 10px 6px;
   flex-shrink: 0;
 }
 
@@ -306,28 +323,30 @@ defineExpose({
 .search-icon {
   position: absolute;
   left: 8px;
-  color: #94a3b8;
+  color: var(--lb-faint);
   pointer-events: none;
 }
 
 .search-input {
   width: 100%;
-  padding: 6px 32px 6px 32px;
-  font-size: 13px;
-  border: 1px solid rgba(148, 163, 184, 0.15);
-  border-radius: 4px;
+  height: 28px;
+  padding: 0 28px 0 28px;
+  font-size: 12.5px;
+  border: 1px solid transparent;
+  border-radius: 6px;
   outline: none;
-  transition: border-color 0.15s ease;
-  background-color: rgba(51, 65, 85, 0.3);
-  color: #e2e8f0;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+  background-color: var(--lb-hover);
+  color: var(--lb-fg);
 }
 
 .search-input:focus {
-  border-color: rgba(139, 92, 246, 0.5);
+  border-color: var(--lb-border-strong);
+  background-color: var(--lb-bg);
 }
 
 .search-input::placeholder {
-  color: #94a3b8;
+  color: var(--lb-faint);
 }
 
 .clear-btn {
@@ -340,26 +359,25 @@ defineExpose({
   background: none;
   border: none;
   cursor: pointer;
-  color: #94a3b8;
-  border-radius: 2px;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  color: var(--lb-faint);
+  border-radius: 4px;
 }
 
 .clear-btn:hover {
-  background-color: rgba(148, 163, 184, 0.1);
-  color: #e2e8f0;
+  background-color: var(--lb-hover);
+  color: var(--lb-fg);
 }
 
 .tree-container {
   flex: 1;
   overflow-y: auto;
-  padding: 4px 0;
+  padding: 2px 0 24px;
 }
 
 .empty-state {
   padding: 24px;
   text-align: center;
-  color: #94a3b8;
+  color: var(--lb-muted);
   font-size: 13px;
 }
 
@@ -369,38 +387,35 @@ defineExpose({
   z-index: 9999;
   min-width: 180px;
   padding: 4px;
-  background-color: rgba(51, 65, 85, 0.95);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  color: #e2e8f0;
+  background-color: var(--lb-popover-bg);
+  border: 1px solid var(--lb-border);
+  border-radius: 8px;
+  box-shadow: var(--lb-shadow);
+  color: var(--lb-fg);
 }
 
 .context-menu-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 12px;
+  padding: 6px 10px;
   font-size: 13px;
   cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 0.15s ease;
-  color: #e2e8f0;
+  border-radius: 5px;
+  color: var(--lb-fg);
 }
 
 .context-menu-item:hover {
-  background-color: rgba(139, 92, 246, 0.2);
+  background-color: var(--lb-active);
 }
 
 .context-menu-item.danger {
-  color: #ef4444;
+  color: #dc2626;
 }
 
 .context-menu-divider {
   height: 1px;
   margin: 4px 0;
-  background-color: rgba(148, 163, 184, 0.2);
+  background-color: var(--lb-border);
 }
 </style>
-

@@ -3,7 +3,7 @@
  * 在编辑器中直接显示 AI 建议和编辑
  */
 
-import type { Editor } from 'codemirror';
+import type { MarkdownEditor } from '@renderer/editor';
 
 export interface AISuggestion {
   text: string;
@@ -16,52 +16,27 @@ interface InlineAIState {
   pendingRequest: AbortController | null;
 }
 
+/**
+ * 灰色建议文字由编辑器的 ghostField 负责显示（见 editor/modes.ts）：
+ * 用户继续输入或移动光标会自动清除，Tab 接受、Esc 取消。
+ */
 export class CursorInlineAI {
-  private editor: Editor;
+  private editor: MarkdownEditor;
   private state: InlineAIState = {
     isGenerating: false,
     suggestion: null,
     pendingRequest: null,
   };
-  private ghostMarker: any = null;
-  private ghostWidget: any = null;
 
-  constructor(editor: Editor) {
+  constructor(editor: MarkdownEditor) {
     this.editor = editor;
-    this.setupBindings();
-  }
-
-  private setupBindings() {
-    // 键盘绑定在主编辑器设置中处理
-    // 这里只提供 API
   }
 
   /**
    * 显示 ghost text (灰色建议文字)
    */
   showGhostText(text: string) {
-    this.clearGhost();
-
-    const cursor = this.editor.getCursor();
-    const line = this.editor.getLine(cursor.line);
-    const beforeCursor = line.slice(0, cursor.ch);
-
-    // 创建 ghost widget
-    const ghostDiv = document.createElement('div');
-    ghostDiv.className = 'ai-ghost-widget';
-    ghostDiv.innerHTML = `
-      <span class="ai-ghost-before">${this.escapeHtml(beforeCursor)}</span><span class="ai-ghost-text">${this.escapeHtml(text)}</span>
-    `;
-
-    this.ghostWidget = (this.editor as any).addLineWidget(
-      cursor.line,
-      ghostDiv,
-      {
-        above: false,
-        coverGutter: false,
-      }
-    );
-
+    this.editor.showGhost(text);
     this.state.suggestion = { text, type: 'continue' };
   }
 
@@ -69,14 +44,7 @@ export class CursorInlineAI {
    * 清除 ghost text
    */
   clearGhost() {
-    if (this.ghostWidget) {
-      this.ghostWidget.clear();
-      this.ghostWidget = null;
-    }
-    if (this.ghostMarker) {
-      this.ghostMarker.clear();
-      this.ghostMarker = null;
-    }
+    this.editor.clearGhost();
     this.state.suggestion = null;
   }
 
@@ -84,11 +52,8 @@ export class CursorInlineAI {
    * 接受建议
    */
   acceptSuggestion() {
-    if (!this.state.suggestion) return;
-
-    const cursor = this.editor.getCursor();
-    this.editor.replaceRange(this.state.suggestion.text, cursor);
-    this.clearGhost();
+    this.editor.acceptGhost();
+    this.state.suggestion = null;
   }
 
   /**
@@ -155,21 +120,17 @@ ${context.content.slice(-500)}`,
    * 获取当前状态
    */
   getState() {
+    // 建议可能已被编辑器清除（用户继续输入），以编辑器为准
+    if (!this.editor.hasGhost())
+      this.state.suggestion = null;
     return this.state;
-  }
-
-  private escapeHtml(text: string) {
-    return text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
   }
 }
 
 // 全局实例
 let globalInlineAI: CursorInlineAI | null = null;
 
-export function initInlineAI(editor: Editor) {
+export function initInlineAI(editor: MarkdownEditor) {
   globalInlineAI = new CursorInlineAI(editor);
   return globalInlineAI;
 }

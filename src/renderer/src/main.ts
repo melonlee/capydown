@@ -10,6 +10,7 @@ import 'codemirror/theme/darcula.css'
 /* 每个页面公共css */
 import '@renderer/assets/index.css'
 import '@renderer/assets/less/theme.less'
+import '@renderer/assets/workbench.css'
 
 import 'codemirror/mode/css/css'
 import 'codemirror/mode/javascript/javascript'

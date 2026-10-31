@@ -121,15 +121,15 @@ const paddingLeft = computed(() => `${props.level * 12 + 8}px`)
         <div v-else class="toggle-placeholder" />
 
         <div class="node-icon">
-          <FolderOpen v-if="isFolder && isExpanded" class="size-4 text-yellow-500" />
-          <Folder v-else-if="isFolder" class="size-4 text-yellow-600" />
-          <Image v-else-if="isImageFile" class="size-4 text-green-500" />
-          <FileText v-else-if="isMarkdownFile" class="size-4 text-blue-500" />
-          <FileType v-else-if="isPdfFile" class="size-4 text-red-500" />
-          <File v-else class="size-4 text-gray-400" />
+          <FolderOpen v-if="isFolder && isExpanded" class="size-[15px] node-glyph" />
+          <Folder v-else-if="isFolder" class="size-[15px] node-glyph" />
+          <Image v-else-if="isImageFile" class="size-[15px] node-glyph" />
+          <FileText v-else-if="isMarkdownFile" class="size-[15px] node-glyph" />
+          <FileType v-else-if="isPdfFile" class="size-[15px] node-glyph" />
+          <File v-else class="size-[15px] node-glyph" />
         </div>
 
-        <span class="node-name line-clamp-1">{{ node.name }}</span>
+        <span class="node-name line-clamp-1" :title="node.name">{{ isMarkdownFile ? node.name.replace(/\.(md|markdown)$/i, '') : node.name }}</span>
 
         <span v-if="isFolder && childrenCount > 0" class="node-count">
           {{ childrenCount }}
@@ -163,17 +163,18 @@ const paddingLeft = computed(() => `${props.level * 12 + 8}px`)
   cursor: pointer;
   user-select: none;
   transition: background-color 0.15s ease;
-  border-radius: 4px;
-  margin: 1px 4px;
-  color: #e2e8f0;
+  border-radius: 6px;
+  margin: 0 6px;
+  color: var(--lb-sidebar-fg);
 }
 
 .file-tree-node:hover {
-  background-color: rgba(139, 92, 246, 0.15);
+  background-color: var(--lb-hover);
 }
 
 .file-tree-node.is-selected {
-  background-color: rgba(139, 92, 246, 0.25);
+  background-color: var(--lb-active);
+  color: var(--lb-fg-strong);
 }
 
 .file-tree-node.is-dragging {
@@ -186,6 +187,7 @@ const paddingLeft = computed(() => `${props.level * 12 + 8}px`)
   gap: 4px;
   height: 28px;
   padding-right: 8px;
+  font-size: 13px;
 }
 
 .toggle-btn {
@@ -210,6 +212,14 @@ const paddingLeft = computed(() => `${props.level * 12 + 8}px`)
   flex-shrink: 0;
 }
 
+.node-glyph {
+  color: var(--lb-faint);
+}
+
+.is-selected .node-glyph {
+  color: var(--lb-muted);
+}
+
 .node-icon {
   display: flex;
   align-items: center;
@@ -222,13 +232,13 @@ const paddingLeft = computed(() => `${props.level * 12 + 8}px`)
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: #e2e8f0;
+  color: inherit;
 }
 
 .node-count {
   font-size: 11px;
-  color: #94a3b8;
-  background-color: rgba(148, 163, 184, 0.15);
+  color: var(--lb-faint);
+  background-color: var(--lb-hover);
   padding: 0 6px;
   border-radius: 10px;
   line-height: 18px;

@@ -1,25 +1,16 @@
 <script setup lang="ts">
-import { useStore, useWorkspaceStore } from '@renderer/stores'
+import { useWorkspaceStore } from '@renderer/stores'
 import { useFileTreeStore } from '@renderer/stores/fileTree'
 import type { FileNode } from '@renderer/types'
 import FileTree from '@renderer/components/FileTree/FileTree.vue'
 import emitter from '@renderer/utils/event'
 import { MoreVertical, X, RefreshCw, Plus, FolderPlus } from 'lucide-vue-next'
 import { toast } from '@renderer/utils/toast'
+import { useDocument } from '@renderer/composables/useDocument'
 
-const props = defineProps<{
-  width?: number
-}>()
-
-const store = useStore()
 const fileTreeStore = useFileTreeStore()
 const workspaceStore = useWorkspaceStore()
-
-// 面板可见性
-const isOpen = computed({
-  get: () => store.isOpenPostSlider,
-  set: (val) => store.isOpenPostSlider = val
-})
+const doc = useDocument()
 
 // 对话框状态
 const createFileDialog = ref(false)
@@ -37,7 +28,8 @@ const currentNode = ref<FileNode | null>(null)
 const parentFolderForCreate = ref<FileNode | null>(null)
 
 // 关闭工作区
-const handleCloseWorkspace = () => {
+const handleCloseWorkspace = async () => {
+  await doc.flushSave()
   workspaceStore.closeCurrentWorkspace()
 }
 
@@ -84,61 +76,9 @@ onUnmounted(() => {
   emitter.off('new-file')
 })
 
-// 判断文件类型
-const getFileType = (filename: string): 'markdown' | 'image' | 'pdf' | 'other' => {
-  const ext = filename.split('.').pop()?.toLowerCase() || ''
-  
-  if (ext === 'md' || ext === 'markdown') {
-    return 'markdown'
-  }
-  
-  const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg', 'ico']
-  if (imageExtensions.includes(ext)) {
-    return 'image'
-  }
-  
-  if (ext === 'pdf') {
-    return 'pdf'
-  }
-  
-  return 'other'
-}
-
-// 选择文件
+// 选择文件：交给 useDocument 打开（会先保存当前文件）
 const handleSelectNode = async (node: FileNode) => {
-  if (node.type === 'file') {
-    fileTreeStore.selectNode(node)
-    
-    const fileType = getFileType(node.name)
-    store.currentFileType = fileType
-    store.currentFilePath = node.path
-    
-    // 根据文件类型处理
-    if (fileType === 'markdown') {
-      // Markdown文件：读取内容并显示在编辑器中
-      const content = await fileTreeStore.readFileContent(node.path)
-      if (store.editor) {
-        toRaw(store.editor).setValue(content)
-      }
-    } else if (fileType === 'image' || fileType === 'pdf') {
-      // 图片文件或PDF文件：不需要读取内容到编辑器，由视图组件处理预览
-      // 清空编辑器内容
-      if (store.editor) {
-        toRaw(store.editor).setValue('')
-      }
-    } else {
-      // 其他文件：尝试作为文本读取
-      try {
-        const content = await fileTreeStore.readFileContent(node.path)
-        if (store.editor) {
-          toRaw(store.editor).setValue(content)
-        }
-      } catch (e) {
-        console.error('Failed to read file:', e)
-        toast.error('无法读取该文件')
-      }
-    }
-  }
+  await doc.openNode(node)
 }
 
 // 创建文件
@@ -214,9 +154,12 @@ const confirmRename = async () => {
   }
 
   if (currentNode.value) {
+    const oldPath = currentNode.value.path
+    await doc.flushSave()
     const result = await fileTreeStore.renameNode(currentNode.value, renameValue.value)
     if (result) {
       renameDialog.value = false
+      doc.pathChanged(oldPath, result)
     }
   }
 }
@@ -229,16 +172,21 @@ const handleDelete = (node: FileNode) => {
 
 const confirmDelete = async () => {
   if (currentNode.value) {
+    const path = currentNode.value.path
     const result = await fileTreeStore.deleteNode(currentNode.value)
     if (result) {
       deleteDialog.value = false
+      doc.closeIfDeleted(path)
     }
   }
 }
 
 // 移动节点
 const handleMoveNode = async (sourceNode: FileNode, targetNode: FileNode) => {
-  await fileTreeStore.moveNode(sourceNode, targetNode)
+  await doc.flushSave()
+  const result = await fileTreeStore.moveNode(sourceNode, targetNode)
+  if (result)
+    doc.pathChanged(sourceNode.path, result)
 }
 
 // 复制节点
@@ -253,19 +201,8 @@ const getDefaultAppDir = () => {
 </script>
 
 <template>
-  <div
-    class="file-tree-panel"
-    :class="{
-      'is-open': isOpen,
-    }"
-  >
-    <div
-      class="panel-content"
-      :class="{
-        'translate-x-0': isOpen,
-        '-translate-x-full': !isOpen,
-      }"
-    >
+  <div class="file-tree-panel">
+    <div class="panel-content">
       <!-- 工作区标题栏 -->
       <div class="workspace-header">
         <Select 
@@ -442,25 +379,15 @@ const getDefaultAppDir = () => {
 
 <style scoped>
 .file-tree-panel {
-  overflow: hidden;
-  background-color: transparent;
-  flex-shrink: 0;
-}
-
-.file-tree-panel.is-open {
-  width: v-bind('`${width || 250}px`');
-}
-
-.file-tree-panel:not(.is-open) {
-  width: 0;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .panel-content {
   height: 100%;
-  width: v-bind('`${width || 250}px`');
   overflow: hidden;
-  transition: transform 0.3s ease;
-  background: transparent;
   display: flex;
   flex-direction: column;
 }
@@ -470,35 +397,31 @@ const getDefaultAppDir = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  padding: 2px 8px 2px 10px;
   flex-shrink: 0;
-  gap: 8px;
+  gap: 4px;
 }
 
 .workspace-select {
   flex: 1;
-  height: 32px;
+  height: 28px;
   min-width: 0;
   background-color: transparent;
   border: none;
-  color: #e2e8f0;
-  font-size: 0.875rem;
+  box-shadow: none;
+  color: var(--lb-fg-strong);
+  font-size: 13px;
   font-weight: 600;
-  padding: 0 4px;
-  
-  &:hover {
-    background-color: rgba(139, 92, 246, 0.1);
-  }
-  
-  &:focus {
-    ring: 2px;
-    ring-color: rgba(139, 92, 246, 0.3);
-  }
-  
-  :deep(svg) {
-    color: #94a3b8;
-  }
+  padding: 0 6px;
+  border-radius: 6px;
+}
+
+.workspace-select:hover {
+  background-color: var(--lb-hover);
+}
+
+.workspace-select :deep(svg) {
+  color: var(--lb-faint);
 }
 
 .workspace-item {
@@ -522,108 +445,25 @@ const getDefaultAppDir = () => {
 .workspace-actions {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 0;
   flex-shrink: 0;
+  opacity: 0.55;
+  transition: opacity 0.15s;
 }
 
-/* 欢迎界面 */
-.welcome-screen {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
+.workspace-header:hover .workspace-actions {
+  opacity: 1;
 }
 
-.welcome-content {
-  text-align: center;
-  max-width: 100%;
+.workspace-actions :deep(button) {
+  color: var(--lb-muted);
+  height: 26px;
+  width: 26px;
+  padding: 0;
 }
 
-.welcome-title {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: rgba(0, 0, 0, 0.85);
-}
-
-.dark .welcome-title {
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.welcome-desc {
-  font-size: 13px;
-  color: rgba(0, 0, 0, 0.45);
-  margin-bottom: 24px;
-}
-
-.dark .welcome-desc {
-  color: rgba(255, 255, 255, 0.45);
-}
-
-.open-folder-btn {
-  width: 100%;
-  margin-bottom: 24px;
-}
-
-/* 最近打开 */
-.recent-workspaces {
-  margin-top: 24px;
-  text-align: left;
-}
-
-.recent-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.65);
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.dark .recent-title {
-  color: rgba(255, 255, 255, 0.65);
-}
-
-.recent-list {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.recent-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 8px 12px;
-  font-size: 12px;
-  text-align: left;
-  background: none;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.15s ease;
-  color: rgba(0, 0, 0, 0.65);
-}
-
-.recent-item:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-.dark .recent-item {
-  color: rgba(255, 255, 255, 0.65);
-}
-
-.dark .recent-item:hover {
-  background-color: rgba(255, 255, 255, 0.08);
-}
-
-.recent-path {
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.workspace-actions :deep(button:hover) {
+  background: var(--lb-hover);
+  color: var(--lb-fg);
 }
 </style>
-

@@ -1,0 +1,560 @@
+/*
+ * LazyBox 工作台：编辑器主题（GitHub / Newsprint / Night）与 CodeMirror 6 实时预览样式。
+ * 主题只定义 CSS 变量；界面组件和编辑器都只引用变量。
+ * 公众号文章的排版主题与这里无关（见 config/theme.ts）。
+ */
+
+/* ------------------------------------------------------------------ 主题变量 */
+
+:root,
+:root[data-lb-theme='github'] {
+  --lb-bg: #ffffff;
+  --lb-fg: #333333;
+  --lb-fg-strong: #1f2328;
+  --lb-muted: #6a737d;
+  --lb-faint: #a3a9b1;
+  --lb-border: #eaecef;
+  --lb-border-strong: #dfe2e5;
+  --lb-chrome-bg: #ffffff;
+  --lb-sidebar-bg: #f7f7f8;
+  --lb-sidebar-fg: #4b5057;
+  --lb-hover: rgba(0, 0, 0, 0.045);
+  --lb-active: rgba(0, 0, 0, 0.07);
+  --lb-accent: #7c3aed;
+  --lb-accent-soft: rgba(124, 58, 237, 0.1);
+  --lb-link: #4183c4;
+  --lb-code-bg: #f6f8fa;
+  --lb-inline-code-bg: #f3f4f4;
+  --lb-quote-border: #dfe2e5;
+  --lb-quote-fg: #6a737d;
+  --lb-stripe: #f8f8f8;
+  --lb-selection: #cfe3fc;
+  --lb-popover-bg: #ffffff;
+  --lb-shadow: 0 12px 40px rgba(15, 23, 42, 0.14), 0 2px 6px rgba(15, 23, 42, 0.06);
+  --lb-font: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+  --lb-heading-font: var(--lb-font);
+  --lb-mono: 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --lb-size: 16px;
+  --lb-line-height: 1.75;
+  --lb-width: 820px;
+
+  --tok-keyword: #a626a4;
+  --tok-string: #50a14f;
+  --tok-comment: #a0a1a7;
+  --tok-number: #986801;
+  --tok-function: #4078f2;
+  --tok-type: #c18401;
+  --tok-property: #e45649;
+  --tok-tag: #e45649;
+  --tok-meta: #4078f2;
+}
+
+:root[data-lb-theme='newsprint'] {
+  --lb-bg: #f3f2ee;
+  --lb-fg: #1f0909;
+  --lb-fg-strong: #1f0909;
+  --lb-muted: #6b5f57;
+  --lb-faint: #a69c92;
+  --lb-border: #ddd8cf;
+  --lb-border-strong: #cdc6ba;
+  --lb-chrome-bg: #f3f2ee;
+  --lb-sidebar-bg: #ebe9e3;
+  --lb-sidebar-fg: #3d3330;
+  --lb-hover: rgba(60, 40, 20, 0.06);
+  --lb-active: rgba(60, 40, 20, 0.1);
+  --lb-accent: #7c3aed;
+  --lb-accent-soft: rgba(124, 58, 237, 0.1);
+  --lb-link: #065588;
+  --lb-code-bg: #e9e6df;
+  --lb-inline-code-bg: #e6e2da;
+  --lb-quote-border: #c9c0b2;
+  --lb-quote-fg: #5c514a;
+  --lb-stripe: #ebe8e1;
+  --lb-selection: #d9cfbf;
+  --lb-popover-bg: #f8f7f4;
+  --lb-font: 'PT Serif', Georgia, 'Times New Roman', 'Songti SC', 'STSong', 'Noto Serif CJK SC', serif;
+  --lb-heading-font: 'PT Serif', Georgia, 'Songti SC', 'STSong', serif;
+  --lb-size: 17px;
+  --lb-line-height: 1.8;
+  --lb-width: 760px;
+}
+
+:root[data-lb-theme='night'] {
+  --lb-bg: #363b40;
+  --lb-fg: #b8bfc6;
+  --lb-fg-strong: #e6e9ec;
+  --lb-muted: #8b939b;
+  --lb-faint: #6c747c;
+  --lb-border: #474d54;
+  --lb-border-strong: #545b63;
+  --lb-chrome-bg: #363b40;
+  --lb-sidebar-bg: #2e3033;
+  --lb-sidebar-fg: #b4bac0;
+  --lb-hover: rgba(255, 255, 255, 0.05);
+  --lb-active: rgba(255, 255, 255, 0.09);
+  --lb-accent: #a78bfa;
+  --lb-accent-soft: rgba(167, 139, 250, 0.14);
+  --lb-link: #8fb4f5;
+  --lb-code-bg: #2f3338;
+  --lb-inline-code-bg: #2f3338;
+  --lb-quote-border: #545b63;
+  --lb-quote-fg: #9da2a6;
+  --lb-stripe: #3b4046;
+  --lb-selection: #4a5866;
+  --lb-popover-bg: #2e3134;
+  --lb-shadow: 0 16px 48px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3);
+
+  --tok-keyword: #c792ea;
+  --tok-string: #a5d6a7;
+  --tok-comment: #7a838c;
+  --tok-number: #f78c6c;
+  --tok-function: #82aaff;
+  --tok-type: #ffcb6b;
+  --tok-property: #f07178;
+  --tok-tag: #f07178;
+  --tok-meta: #89ddff;
+}
+
+/* shadcn 组件（对话框、下拉菜单）在夜间主题下跟随编辑器的灰色调 */
+:root[data-lb-theme='night'].dark {
+  --background: 210 8% 23%;
+  --foreground: 210 10% 88%;
+  --card: 216 5% 19%;
+  --card-foreground: 210 10% 88%;
+  --popover: 216 5% 19%;
+  --popover-foreground: 210 10% 88%;
+  --secondary: 210 6% 28%;
+  --muted: 210 6% 28%;
+  --muted-foreground: 210 6% 62%;
+  --accent: 210 6% 30%;
+  --accent-foreground: 210 10% 92%;
+  --border: 210 6% 31%;
+  --input: 210 6% 33%;
+}
+
+:root[data-lb-theme='newsprint'] {
+  --background: 45 17% 95%;
+  --popover: 45 20% 97%;
+  --card: 45 20% 97%;
+  --border: 40 15% 84%;
+  --input: 40 15% 82%;
+}
+
+/* ------------------------------------------------------------------ 编辑器 */
+
+.lb-editor {
+  height: 100%;
+  background: var(--lb-bg);
+}
+
+.lb-editor .cm-editor {
+  height: 100%;
+  background: var(--lb-bg);
+  color: var(--lb-fg);
+}
+
+.lb-editor .cm-editor.cm-focused {
+  outline: none;
+}
+
+.lb-editor .cm-editor .cm-scroller {
+  font-family: var(--lb-font);
+  font-size: var(--lb-size);
+  line-height: var(--lb-line-height);
+  overflow-x: hidden;
+}
+
+.lb-editor .cm-editor .cm-content {
+  max-width: var(--lb-width);
+  margin: 0 auto;
+  padding: 48px 56px 40vh;
+  caret-color: var(--lb-fg-strong);
+  -webkit-font-smoothing: antialiased;
+}
+
+.lb-editor .cm-editor .cm-line {
+  padding: 0 2px;
+}
+
+.lb-editor .cm-editor .cm-cursor,
+.lb-editor .cm-editor .cm-dropCursor {
+  border-left: 2px solid var(--lb-fg-strong) !important;
+}
+
+.lb-editor .cm-editor .cm-selectionBackground,
+.lb-editor .cm-editor.cm-focused .cm-selectionBackground,
+.lb-editor .cm-editor .cm-content ::selection {
+  background: var(--lb-selection) !important;
+}
+
+.lb-editor .cm-placeholder {
+  color: var(--lb-faint);
+}
+
+/* 源代码模式：等宽字体、不做实时渲染 */
+.lb-editor .cm-editor.cm-source-mode .cm-scroller {
+  font-family: var(--lb-mono);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.lb-editor .cm-editor.cm-source-mode .cm-content {
+  max-width: 900px;
+}
+
+/* ------------------------------------------------------------------ 语法高亮（两种模式通用） */
+
+.lb-editor .tok-heading { font-weight: 600; color: var(--lb-fg-strong); font-family: var(--lb-heading-font); }
+.lb-editor .cm-source-mode .tok-heading { font-family: inherit; }
+.lb-editor .tok-strong { font-weight: 700; color: var(--lb-fg-strong); }
+.lb-editor .tok-em { font-style: italic; }
+.lb-editor .tok-strike { text-decoration: line-through; color: var(--lb-muted); }
+.lb-editor .tok-link { color: var(--lb-link); }
+.lb-editor .tok-url { color: var(--lb-faint); }
+.lb-editor .tok-mark { color: var(--lb-faint); font-weight: normal; }
+.lb-editor .tok-label { color: var(--lb-muted); }
+.lb-editor .tok-quote { color: var(--lb-quote-fg); }
+.lb-editor .tok-hr { color: var(--lb-faint); }
+.lb-editor .tok-mono { font-family: var(--lb-mono); font-size: 0.88em; }
+
+.lb-editor .tok-keyword { color: var(--tok-keyword); }
+.lb-editor .tok-string { color: var(--tok-string); }
+.lb-editor .tok-comment { color: var(--tok-comment); font-style: italic; }
+.lb-editor .tok-number { color: var(--tok-number); }
+.lb-editor .tok-function { color: var(--tok-function); }
+.lb-editor .tok-type { color: var(--tok-type); }
+.lb-editor .tok-property { color: var(--tok-property); }
+.lb-editor .tok-tag { color: var(--tok-tag); }
+.lb-editor .tok-meta { color: var(--tok-meta); }
+
+/* ------------------------------------------------------------------ 实时预览 */
+
+.lb-editor .cm-live-preview .cm-line.cm-lp-h {
+  font-family: var(--lb-heading-font);
+  color: var(--lb-fg-strong);
+  line-height: 1.3;
+}
+
+.lb-editor .cm-live-preview .cm-lp-h1 { font-size: 2em; padding-top: 0.5em; padding-bottom: 0.3em; border-bottom: 1px solid var(--lb-border); }
+.lb-editor .cm-live-preview .cm-lp-h2 { font-size: 1.55em; padding-top: 0.9em; padding-bottom: 0.25em; border-bottom: 1px solid var(--lb-border); }
+.lb-editor .cm-live-preview .cm-lp-h3 { font-size: 1.3em; padding-top: 0.8em; padding-bottom: 0.15em; }
+.lb-editor .cm-live-preview .cm-lp-h4 { font-size: 1.12em; padding-top: 0.7em; }
+.lb-editor .cm-live-preview .cm-lp-h5 { font-size: 1em; padding-top: 0.6em; }
+.lb-editor .cm-live-preview .cm-lp-h6 { font-size: 1em; padding-top: 0.6em; color: var(--lb-muted); }
+
+:root[data-lb-theme='newsprint'] .lb-editor .cm-live-preview .cm-lp-h1 { text-align: left; border-bottom-color: var(--lb-border-strong); }
+:root[data-lb-theme='newsprint'] .lb-editor .cm-live-preview .cm-lp-h2 { border-bottom: none; }
+
+/* 行内代码 */
+.lb-editor .cm-live-preview .tok-mono {
+  background: var(--lb-inline-code-bg);
+  border-radius: 4px;
+  padding: 0.15em 0.35em;
+}
+
+/* 代码块 */
+.lb-editor .cm-live-preview .cm-line.cm-lp-code {
+  background: var(--lb-code-bg);
+  font-family: var(--lb-mono);
+  font-size: 0.86em;
+  line-height: 1.65;
+  padding: 0 1.1em;
+}
+
+.lb-editor .cm-live-preview .cm-lp-code .tok-mono {
+  background: none;
+  padding: 0;
+  font-size: 1em;
+}
+
+.lb-editor .cm-live-preview .cm-line.cm-lp-code-begin {
+  border-radius: 6px 6px 0 0;
+  padding-top: 0.5em;
+}
+
+.lb-editor .cm-live-preview .cm-line.cm-lp-code-end {
+  border-radius: 0 0 6px 6px;
+  padding-bottom: 0.5em;
+}
+
+.lb-editor .cm-live-preview .cm-line.cm-lp-code-begin.cm-lp-code-end {
+  border-radius: 6px;
+}
+
+.lb-editor .cm-live-preview .cm-line.cm-lp-fence {
+  font-size: 11px;
+  line-height: 1;
+  padding-top: 0.6em;
+  padding-bottom: 0.15em;
+  text-align: right;
+}
+
+.lb-editor .cm-live-preview .cm-line.cm-lp-fence.cm-lp-code-end {
+  padding-top: 0;
+  padding-bottom: 0.6em;
+}
+
+.lb-editor .cm-lp-code-lang {
+  font-family: var(--lb-font);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--lb-faint);
+  text-transform: lowercase;
+}
+
+/* 引用 */
+.lb-editor .cm-live-preview .cm-line.cm-lp-quote {
+  border-left: 4px solid var(--lb-quote-border);
+  padding-left: 1em;
+  color: var(--lb-quote-fg);
+}
+
+/* 列表 */
+.lb-editor .cm-lp-bullet {
+  display: inline-block;
+  min-width: 0.6em;
+  color: var(--lb-muted);
+  font-weight: 700;
+}
+
+.lb-editor .cm-lp-ol-mark {
+  color: var(--lb-muted);
+}
+
+.lb-editor .cm-lp-task {
+  width: 15px;
+  height: 15px;
+  margin: 0 0.45em 0 0.1em;
+  vertical-align: -2px;
+  accent-color: var(--lb-accent);
+  cursor: pointer;
+}
+
+.lb-editor .cm-lp-task-done {
+  color: var(--lb-muted);
+  text-decoration: line-through;
+}
+
+/* 链接 */
+.lb-editor .cm-lp-link {
+  color: var(--lb-link);
+  text-decoration: none;
+}
+
+.lb-editor .cm-lp-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* 分割线 */
+.lb-editor .cm-lp-hr {
+  display: inline-block;
+  width: 100%;
+  height: 0;
+  vertical-align: middle;
+  border-top: 2px solid var(--lb-border);
+}
+
+/* 图片 */
+.lb-editor .cm-lp-image {
+  display: block;
+  padding: 0.4em 0;
+  cursor: default;
+}
+
+.lb-editor .cm-lp-image img {
+  display: block;
+  max-width: 100%;
+  max-height: 70vh;
+  margin: 0 auto;
+  border-radius: 4px;
+}
+
+.lb-editor .cm-lp-image.is-broken img {
+  display: none;
+}
+
+.lb-editor .cm-lp-image.is-broken::after {
+  content: attr(data-label);
+  display: block;
+  padding: 0.8em 1em;
+  border: 1px dashed var(--lb-border-strong);
+  border-radius: 6px;
+  color: var(--lb-muted);
+  font-size: 0.85em;
+  text-align: center;
+}
+
+.lb-editor .cm-lp-image-src {
+  color: var(--lb-muted);
+  font-size: 0.9em;
+}
+
+/* 表格 / mermaid 等块部件 */
+.lb-editor .cm-lp-block {
+  padding: 0.5em 0 0.6em;
+  cursor: text;
+}
+
+.lb-editor .cm-lp-table {
+  overflow-x: auto;
+}
+
+.lb-editor .cm-lp-table table {
+  border-collapse: collapse;
+  min-width: 60%;
+  font-size: 0.94em;
+  line-height: 1.6;
+}
+
+.lb-editor .cm-lp-table th,
+.lb-editor .cm-lp-table td {
+  border: 1px solid var(--lb-border-strong);
+  padding: 6px 13px;
+}
+
+.lb-editor .cm-lp-table th {
+  font-weight: 600;
+  color: var(--lb-fg-strong);
+  background: var(--lb-stripe);
+}
+
+.lb-editor .cm-lp-table tr:nth-child(2n) td {
+  background: var(--lb-stripe);
+}
+
+.lb-editor .cm-lp-table code {
+  font-family: var(--lb-mono);
+  font-size: 0.88em;
+  background: var(--lb-inline-code-bg);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+
+.lb-editor .cm-live-preview .cm-line.cm-lp-table-src {
+  font-family: var(--lb-mono);
+  font-size: 0.86em;
+}
+
+.lb-editor .cm-lp-mermaid {
+  text-align: center;
+  color: var(--lb-muted);
+  font-size: 0.85em;
+}
+
+.lb-editor .cm-lp-mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.lb-editor .cm-live-preview .cm-line.cm-lp-frontmatter {
+  font-family: var(--lb-mono);
+  font-size: 0.8em;
+  color: var(--lb-muted);
+  background: var(--lb-code-bg);
+}
+
+.lb-editor .cm-live-preview .cm-line.cm-lp-html,
+.lb-editor .cm-live-preview .cm-line.cm-lp-linkref {
+  font-family: var(--lb-mono);
+  font-size: 0.86em;
+  color: var(--lb-muted);
+}
+
+/* ------------------------------------------------------------------ 专注 / 打字机 / AI */
+
+.lb-editor .cm-focus-mode .cm-content > * {
+  opacity: 0.22;
+  transition: opacity 0.25s ease;
+}
+
+.lb-editor .cm-focus-mode .cm-content > .cm-focus-line {
+  opacity: 1;
+}
+
+.lb-editor .cm-typewriter .cm-content {
+  padding-top: 40vh;
+  padding-bottom: 50vh;
+}
+
+.lb-editor .cm-ai-ghost {
+  color: var(--lb-faint);
+  font-style: italic;
+  white-space: pre-wrap;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------------ 查找面板 */
+
+.lb-editor .cm-panels {
+  background: var(--lb-chrome-bg);
+  color: var(--lb-fg);
+}
+
+.lb-editor .cm-panels-top {
+  border-bottom: 1px solid var(--lb-border);
+}
+
+.lb-editor .cm-search {
+  max-width: var(--lb-width);
+  margin: 0 auto;
+  padding: 8px 56px !important;
+  font-family: var(--lb-font);
+  font-size: 13px;
+}
+
+.lb-editor .cm-search input,
+.lb-editor .cm-search button {
+  font-family: var(--lb-font);
+  font-size: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--lb-border-strong);
+  background: var(--lb-bg);
+  color: var(--lb-fg);
+  padding: 3px 8px;
+  background-image: none;
+}
+
+.lb-editor .cm-search input[type='checkbox'] {
+  padding: 0;
+}
+
+.lb-editor .cm-search button:hover {
+  background: var(--lb-hover);
+}
+
+.lb-editor .cm-search label {
+  font-size: 12px;
+  color: var(--lb-muted);
+}
+
+.lb-editor .cm-searchMatch {
+  background: rgba(250, 204, 21, 0.35);
+}
+
+.lb-editor .cm-searchMatch-selected {
+  background: rgba(250, 160, 21, 0.6);
+}
+
+/* ------------------------------------------------------------------ 全局滚动条 */
+
+.lb-app ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: transparent;
+}
+
+.lb-app ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.lb-app ::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background: transparent;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.lb-app :hover::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--lb-fg) 22%, transparent);
+}

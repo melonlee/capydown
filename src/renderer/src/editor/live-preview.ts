@@ -517,6 +517,9 @@ export function buildLivePreviewDecorations(state: EditorState): DecorationSet {
               cls += ' cm-lp-code-begin'
             if (n === last.number)
               cls += ' cm-lp-code-end'
+            // 光标不在代码块里时，围栏行收窄成上下内边距
+            if (!active && (n === first.number || (closed && n === last.number)))
+              cls += ' cm-lp-fence'
             decos.push(Decoration.line({ class: cls }).range(doc.line(n).from))
           }
           if (!active) {
