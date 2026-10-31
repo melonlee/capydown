@@ -3,6 +3,7 @@ import { useWorkspaceStore } from '@renderer/stores'
 import BrandMark from '@renderer/components/brand/BrandMark.vue'
 import { Edit2, ExternalLink, FolderOpen, FolderPlus, MoreHorizontal, Trash2 } from 'lucide-vue-next'
 import type { Workspace } from '@renderer/types'
+import { APP_NAME, APP_NAME_ZH, APP_TAGLINE } from '../../../shared/brand'
 
 const workspaceStore = useWorkspaceStore()
 
@@ -119,8 +120,8 @@ const openInFinder = async (workspace: Workspace) => {
     <main class="lb-welcome-main">
       <header class="lb-welcome-brand">
         <BrandMark class="lb-welcome-logo" />
-        <h1>LazyBox <span class="lb-welcome-dot">·</span> 墨排</h1>
-        <p>Typora 式公众号编辑器</p>
+        <h1>{{ APP_NAME }} <span class="lb-welcome-dot">·</span> {{ APP_NAME_ZH }}</h1>
+        <p>{{ APP_TAGLINE }}</p>
       </header>
 
       <section class="lb-welcome-actions">

@@ -182,7 +182,7 @@ const testConnection = async () => {
     </h2>
 
     <p class="text-xs text-muted-foreground leading-relaxed">
-      AI 用于起标题、写摘要、润色和续写。请求由本机直接发给你选择的服务商，墨排不经手、不保存你的文章。
+      AI 用于起标题、写摘要、润色和续写。请求由本机直接发给你选择的服务商，懒排不经手、不保存你的文章。
     </p>
 
     <div class="flex items-center justify-between">

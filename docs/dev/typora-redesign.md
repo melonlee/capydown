@@ -42,7 +42,7 @@
 
 ## 视觉：黑白灰（2026-11）
 
-- 产品名「LazyBox · 墨排」（`src/shared/brand.ts`）；安装包名仍是 `LazyBox`。
+- 产品名「LazyBox · 懒排」（`src/shared/brand.ts`）；安装包名仍是 `LazyBox`。
 - 界面不使用彩色强调色：主题变量见 `src/renderer/src/assets/workbench.css`，`--lb-accent` 在浅色主题是黑、Night 是白；Night 为灰阶反相。代码高亮、mermaid 预览、CSS 编辑器（CM5 `lb-mono` 主题）也是灰阶。
 - 公众号文章主题（`config/theme.ts`）是输出内容，颜色不受影响。
 - 临时标志：`src/renderer/src/assets/images/logo-mark.svg`（只用 `currentColor`，由 `components/brand/BrandMark.vue` 内联），品牌任务替换这一个文件即可。
