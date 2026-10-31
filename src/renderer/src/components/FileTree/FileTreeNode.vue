@@ -8,6 +8,10 @@ interface Props {
   isExpanded?: boolean
   isSelected?: boolean
   isDragging?: boolean
+  // 递归传给子节点的树状态（以前靠 $attrs 传，但 $attrs 的键是 kebab-case，深层节点拿不到）
+  expandedIds?: Set<string>
+  selectedId?: string | null
+  draggingId?: string | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -15,6 +19,9 @@ const props = withDefaults(defineProps<Props>(), {
   isExpanded: false,
   isSelected: false,
   isDragging: false,
+  expandedIds: () => new Set<string>(),
+  selectedId: null,
+  draggingId: null,
 })
 
 const emit = defineEmits<{
@@ -143,9 +150,12 @@ const paddingLeft = computed(() => `${props.level * 12 + 8}px`)
         :key="child.id"
         :node="child"
         :level="level + 1"
-        :is-expanded="$attrs.expandedIds?.has(child.id)"
-        :is-selected="$attrs.selectedId === child.id"
-        :is-dragging="$attrs.draggingId === child.id"
+        :is-expanded="expandedIds.has(child.id)"
+        :is-selected="selectedId === child.id"
+        :is-dragging="draggingId === child.id"
+        :expanded-ids="expandedIds"
+        :selected-id="selectedId"
+        :dragging-id="draggingId"
         @toggle="emit('toggle', $event)"
         @select="emit('select', $event)"
         @context-menu="(e: MouseEvent, n: FileNode) => emit('contextMenu', e, n)"
