@@ -6,7 +6,7 @@ node_modules/
 # Build output
 out/
 dist/
-build/
+# 注意：build/ 是 electron-builder 的资源目录（图标、entitlements），需要提交
 
 # Cache and logs
 .DS_Store
