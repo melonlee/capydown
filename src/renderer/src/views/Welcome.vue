@@ -261,7 +261,7 @@ const openInFinder = async (workspace: Workspace) => {
   overflow-y: auto;
   background: var(--lb-bg);
   color: var(--lb-fg);
-  font-family: var(--lb-font);
+  font-family: var(--lb-ui-font);
   -webkit-font-smoothing: antialiased;
 }
 

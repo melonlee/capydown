@@ -14,6 +14,8 @@ interface FileNodeData {
 
 interface LazyBoxAPI {
   onMessage: (callback: (...args: any[]) => void) => void
+  /** 端到端测试模式（LAZYBOX_E2E=1） */
+  isE2E?: boolean
 
   // 应用信息 / 设置
   getDefaultDocument: () => Promise<{ name: string; path: string }>

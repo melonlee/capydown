@@ -91,7 +91,7 @@ watch(() => wb.activeHeading, async (idx) => {
   bottom: 7px;
   width: 2px;
   border-radius: 2px;
-  background: var(--lb-accent);
+  background: var(--lb-fg-strong);
 }
 
 .lb-outline-empty {

@@ -22,6 +22,7 @@ declare module 'vue' {
     AlertDialogTrigger: typeof import('./src/components/ui/alert-dialog/AlertDialogTrigger.vue')['default']
     AlertTitle: typeof import('./src/components/ui/alert/AlertTitle.vue')['default']
     BackTop: typeof import('./src/components/ui/back-top/BackTop.vue')['default']
+    BrandMark: typeof import('./src/components/brand/BrandMark.vue')['default']
     Button: typeof import('./src/components/ui/button/Button.vue')['default']
     CommandPalette: typeof import('./src/components/workbench/CommandPalette.vue')['default']
     ContextMenu: typeof import('./src/components/ui/context-menu/ContextMenu.vue')['default']

@@ -6,6 +6,7 @@
 import { useStore } from '@renderer/stores'
 import { addPrefix, processClipboardContent } from '@renderer/utils'
 import emitter from '@renderer/utils/event'
+import { restorePreviewImages } from '@renderer/utils/local-image'
 
 // 复制过程中预览区显示「正在生成」遮罩
 export const isCopying = ref(false)
@@ -43,6 +44,7 @@ export function useWeChatCopy() {
       }
 
       nextTick(async () => {
+        restorePreviewImages(document.getElementById(`output`)!)
         processClipboardContent(primaryColor.value)
         const clipboardDiv = document.getElementById(`output`)!
         clipboardDiv.focus()
@@ -89,6 +91,7 @@ export function useWeChatCopy() {
         nextTick(() => {
           let html = ``
           try {
+            restorePreviewImages(document.getElementById(`output`)!)
             processClipboardContent(primaryColor.value)
             const clipboardDiv = document.getElementById(`output`)!
             html = clipboardDiv.innerHTML

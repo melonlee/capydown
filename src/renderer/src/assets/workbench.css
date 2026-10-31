@@ -6,138 +6,168 @@
 
 /* ------------------------------------------------------------------ 主题变量 */
 
+/*
+ * 整个界面是黑白灰（与 Typora 一致，不使用彩色强调色）：
+ *   正文近黑、次要信息用灰阶、主要按钮用纯黑（夜间主题反白）、细线分隔。
+ * --lb-accent 只表示「强调」，取值是黑 / 白，不是彩色。
+ */
 :root,
 :root[data-lb-theme='github'] {
   --lb-bg: #ffffff;
   --lb-fg: #333333;
-  --lb-fg-strong: #1f2328;
-  --lb-muted: #6a737d;
-  --lb-faint: #a3a9b1;
-  --lb-border: #eaecef;
-  --lb-border-strong: #dfe2e5;
+  --lb-fg-strong: #111111;
+  --lb-muted: #777777;
+  --lb-faint: #aaaaaa;
+  --lb-border: #eeeeee;
+  --lb-border-strong: #dddddd;
   --lb-chrome-bg: #ffffff;
-  --lb-sidebar-bg: #f7f7f8;
-  --lb-sidebar-fg: #4b5057;
-  --lb-hover: rgba(0, 0, 0, 0.045);
-  --lb-active: rgba(0, 0, 0, 0.07);
-  --lb-accent: #7c3aed;
-  --lb-accent-soft: rgba(124, 58, 237, 0.1);
-  --lb-link: #4183c4;
-  --lb-code-bg: #f6f8fa;
-  --lb-inline-code-bg: #f3f4f4;
-  --lb-quote-border: #dfe2e5;
-  --lb-quote-fg: #6a737d;
+  --lb-sidebar-bg: #fafafa;
+  --lb-sidebar-fg: #555555;
+  --lb-hover: rgba(0, 0, 0, 0.04);
+  --lb-active: rgba(0, 0, 0, 0.075);
+  --lb-accent: #111111;
+  --lb-accent-fg: #ffffff;
+  --lb-accent-soft: rgba(0, 0, 0, 0.06);
+  --lb-focus-ring: rgba(0, 0, 0, 0.12);
+  --lb-link: #333333;
+  --lb-link-line: rgba(0, 0, 0, 0.3);
+  --lb-code-bg: #f8f8f8;
+  --lb-code-border: #eeeeee;
+  --lb-inline-code-bg: #f3f3f3;
+  --lb-quote-border: #dddddd;
+  --lb-quote-fg: #777777;
+  --lb-hr: #e7e7e7;
   --lb-stripe: #f8f8f8;
-  --lb-selection: #cfe3fc;
+  --lb-selection: #e2e2e2;
+  --lb-search-match: rgba(0, 0, 0, 0.1);
+  --lb-search-current: rgba(0, 0, 0, 0.22);
   --lb-popover-bg: #ffffff;
-  --lb-shadow: 0 12px 40px rgba(15, 23, 42, 0.14), 0 2px 6px rgba(15, 23, 42, 0.06);
-  --lb-font: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+  --lb-overlay: rgba(0, 0, 0, 0.12);
+  --lb-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.06);
+  --lb-ui-font: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+  --lb-font: 'Open Sans', 'Clear Sans', 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Source Han Sans SC', 'Microsoft YaHei', sans-serif;
   --lb-heading-font: var(--lb-font);
   --lb-mono: 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --lb-size: 16px;
-  --lb-line-height: 1.75;
-  --lb-width: 820px;
+  --lb-line-height: 1.7;
+  --lb-width: 860px;
 
-  --tok-keyword: #a626a4;
-  --tok-string: #50a14f;
-  --tok-comment: #a0a1a7;
-  --tok-number: #986801;
-  --tok-function: #4078f2;
-  --tok-type: #c18401;
-  --tok-property: #e45649;
-  --tok-tag: #e45649;
-  --tok-meta: #4078f2;
+  /* 代码高亮也是灰阶：靠字重、斜体和深浅区分 */
+  --tok-keyword: #111111;
+  --tok-string: #6b6b6b;
+  --tok-comment: #a8a8a8;
+  --tok-number: #444444;
+  --tok-function: #222222;
+  --tok-type: #333333;
+  --tok-property: #555555;
+  --tok-tag: #222222;
+  --tok-meta: #8a8a8a;
 }
 
+/* Newsprint：衬线字体的纸张感，底色只带极淡的暖灰 */
 :root[data-lb-theme='newsprint'] {
-  --lb-bg: #f3f2ee;
-  --lb-fg: #1f0909;
-  --lb-fg-strong: #1f0909;
-  --lb-muted: #6b5f57;
-  --lb-faint: #a69c92;
-  --lb-border: #ddd8cf;
-  --lb-border-strong: #cdc6ba;
-  --lb-chrome-bg: #f3f2ee;
-  --lb-sidebar-bg: #ebe9e3;
-  --lb-sidebar-fg: #3d3330;
-  --lb-hover: rgba(60, 40, 20, 0.06);
-  --lb-active: rgba(60, 40, 20, 0.1);
-  --lb-accent: #7c3aed;
-  --lb-accent-soft: rgba(124, 58, 237, 0.1);
-  --lb-link: #065588;
-  --lb-code-bg: #e9e6df;
-  --lb-inline-code-bg: #e6e2da;
-  --lb-quote-border: #c9c0b2;
-  --lb-quote-fg: #5c514a;
-  --lb-stripe: #ebe8e1;
-  --lb-selection: #d9cfbf;
-  --lb-popover-bg: #f8f7f4;
-  --lb-font: 'PT Serif', Georgia, 'Times New Roman', 'Songti SC', 'STSong', 'Noto Serif CJK SC', serif;
-  --lb-heading-font: 'PT Serif', Georgia, 'Songti SC', 'STSong', serif;
+  --lb-bg: #f6f6f3;
+  --lb-fg: #222222;
+  --lb-fg-strong: #111111;
+  --lb-muted: #6f6f6c;
+  --lb-faint: #a5a5a1;
+  --lb-border: #e2e2de;
+  --lb-border-strong: #d2d2cd;
+  --lb-chrome-bg: #f6f6f3;
+  --lb-sidebar-bg: #efefeb;
+  --lb-sidebar-fg: #444442;
+  --lb-hover: rgba(0, 0, 0, 0.045);
+  --lb-active: rgba(0, 0, 0, 0.08);
+  --lb-link: #222222;
+  --lb-link-line: rgba(0, 0, 0, 0.35);
+  --lb-code-bg: #eeeeea;
+  --lb-code-border: #e2e2de;
+  --lb-inline-code-bg: #ebebe7;
+  --lb-quote-border: #cfcfca;
+  --lb-quote-fg: #5f5f5c;
+  --lb-hr: #d2d2cd;
+  --lb-stripe: #efefeb;
+  --lb-selection: #deded9;
+  --lb-popover-bg: #fafaf8;
+  --lb-font: 'PT Serif', Georgia, 'Times New Roman', 'Source Han Serif SC', 'Noto Serif CJK SC', 'Noto Serif SC', 'Songti SC', STSong, serif;
+  --lb-heading-font: 'PT Serif', Georgia, 'Source Han Serif SC', 'Noto Serif CJK SC', 'Noto Serif SC', 'Songti SC', STSong, serif;
   --lb-size: 17px;
   --lb-line-height: 1.8;
-  --lb-width: 760px;
+  --lb-width: 780px;
 }
 
+/* Night：灰阶反相 */
 :root[data-lb-theme='night'] {
-  --lb-bg: #363b40;
-  --lb-fg: #b8bfc6;
-  --lb-fg-strong: #e6e9ec;
-  --lb-muted: #8b939b;
-  --lb-faint: #6c747c;
-  --lb-border: #474d54;
-  --lb-border-strong: #545b63;
-  --lb-chrome-bg: #363b40;
-  --lb-sidebar-bg: #2e3033;
-  --lb-sidebar-fg: #b4bac0;
+  --lb-bg: #1e1e1e;
+  --lb-fg: #c9c9c9;
+  --lb-fg-strong: #ededed;
+  --lb-muted: #8c8c8c;
+  --lb-faint: #616161;
+  --lb-border: #2c2c2c;
+  --lb-border-strong: #3a3a3a;
+  --lb-chrome-bg: #1e1e1e;
+  --lb-sidebar-bg: #181818;
+  --lb-sidebar-fg: #b4b4b4;
   --lb-hover: rgba(255, 255, 255, 0.05);
   --lb-active: rgba(255, 255, 255, 0.09);
-  --lb-accent: #a78bfa;
-  --lb-accent-soft: rgba(167, 139, 250, 0.14);
-  --lb-link: #8fb4f5;
-  --lb-code-bg: #2f3338;
-  --lb-inline-code-bg: #2f3338;
-  --lb-quote-border: #545b63;
-  --lb-quote-fg: #9da2a6;
-  --lb-stripe: #3b4046;
-  --lb-selection: #4a5866;
-  --lb-popover-bg: #2e3134;
-  --lb-shadow: 0 16px 48px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3);
+  --lb-accent: #ededed;
+  --lb-accent-fg: #111111;
+  --lb-accent-soft: rgba(255, 255, 255, 0.08);
+  --lb-focus-ring: rgba(255, 255, 255, 0.16);
+  --lb-link: #dddddd;
+  --lb-link-line: rgba(255, 255, 255, 0.35);
+  --lb-code-bg: #252525;
+  --lb-code-border: #2e2e2e;
+  --lb-inline-code-bg: #2a2a2a;
+  --lb-quote-border: #444444;
+  --lb-quote-fg: #969696;
+  --lb-hr: #3a3a3a;
+  --lb-stripe: #232323;
+  --lb-selection: #3d3d3d;
+  --lb-search-match: rgba(255, 255, 255, 0.14);
+  --lb-search-current: rgba(255, 255, 255, 0.3);
+  --lb-popover-bg: #252525;
+  --lb-overlay: rgba(0, 0, 0, 0.4);
+  --lb-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.35);
 
-  --tok-keyword: #c792ea;
-  --tok-string: #a5d6a7;
-  --tok-comment: #7a838c;
-  --tok-number: #f78c6c;
-  --tok-function: #82aaff;
-  --tok-type: #ffcb6b;
-  --tok-property: #f07178;
-  --tok-tag: #f07178;
-  --tok-meta: #89ddff;
+  --tok-keyword: #f0f0f0;
+  --tok-string: #a3a3a3;
+  --tok-comment: #6a6a6a;
+  --tok-number: #d0d0d0;
+  --tok-function: #e4e4e4;
+  --tok-type: #d6d6d6;
+  --tok-property: #b8b8b8;
+  --tok-tag: #e4e4e4;
+  --tok-meta: #8a8a8a;
 }
 
-/* shadcn 组件（对话框、下拉菜单）在夜间主题下跟随编辑器的灰色调 */
+/* shadcn 组件（对话框、下拉菜单、按钮）同样是纯灰阶 */
 :root[data-lb-theme='night'].dark {
-  --background: 210 8% 23%;
-  --foreground: 210 10% 88%;
-  --card: 216 5% 19%;
-  --card-foreground: 210 10% 88%;
-  --popover: 216 5% 19%;
-  --popover-foreground: 210 10% 88%;
-  --secondary: 210 6% 28%;
-  --muted: 210 6% 28%;
-  --muted-foreground: 210 6% 62%;
-  --accent: 210 6% 30%;
-  --accent-foreground: 210 10% 92%;
-  --border: 210 6% 31%;
-  --input: 210 6% 33%;
+  --background: 0 0% 12%;
+  --foreground: 0 0% 90%;
+  --card: 0 0% 14.5%;
+  --card-foreground: 0 0% 90%;
+  --popover: 0 0% 14.5%;
+  --popover-foreground: 0 0% 90%;
+  --primary: 0 0% 93%;
+  --primary-foreground: 0 0% 7%;
+  --secondary: 0 0% 19%;
+  --secondary-foreground: 0 0% 92%;
+  --muted: 0 0% 19%;
+  --muted-foreground: 0 0% 58%;
+  --accent: 0 0% 21%;
+  --accent-foreground: 0 0% 94%;
+  --border: 0 0% 22%;
+  --input: 0 0% 25%;
+  --ring: 0 0% 70%;
 }
 
 :root[data-lb-theme='newsprint'] {
-  --background: 45 17% 95%;
-  --popover: 45 20% 97%;
-  --card: 45 20% 97%;
-  --border: 40 15% 84%;
-  --input: 40 15% 82%;
+  --background: 60 10% 96%;
+  --popover: 60 10% 98%;
+  --card: 60 10% 98%;
+  --border: 60 5% 86%;
+  --input: 60 5% 83%;
 }
 
 /* ------------------------------------------------------------------ 编辑器 */
@@ -167,7 +197,7 @@
 .lb-editor .cm-editor .cm-content {
   max-width: var(--lb-width);
   margin: 0 auto;
-  padding: 48px 56px 40vh;
+  padding: 72px 40px 40vh;
   caret-color: var(--lb-fg-strong);
   -webkit-font-smoothing: antialiased;
 }
@@ -204,12 +234,13 @@
 
 /* ------------------------------------------------------------------ 语法高亮（两种模式通用） */
 
-.lb-editor .tok-heading { font-weight: 600; color: var(--lb-fg-strong); font-family: var(--lb-heading-font); }
+.lb-editor .tok-heading { font-weight: 700; color: var(--lb-fg-strong); font-family: var(--lb-heading-font); }
 .lb-editor .cm-source-mode .tok-heading { font-family: inherit; }
 .lb-editor .tok-strong { font-weight: 700; color: var(--lb-fg-strong); }
 .lb-editor .tok-em { font-style: italic; }
 .lb-editor .tok-strike { text-decoration: line-through; color: var(--lb-muted); }
-.lb-editor .tok-link { color: var(--lb-link); }
+.lb-editor .tok-link { color: var(--lb-link); text-decoration: underline; text-decoration-color: var(--lb-link-line); text-underline-offset: 3px; }
+.lb-editor .cm-source-mode .tok-link { text-decoration: none; }
 .lb-editor .tok-url { color: var(--lb-faint); }
 .lb-editor .tok-mark { color: var(--lb-faint); font-weight: normal; }
 .lb-editor .tok-label { color: var(--lb-muted); }
@@ -217,7 +248,7 @@
 .lb-editor .tok-hr { color: var(--lb-faint); }
 .lb-editor .tok-mono { font-family: var(--lb-mono); font-size: 0.88em; }
 
-.lb-editor .tok-keyword { color: var(--tok-keyword); }
+.lb-editor .tok-keyword { color: var(--tok-keyword); font-weight: 600; }
 .lb-editor .tok-string { color: var(--tok-string); }
 .lb-editor .tok-comment { color: var(--tok-comment); font-style: italic; }
 .lb-editor .tok-number { color: var(--tok-number); }
@@ -232,18 +263,22 @@
 .lb-editor .cm-live-preview .cm-line.cm-lp-h {
   font-family: var(--lb-heading-font);
   color: var(--lb-fg-strong);
-  line-height: 1.3;
+  line-height: 1.4;
 }
 
-.lb-editor .cm-live-preview .cm-lp-h1 { font-size: 2em; padding-top: 0.5em; padding-bottom: 0.3em; border-bottom: 1px solid var(--lb-border); }
-.lb-editor .cm-live-preview .cm-lp-h2 { font-size: 1.55em; padding-top: 0.9em; padding-bottom: 0.25em; border-bottom: 1px solid var(--lb-border); }
-.lb-editor .cm-live-preview .cm-lp-h3 { font-size: 1.3em; padding-top: 0.8em; padding-bottom: 0.15em; }
-.lb-editor .cm-live-preview .cm-lp-h4 { font-size: 1.12em; padding-top: 0.7em; }
+/* 标题字号与分隔线参照 Typora GitHub 主题 */
+.lb-editor .cm-live-preview .cm-lp-h1 { font-size: 2.25em; line-height: 1.25; padding-top: 0.45em; padding-bottom: 0.3em; border-bottom: 1px solid var(--lb-border); }
+.lb-editor .cm-live-preview .cm-lp-h2 { font-size: 1.75em; line-height: 1.3; padding-top: 0.75em; padding-bottom: 0.25em; border-bottom: 1px solid var(--lb-border); }
+.lb-editor .cm-live-preview .cm-lp-h3 { font-size: 1.5em; padding-top: 0.7em; padding-bottom: 0.1em; }
+.lb-editor .cm-live-preview .cm-lp-h4 { font-size: 1.25em; padding-top: 0.6em; }
 .lb-editor .cm-live-preview .cm-lp-h5 { font-size: 1em; padding-top: 0.6em; }
 .lb-editor .cm-live-preview .cm-lp-h6 { font-size: 1em; padding-top: 0.6em; color: var(--lb-muted); }
 
-:root[data-lb-theme='newsprint'] .lb-editor .cm-live-preview .cm-lp-h1 { text-align: left; border-bottom-color: var(--lb-border-strong); }
-:root[data-lb-theme='newsprint'] .lb-editor .cm-live-preview .cm-lp-h2 { border-bottom: none; }
+/* Newsprint：标题不加粗线，H1 下用细实线，H2 以下只靠字号 */
+:root[data-lb-theme='newsprint'] .lb-editor .tok-heading { font-weight: 700; }
+:root[data-lb-theme='newsprint'] .lb-editor .cm-live-preview .cm-lp-h1 { font-size: 2.1em; border-bottom-color: var(--lb-border-strong); }
+:root[data-lb-theme='newsprint'] .lb-editor .cm-live-preview .cm-lp-h2 { font-size: 1.6em; border-bottom: none; }
+:root[data-lb-theme='newsprint'] .lb-editor .cm-live-preview .cm-lp-h3 { font-size: 1.3em; }
 
 /* 行内代码 */
 .lb-editor .cm-live-preview .tok-mono {
@@ -255,6 +290,8 @@
 /* 代码块 */
 .lb-editor .cm-live-preview .cm-line.cm-lp-code {
   background: var(--lb-code-bg);
+  border-left: 1px solid var(--lb-code-border);
+  border-right: 1px solid var(--lb-code-border);
   font-family: var(--lb-mono);
   font-size: 0.86em;
   line-height: 1.65;
@@ -268,17 +305,19 @@
 }
 
 .lb-editor .cm-live-preview .cm-line.cm-lp-code-begin {
-  border-radius: 6px 6px 0 0;
+  border-top: 1px solid var(--lb-code-border);
+  border-radius: 4px 4px 0 0;
   padding-top: 0.5em;
 }
 
 .lb-editor .cm-live-preview .cm-line.cm-lp-code-end {
-  border-radius: 0 0 6px 6px;
+  border-bottom: 1px solid var(--lb-code-border);
+  border-radius: 0 0 4px 4px;
   padding-bottom: 0.5em;
 }
 
 .lb-editor .cm-live-preview .cm-line.cm-lp-code-begin.cm-lp-code-end {
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 .lb-editor .cm-live-preview .cm-line.cm-lp-fence {
@@ -330,20 +369,22 @@
   cursor: pointer;
 }
 
+/* 与 Typora 一致：已完成的任务只变灰，不加删除线 */
 .lb-editor .cm-lp-task-done {
   color: var(--lb-muted);
-  text-decoration: line-through;
 }
 
 /* 链接 */
 .lb-editor .cm-lp-link {
   color: var(--lb-link);
-  text-decoration: none;
+  text-decoration: underline;
+  text-decoration-color: var(--lb-link-line);
+  text-underline-offset: 3px;
 }
 
 .lb-editor .cm-lp-link:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  color: var(--lb-fg-strong);
+  text-decoration-color: currentColor;
 }
 
 /* 分割线 */
@@ -352,7 +393,7 @@
   width: 100%;
   height: 0;
   vertical-align: middle;
-  border-top: 2px solid var(--lb-border);
+  border-top: 2px solid var(--lb-hr);
 }
 
 /* 图片 */
@@ -498,14 +539,14 @@
 .lb-editor .cm-search {
   max-width: var(--lb-width);
   margin: 0 auto;
-  padding: 8px 56px !important;
-  font-family: var(--lb-font);
+  padding: 8px 40px !important;
+  font-family: var(--lb-ui-font);
   font-size: 13px;
 }
 
 .lb-editor .cm-search input,
 .lb-editor .cm-search button {
-  font-family: var(--lb-font);
+  font-family: var(--lb-ui-font);
   font-size: 12px;
   border-radius: 6px;
   border: 1px solid var(--lb-border-strong);
@@ -517,6 +558,22 @@
 
 .lb-editor .cm-search input[type='checkbox'] {
   padding: 0;
+  accent-color: var(--lb-accent);
+}
+
+.lb-editor .cm-search input:focus,
+.lb-editor .cm-search input:focus-visible,
+.lb-editor .cm-search button:focus-visible {
+  outline: none;
+  border-color: var(--lb-fg-strong);
+  box-shadow: 0 0 0 2px var(--lb-focus-ring);
+}
+
+.lb-editor .cm-panel.cm-search [name='close'] {
+  border: none;
+  background: transparent;
+  color: var(--lb-muted);
+  font-size: 16px;
 }
 
 .lb-editor .cm-search button:hover {
@@ -529,11 +586,59 @@
 }
 
 .lb-editor .cm-searchMatch {
-  background: rgba(250, 204, 21, 0.35);
+  background: var(--lb-search-match);
+  outline: 1px solid var(--lb-search-match);
 }
 
 .lb-editor .cm-searchMatch-selected {
-  background: rgba(250, 160, 21, 0.6);
+  background: var(--lb-search-current);
+}
+
+/* ------------------------------------------------------------------ CSS 编辑器（CodeMirror 5）单色主题 */
+
+.cm-s-lb-mono.CodeMirror { background: var(--lb-bg); color: var(--lb-fg); }
+.cm-s-lb-mono .CodeMirror-cursor { border-left-color: var(--lb-fg-strong); }
+.cm-s-lb-mono .CodeMirror-selected,
+.cm-s-lb-mono.CodeMirror-focused .CodeMirror-selected { background: var(--lb-selection); }
+.cm-s-lb-mono .CodeMirror-activeline-background { background: var(--lb-hover); }
+.cm-s-lb-mono .CodeMirror-matchingbracket { color: var(--lb-fg-strong) !important; text-decoration: underline; }
+.cm-s-lb-mono .cm-tag,
+.cm-s-lb-mono .cm-keyword,
+.cm-s-lb-mono .cm-qualifier,
+.cm-s-lb-mono .cm-builtin { color: var(--tok-keyword); font-weight: 600; }
+.cm-s-lb-mono .cm-property { color: var(--tok-property); }
+.cm-s-lb-mono .cm-atom,
+.cm-s-lb-mono .cm-number,
+.cm-s-lb-mono .cm-variable-2,
+.cm-s-lb-mono .cm-variable-3 { color: var(--tok-number); }
+.cm-s-lb-mono .cm-string,
+.cm-s-lb-mono .cm-string-2 { color: var(--tok-string); }
+.cm-s-lb-mono .cm-comment { color: var(--tok-comment); font-style: italic; }
+.cm-s-lb-mono .cm-def,
+.cm-s-lb-mono .cm-variable { color: var(--tok-function); }
+.cm-s-lb-mono .cm-meta { color: var(--tok-meta); }
+.cm-s-lb-mono .cm-error { color: var(--lb-fg-strong); text-decoration: underline wavy; }
+
+/* ------------------------------------------------------------------ 全局：单色控件 */
+
+/* 原生复选框 / 单选框 / 进度条一律用黑白强调色，不用系统蓝 */
+:root {
+  accent-color: var(--lb-accent);
+}
+
+/* 全局键盘焦点环：灰色，不用浏览器默认的蓝色 */
+.lb-app :focus-visible,
+.lb-welcome :focus-visible {
+  outline: 2px solid var(--lb-focus-ring);
+  outline-offset: 1px;
+}
+
+.lb-editor .cm-editor :focus-visible {
+  outline: none;
+}
+
+::selection {
+  background: var(--lb-selection);
 }
 
 /* ------------------------------------------------------------------ 全局滚动条 */

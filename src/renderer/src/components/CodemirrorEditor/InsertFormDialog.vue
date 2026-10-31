@@ -66,7 +66,7 @@ function onUpdate(val: boolean) {
             v-for="col in colNum" :key="col"
             v-model="tableData[`k_${row - 1}_${col - 1}`]"
             :class="{
-              'bg-gray-100 dark:bg-gray-900': row === 1,
+              'bg-muted': row === 1,
             }"
             :placeholder="row === 1 ? '表头' : ''"
           />

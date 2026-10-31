@@ -244,7 +244,7 @@ watch(() => props.modelValue, async (open) => {
 
           <div class="space-y-1.5">
             <div class="flex items-center justify-between">
-              <label class="text-sm font-medium">摘要 <span class="text-xs text-gray-500">{{ summary.length }}/{{ WECHAT_SUMMARY_LIMIT }}</span></label>
+              <label class="text-sm font-medium">摘要 <span class="text-xs text-muted-foreground">{{ summary.length }}/{{ WECHAT_SUMMARY_LIMIT }}</span></label>
               <button
                 v-if="aiEnabled"
                 class="ai-link"
@@ -263,7 +263,7 @@ watch(() => props.modelValue, async (open) => {
               placeholder="公众号「摘要」栏最多 120 字；导出 Markdown 时写入 description"
             />
           </div>
-          <p v-if="!aiEnabled" class="text-xs text-gray-500">
+          <p v-if="!aiEnabled" class="text-xs text-muted-foreground">
             在「设置 → AI 设置」里填好 API Key，可以让 AI 帮你拟标题、写摘要。
           </p>
         </section>
@@ -274,7 +274,7 @@ watch(() => props.modelValue, async (open) => {
             <div class="text-sm font-medium">
               微信公众号
             </div>
-            <p class="text-xs text-gray-500 mt-1 mb-3">
+            <p class="text-xs text-muted-foreground mt-1 mb-3">
               复制当前主题排版后的内容，到公众号后台「新的创作 → 文章」里粘贴（⌘V / Ctrl+V）。标题和摘要需在后台单独填写。
             </p>
             <Button class="w-full" :disabled="!!busy" @click="copyToWeChat">
@@ -288,7 +288,7 @@ watch(() => props.modelValue, async (open) => {
             <div class="text-sm font-medium">
               Markdown 文件
             </div>
-            <p class="text-xs text-gray-500 mt-1 mb-3">
+            <p class="text-xs text-muted-foreground mt-1 mb-3">
               导出带 Front Matter（标题、作者、日期、标签、摘要）的 .md，适合 Hexo / Hugo / VitePress 等博客。
             </p>
             <Button class="w-full" variant="outline" :disabled="!!busy" @click="exportMarkdown">
@@ -325,7 +325,7 @@ watch(() => props.modelValue, async (open) => {
           </div>
         </section>
 
-        <p v-if="unsupported.length" class="text-xs text-gray-500">
+        <p v-if="unsupported.length" class="text-xs text-muted-foreground">
           {{ unsupported.map(p => p.displayName).join('、') }}：暂不支持。
         </p>
       </div>
@@ -344,14 +344,18 @@ watch(() => props.modelValue, async (open) => {
 }
 .field:focus {
   outline: none;
-  border-color: rgba(139, 92, 246, 0.6);
+  border-color: hsl(var(--foreground));
+  box-shadow: 0 0 0 2px hsl(var(--foreground) / 0.12);
 }
 .ai-link {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
   font-size: 0.75rem;
-  color: rgb(139, 92, 246);
+  color: hsl(var(--foreground));
+  text-decoration: underline;
+  text-decoration-color: hsl(var(--foreground) / 0.3);
+  text-underline-offset: 3px;
 }
 .ai-link:disabled {
   opacity: 0.5;
@@ -360,11 +364,11 @@ watch(() => props.modelValue, async (open) => {
   text-align: left;
   font-size: 0.8125rem;
   padding: 0.375rem 0.625rem;
-  border: 1px dashed rgba(139, 92, 246, 0.4);
+  border: 1px dashed hsl(var(--border));
   border-radius: 0.375rem;
 }
 .suggestion:hover {
-  background: rgba(139, 92, 246, 0.1);
+  background: hsl(var(--accent));
 }
 .target-card {
   border: 1px solid hsl(var(--border));
@@ -382,16 +386,17 @@ watch(() => props.modelValue, async (open) => {
   border: 1px solid;
 }
 .result-ok {
-  border-color: rgba(34, 197, 94, 0.5);
-  background: rgba(34, 197, 94, 0.08);
-  color: rgb(22, 163, 74);
+  border-color: hsl(var(--border));
+  background: hsl(var(--muted));
+  color: hsl(var(--foreground));
 }
 .result-err {
-  border-color: rgba(239, 68, 68, 0.5);
-  background: rgba(239, 68, 68, 0.08);
-  color: rgb(220, 38, 38);
+  border-color: hsl(var(--foreground) / 0.5);
+  background: hsl(var(--muted));
+  color: hsl(var(--foreground));
+  font-weight: 500;
 }
 .warning {
-  color: rgb(217, 119, 6);
+  color: hsl(var(--muted-foreground));
 }
 </style>

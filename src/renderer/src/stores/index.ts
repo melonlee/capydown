@@ -282,7 +282,8 @@ export const useStore = defineStore(`store`, () => {
       return
     
     cssEditorDom.value = getCurrentTab().content
-    const theme = isDark.value ? `darcula` : `xq-light`
+    // 单色主题（workbench.css 里的 .cm-s-lb-mono），跟随编辑器主题变量，不需要按深浅切换
+    const theme = `lb-mono`
     cssEditor.value = markRaw(
       CodeMirror.fromTextArea(cssEditorDom, {
         mode: `css`,
@@ -316,11 +317,6 @@ export const useStore = defineStore(`store`, () => {
       updateCss()
     })
   }
-
-  watch(isDark, () => {
-    const theme = isDark.value ? `darcula` : `xq-light`
-    toRaw(cssEditor.value)?.setOption?.(`theme`, theme)
-  })
 
   // 重置样式
   const resetStyle = () => {

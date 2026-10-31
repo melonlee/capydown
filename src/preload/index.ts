@@ -5,6 +5,8 @@ import { contextBridge, ipcRenderer } from 'electron'
 
 // Custom APIs for renderer
 const api = {
+  // 仅在端到端测试（LAZYBOX_E2E=1 启动）时为 true，用于暴露测试钩子
+  isE2E: process.env.LAZYBOX_E2E === '1',
   onMessage: (callback: (...args: any[]) => void) => ipcRenderer.on('message-to-renderer', (_, ...args) => callback(...args)),
 
   // 应用信息 / 设置

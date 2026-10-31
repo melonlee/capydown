@@ -236,7 +236,7 @@ function onKeydown(e: KeyboardEvent) {
   justify-content: center;
   align-items: flex-start;
   padding-top: 13vh;
-  background: rgba(15, 18, 22, 0.18);
+  background: var(--lb-overlay);
 }
 
 .lb-palette {
@@ -247,11 +247,7 @@ function onKeydown(e: KeyboardEvent) {
   border: 1px solid var(--lb-border);
   box-shadow: var(--lb-shadow);
   color: var(--lb-fg);
-  font-family: var(--lb-font);
-}
-
-:root[data-lb-theme='newsprint'] .lb-palette {
-  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  font-family: var(--lb-ui-font);
 }
 
 .lb-palette-input {
@@ -283,7 +279,7 @@ function onKeydown(e: KeyboardEvent) {
 }
 
 .is-ai {
-  color: var(--lb-accent) !important;
+  color: var(--lb-fg-strong) !important;
 }
 
 .lb-palette-list {
@@ -340,7 +336,7 @@ function onKeydown(e: KeyboardEvent) {
 .lb-row-kbd {
   margin-left: auto;
   flex-shrink: 0;
-  font-family: var(--lb-font);
+  font-family: var(--lb-ui-font);
   font-size: 11.5px;
   letter-spacing: 0.05em;
   color: var(--lb-muted);
@@ -369,7 +365,7 @@ function onKeydown(e: KeyboardEvent) {
   padding: 0 4px;
   border-radius: 4px;
   border: 1px solid var(--lb-border);
-  font-family: var(--lb-font);
+  font-family: var(--lb-ui-font);
   font-size: 10.5px;
   text-align: center;
 }

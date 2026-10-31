@@ -105,7 +105,7 @@ function tabChanged(tabName: string | number) {
 </script>
 
 <template>
-  <transition enter-active-class="bounceInRight">
+  <transition name="lb-slide">
     <div v-show="displayStore.isShowCssEditor" class="cssEditor-wrapper h-full flex flex-col border-l css-editor-panel">
       <Tabs
         v-model="store.cssContentConfig.active"
@@ -120,11 +120,11 @@ function tabChanged(tabName: string | number) {
           >
             {{ item.title }}
             <Edit3
-              v-show="store.cssContentConfig.active === item.name" class="inline size-4 rounded-full p-0.5 transition-color hover:bg-gray-200 dark:hover:bg-gray-600"
+              v-show="store.cssContentConfig.active === item.name" class="inline size-4 rounded-full p-0.5 transition-color hover:bg-accent"
               @click="rename(item.name)"
             />
             <X
-              v-show="store.cssContentConfig.active === item.name" class="inline size-4 rounded-full p-0.5 transition-color hover:bg-gray-200 dark:hover:bg-gray-600"
+              v-show="store.cssContentConfig.active === item.name" class="inline size-4 rounded-full p-0.5 transition-color hover:bg-accent"
               @click.self="removeHandler(item.name)"
             />
           </TabsTrigger>
@@ -203,45 +203,24 @@ function tabChanged(tabName: string | number) {
 
 <style lang="less" scoped>
 .css-editor-panel {
-  background-color: transparent;
-  border-left-color: rgba(148, 163, 184, 0.15);
+  width: 360px;
+  background-color: var(--lb-bg);
+  border-left-color: var(--lb-border);
 }
 
-.bounceInRight {
-  animation-name: bounceInRight;
-  animation-duration: 1s;
-  animation-fill-mode: both;
+.css-editor-panel :deep(.CodeMirror) {
+  font-family: var(--lb-mono) !important;
+  font-size: 12.5px;
 }
 
-@keyframes bounceInRight {
-  0%,
-  60%,
-  75%,
-  90%,
-  100% {
-    transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-  }
+.lb-slide-enter-active,
+.lb-slide-leave-active {
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
 
-  0% {
-    opacity: 0;
-    transform: translate3d(3000px, 0, 0);
-  }
-
-  60% {
-    opacity: 1;
-    transform: translate3d(-25px, 0, 0);
-  }
-
-  75% {
-    transform: translate3d(10px, 0, 0);
-  }
-
-  90% {
-    transform: translate3d(-5px, 0, 0);
-  }
-
-  100% {
-    transform: none;
-  }
+.lb-slide-enter-from,
+.lb-slide-leave-to {
+  opacity: 0;
+  transform: translateX(12px);
 }
 </style>

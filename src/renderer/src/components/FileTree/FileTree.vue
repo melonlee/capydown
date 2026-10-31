@@ -413,7 +413,7 @@ defineExpose({
 }
 
 .context-menu-item.danger {
-  color: #dc2626;
+  color: var(--lb-fg-strong);
 }
 
 .context-menu-divider {

@@ -324,9 +324,9 @@ function onDrop(e: DragEvent) {
             </Select>
           </Label>
           <div
-            class="bg-clip-padding mt-4 h-50 flex flex-col cursor-pointer items-center justify-evenly border-2 rounded border-dashed transition-colors hover:border-gray-700 hover:bg-gray-400/50 dark:hover:border-gray-200 dark:hover:bg-gray-500/50"
+            class="bg-clip-padding mt-4 h-50 flex flex-col cursor-pointer items-center justify-evenly border-2 rounded border-dashed transition-colors hover:border-muted-foreground hover:bg-accent"
             :class="{
-              'border-gray-700 bg-gray-400/50 dark:border-gray-200 dark:bg-gray-500/50': dragover,
+              'border-muted-foreground bg-accent': dragover,
             }"
             @click="open()"
             @drop.prevent="onDrop"

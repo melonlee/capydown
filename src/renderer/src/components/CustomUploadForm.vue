@@ -1,9 +1,7 @@
 <script setup lang='ts'>
-import { useStore } from '@renderer/stores'
 import { removeLeft } from '@renderer/utils'
 import CodeMirror from 'codemirror'
 
-const store = useStore()
 
 const code = useLocalStorage(`formCustomConfig`, removeLeft(`
   const {file, util, okCb, errCb} = CUSTOM_ARG
@@ -25,7 +23,7 @@ const editor = ref< CodeMirror.EditorFromTextArea | null>(null)
 onMounted(() => {
   editor.value = markRaw(CodeMirror.fromTextArea(formCustomTextarea.value!, {
     mode: `javascript`,
-    theme: store.isDark ? `darcula` : `xq-light`,
+    theme: `lb-mono`,
     lineNumbers: true,
   }))
 

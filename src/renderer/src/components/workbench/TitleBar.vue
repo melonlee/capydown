@@ -102,7 +102,7 @@ function startRename() {
 .lb-docname {
   font-size: 13px;
   font-weight: 500;
-  color: var(--lb-fg);
+  color: var(--lb-fg-strong);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -141,8 +141,8 @@ function startRename() {
 }
 
 .lb-rename:focus {
-  border-color: var(--lb-accent);
-  box-shadow: 0 0 0 3px var(--lb-accent-soft);
+  border-color: var(--lb-fg-strong);
+  box-shadow: 0 0 0 3px var(--lb-focus-ring);
 }
 
 .lb-titlebar-right {
@@ -176,7 +176,7 @@ function startRename() {
 }
 
 .lb-chip.is-active {
-  color: var(--lb-accent);
-  background: var(--lb-accent-soft);
+  color: var(--lb-fg-strong);
+  background: var(--lb-active);
 }
 </style>

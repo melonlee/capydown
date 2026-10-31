@@ -176,15 +176,13 @@ const testConnection = async () => {
 
 <template>
   <div class="ai-settings space-y-4">
-    <div class="flex items-center gap-2 border-b pb-2">
-      <Sparkles class="h-5 w-5 text-blue-500" />
-      <h2 class="text-lg font-semibold">
-        AI 设置
-      </h2>
-    </div>
+    <h2 class="lb-prefs-h2 flex items-center gap-1.5">
+      <Sparkles class="h-3.5 w-3.5" />
+      AI 设置
+    </h2>
 
-    <p class="text-xs text-gray-500 leading-relaxed">
-      AI 用于起标题、写摘要、润色和续写。请求由本机直接发给你选择的服务商，LazyBox 不经手、不保存你的文章。
+    <p class="text-xs text-muted-foreground leading-relaxed">
+      AI 用于起标题、写摘要、润色和续写。请求由本机直接发给你选择的服务商，墨排不经手、不保存你的文章。
     </p>
 
     <div class="flex items-center justify-between">
@@ -195,7 +193,7 @@ const testConnection = async () => {
         />
         <span class="text-sm">启用 AI 功能</span>
       </div>
-      <div v-if="isAIEnabled" class="flex items-center gap-1 text-xs text-green-500">
+      <div v-if="isAIEnabled" class="flex items-center gap-1 text-xs text-muted-foreground">
         <Check class="h-3 w-3" />
         <span>已启用</span>
       </div>
@@ -252,18 +250,18 @@ const testConnection = async () => {
         />
         <button
           type="button"
-          class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+          class="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
           @click="showAPIKey = !showAPIKey"
         >
           <Eye v-if="!showAPIKey" class="h-4 w-4" />
           <EyeOff v-else class="h-4 w-4" />
         </button>
       </div>
-      <p v-if="keyHelp" class="text-xs text-gray-500">
+      <p v-if="keyHelp" class="text-xs text-muted-foreground">
         获取 API Key：
-        <a :href="keyHelp.url" target="_blank" class="text-blue-500 hover:underline">{{ keyHelp.label }}</a>
+        <a :href="keyHelp.url" target="_blank" class="underline underline-offset-2 decoration-muted-foreground hover:decoration-foreground">{{ keyHelp.label }}</a>
       </p>
-      <p class="text-xs text-gray-500">
+      <p class="text-xs text-muted-foreground">
         Key 仅保存在本机的应用配置中。
       </p>
     </div>
@@ -319,6 +317,6 @@ const testConnection = async () => {
 
 <style scoped>
 .ai-settings {
-  padding: 1rem;
+  padding: 0;
 }
 </style>

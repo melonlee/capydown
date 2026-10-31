@@ -6,6 +6,8 @@
 import { isCopying, useWeChatCopy } from '@renderer/composables/useWeChatCopy'
 import { useDisplayStore, useStore } from '@renderer/stores'
 import { useWorkbenchStore } from '@renderer/stores/workbench'
+import { resolvePreviewImages } from '@renderer/utils/local-image'
+import * as path from 'path-browserify'
 import { ChevronDown, Code2, Palette, Send, X } from 'lucide-vue-next'
 
 const emit = defineEmits<{ publish: [] }>()
@@ -20,12 +22,31 @@ const isMac = /Mac/i.test(navigator.userAgent)
 const scroller = ref<HTMLElement>()
 defineExpose({ scroller })
 
+// 预览里的本地图片（相对路径）只为显示换成 data URL；复制前会还原（见 useWeChatCopy）
+const outputEl = ref<HTMLElement>()
+let observer: MutationObserver | null = null
+function resolveImages() {
+  const docFile = store.currentFilePath || wb.docPath
+  if (outputEl.value && docFile)
+    resolvePreviewImages(outputEl.value, path.dirname(docFile))
+}
+onMounted(() => {
+  observer = new MutationObserver(resolveImages)
+  if (outputEl.value)
+    observer.observe(outputEl.value, { childList: true, subtree: true })
+  resolveImages()
+})
+onBeforeUnmount(() => observer?.disconnect())
+
 function openStyle() {
   store.isOpenRightSlider = !store.isOpenRightSlider
 }
 
 function openCss() {
   display.toggleShowCssEditor()
+  // 窗口不够宽时收起左侧边栏，避免编辑区被挤没
+  if (display.isShowCssEditor && wb.sidebarOpen && window.innerWidth - wb.sidebarWidth - 436 - 360 < 480)
+    wb.sidebarOpen = false
   setTimeout(() => store.cssEditor?.refresh(), 50)
 }
 </script>
@@ -50,7 +71,7 @@ function openCss() {
     <div id="preview" ref="scroller" class="lb-wechat-scroll">
       <div id="output-wrapper" :class="{ output_night: !backLight }">
         <div class="preview">
-          <section id="output" v-html="output" />
+          <section id="output" ref="outputEl" v-html="output" />
           <div v-if="isCopying" class="loading-mask">
             <div class="loading-mask-box">
               <div class="loading__img" />
@@ -180,8 +201,8 @@ function openCss() {
   /* 夜间主题下 theme.less 会把预览背景设为透明，这里强制保持公众号的白底 */
   background: #ffffff !important;
   color: #1f2329;
-  border-radius: 10px;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 8px 24px rgba(15, 23, 42, 0.08) !important;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px var(--lb-border), 0 6px 20px rgba(0, 0, 0, 0.06) !important;
 }
 
 .loading-mask {
@@ -203,9 +224,10 @@ function openCss() {
     .loading__img {
       width: 56px;
       height: 56px;
-      background: url('../../assets/images/favicon.png') no-repeat;
+      background: url('../../assets/images/logo-mark.svg') no-repeat center;
       margin: 1em auto;
-      background-size: cover;
+      background-size: contain;
+      opacity: 0.18;
     }
   }
 }
@@ -229,16 +251,16 @@ function openCss() {
   height: 32px;
   font-size: 13px;
   font-weight: 500;
-  color: #fff;
+  color: var(--lb-accent-fg);
   background: var(--lb-accent);
   border: none;
   border-radius: 7px 0 0 7px;
   cursor: pointer;
-  transition: filter 0.15s;
+  transition: opacity 0.15s;
 }
 
 .lb-primary:hover {
-  filter: brightness(1.08);
+  opacity: 0.86;
 }
 
 .lb-primary-caret {
@@ -247,11 +269,7 @@ function openCss() {
   align-items: center;
   justify-content: center;
   border-radius: 0 7px 7px 0;
-  border-left: 1px solid rgba(255, 255, 255, 0.25);
-}
-
-:root[data-lb-theme='night'] .lb-primary {
-  color: #1f1440;
+  border-left: 1px solid color-mix(in srgb, var(--lb-accent-fg) 25%, transparent);
 }
 
 .lb-secondary {

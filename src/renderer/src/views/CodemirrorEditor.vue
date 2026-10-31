@@ -28,6 +28,7 @@ import { useWorkbenchStore } from '@renderer/stores/workbench'
 import { checkImage, formatDoc, toBase64 } from '@renderer/utils'
 import emitter from '@renderer/utils/event'
 import fileApi from '@renderer/utils/file'
+import { loadLocalImage } from '@renderer/utils/local-image'
 import { getInlineAI, initInlineAI } from '@renderer/utils/inline-ai'
 import DOMPurify from 'dompurify'
 import { Marked } from 'marked'
@@ -52,28 +53,10 @@ let editor: MarkdownEditor | null = null
 
 // ------------------------------------------------------------------ 编辑器里的图片 / 表格 / mermaid
 
-const imageCache = new Map<string, string>()
 function resolveImage(src: string): string | Promise<string> {
-  if (/^(?:https?:|data:|blob:)/i.test(src))
-    return src
-  let p = src
-  try {
-    p = decodeURI(src.replace(/^file:\/\//, ''))
-  }
-  catch {}
-  if (!path.isAbsolute(p)) {
-    // 载入文件时 wb.docPath 要等内容进入编辑器后才更新，而 store.currentFilePath 在读取前就已设置
-    const docFile = store.currentFilePath || wb.docPath
-    const base = docFile ? path.dirname(docFile) : fileTree.currentWorkspacePath
-    p = path.join(base, p)
-  }
-  const cached = imageCache.get(p)
-  if (cached)
-    return cached
-  return window.$api.readImageAsBase64(p).then((url: string) => {
-    imageCache.set(p, url)
-    return url
-  })
+  // 载入文件时 wb.docPath 要等内容进入编辑器后才更新，而 store.currentFilePath 在读取前就已设置
+  const docFile = store.currentFilePath || wb.docPath
+  return loadLocalImage(src, docFile ? path.dirname(docFile) : fileTree.currentWorkspacePath)
 }
 
 const tableMarked = new Marked({ gfm: true })
@@ -82,9 +65,30 @@ function renderMarkdown(src: string) {
 }
 
 let mermaidSeq = 0
+const MERMAID_LIGHT_INIT = JSON.stringify({ theme: 'neutral' })
+const MERMAID_NIGHT_INIT = JSON.stringify({
+  theme: 'base',
+  themeVariables: {
+    darkMode: true,
+    background: '#1e1e1e',
+    primaryColor: '#2a2a2a',
+    primaryTextColor: '#e0e0e0',
+    primaryBorderColor: '#777777',
+    secondaryColor: '#262626',
+    tertiaryColor: '#232323',
+    lineColor: '#9a9a9a',
+    textColor: '#d0d0d0',
+    noteBkgColor: '#2a2a2a',
+    noteTextColor: '#d0d0d0',
+  },
+})
 async function renderMermaid(code: string) {
-  await mermaid.parse(code)
-  const { svg } = await mermaid.render(`lb-mmd-${++mermaidSeq}`, code)
+  // 编辑区里的图表用灰阶 neutral 主题（与界面一致）；公众号输出的 mermaid 不受影响。
+  // 用户自己写了 %%{init}%% 指令时尊重用户设置。
+  const init = wb.effectiveTheme === 'night' ? MERMAID_NIGHT_INIT : MERMAID_LIGHT_INIT
+  const themed = /^\s*%%\{/.test(code) ? code : `%%{init: ${init}}%%\n${code}`
+  await mermaid.parse(themed)
+  const { svg } = await mermaid.render(`lb-mmd-${++mermaidSeq}`, themed)
   return DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true, svgFilters: true }, ADD_TAGS: ['foreignObject'] })
 }
 
@@ -458,6 +462,12 @@ function toggleSidebarTab(tab: 'files' | 'outline') {
   }
 }
 
+/** 右侧同时打开公众号预览和 CSS 编辑器时，窗口不够宽就先收起左侧边栏，保证编辑区可用 */
+function fitSidePanels() {
+  if (wb.sidebarOpen && window.innerWidth - wb.sidebarWidth - 436 - 360 < 480)
+    wb.sidebarOpen = false
+}
+
 function formatDocument() {
   if (!editor)
     return
@@ -536,8 +546,10 @@ function runCommand(id: string) {
       break
     case 'theme.customCss':
       wb.wechatOpen = true
-      if (!display.isShowCssEditor)
+      if (!display.isShowCssEditor) {
         display.toggleShowCssEditor()
+        fitSidePanels()
+      }
       setTimeout(() => store.cssEditor?.refresh(), 50)
       break
 
@@ -686,6 +698,9 @@ onMounted(() => {
     openLink: url => window.open(url, '_blank'),
   })
   store.editor = markRaw(editor) as any
+  // 端到端测试钩子：只在开发模式或 LAZYBOX_E2E=1 启动时暴露
+  if (import.meta.env.DEV || window.$api?.isE2E)
+    (window as any).__lbEditor = editor
   initInlineAI(editor)
   editor.setSourceMode(wb.sourceMode)
   editor.setFocusMode(wb.focusMode)
@@ -713,6 +728,7 @@ onBeforeUnmount(() => {
   emitter.off('publish:open-dialog')
   editor?.destroy()
   editor = null
+  delete (window as any).__lbEditor
   store.editor = null
 })
 
@@ -785,7 +801,7 @@ window.addEventListener('beforeunload', () => {
 
         <WeChatPanel ref="wechatPanel" @publish="runCommand('wechat.publish')" />
         <CssEditor class="lb-side-panel" />
-        <RightSlider class="lb-side-panel" />
+        <RightSlider />
       </div>
     </div>
 
@@ -835,6 +851,7 @@ window.addEventListener('beforeunload', () => {
   display: flex;
   background: var(--lb-bg);
   color: var(--lb-fg);
+  font-family: var(--lb-ui-font);
   overflow: hidden;
 }
 
@@ -851,6 +868,7 @@ window.addEventListener('beforeunload', () => {
 }
 
 .lb-body {
+  position: relative;
   flex: 1;
   min-height: 0;
   display: flex;
@@ -884,32 +902,45 @@ window.addEventListener('beforeunload', () => {
   flex-direction: column;
 }
 
+/* Typora 式文字标签：文件 / 大纲，当前项加深并带一条细下划线 */
 .lb-sidebar-tabs {
   display: flex;
-  gap: 2px;
-  margin: 2px 10px 8px;
-  padding: 2px;
-  border-radius: 7px;
-  background: var(--lb-hover);
+  justify-content: center;
+  gap: 22px;
+  margin: 0 12px 8px;
+  border-bottom: 1px solid var(--lb-border);
 }
 
 .lb-sidebar-tabs button {
-  flex: 1;
-  height: 24px;
+  position: relative;
+  height: 28px;
+  padding: 0 2px;
   font-size: 12px;
-  color: var(--lb-muted);
+  letter-spacing: 0.08em;
+  color: var(--lb-faint);
   border: none;
-  border-radius: 5px;
   background: transparent;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: color 0.15s;
+}
+
+.lb-sidebar-tabs button:hover {
+  color: var(--lb-fg);
 }
 
 .lb-sidebar-tabs button.is-active {
   color: var(--lb-fg-strong);
-  background: var(--lb-bg);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
-  font-weight: 500;
+  font-weight: 600;
+}
+
+.lb-sidebar-tabs button.is-active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1.5px;
+  background: var(--lb-fg-strong);
 }
 
 .lb-sidebar-resizer {
@@ -926,7 +957,7 @@ window.addEventListener('beforeunload', () => {
 .lb-main {
   position: relative;
   flex: 1;
-  min-width: 0;
+  min-width: 320px;
   background: var(--lb-bg);
 }
 
@@ -977,7 +1008,7 @@ window.addEventListener('beforeunload', () => {
 }
 
 .lb-empty-actions kbd {
-  font-family: var(--lb-font);
+  font-family: var(--lb-ui-font);
   font-size: 11px;
   color: var(--lb-faint);
 }
@@ -1017,6 +1048,8 @@ window.addEventListener('beforeunload', () => {
 
 .lb-link-btn {
   font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
   color: var(--lb-link);
   background: none;
   border: none;
