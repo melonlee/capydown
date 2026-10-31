@@ -173,17 +173,37 @@ function uploaded(imageUrl: string) {
   toast.success(`图片上传成功`)
 }
 
+/** 默认图床 = 本地：像 Typora 一样把图片复制到「文档所在目录/assets/」，写入相对路径 */
+function isLocalImageHost() {
+  const host = localStorage.getItem(`imgHost`) || `default`
+  return host === `default`
+}
+
+async function saveImageLocally(file: File, base64: string): Promise<string> {
+  const docPath = store.currentFilePath || wb.docPath
+  if (!docPath || !/\.(md|markdown)$/i.test(docPath))
+    throw new Error(`请先打开一篇 Markdown 文档再插入图片`)
+  return window.$api.saveImageAsset(docPath, file.name, file.type, base64)
+}
+
 function uploadImage(file: File, cb?: (url: any) => void) {
   isImgLoading.value = true
   toBase64(file)
-    .then(base64Content => fileApi.fileUpload(base64Content, file))
+    .then(base64Content => isLocalImageHost() ? saveImageLocally(file, base64Content) : fileApi.fileUpload(base64Content, file))
     .then((url) => {
-      if (cb)
+      if (cb) {
         cb(url)
-      else
+      }
+      else if (isLocalImageHost()) {
+        display.toggleShowUploadImgDialog(false)
+        editor?.replaceSelection(`![](${url})`)
+        toast.success(`图片已保存到 ${url}`, { duration: 1600 })
+      }
+      else {
         uploaded(url)
+      }
     })
-    .catch(err => toast.error(err.message))
+    .catch(err => toast.error(String(err?.message || err).replace(/^Error invoking remote method '[^']+': (Error: )?/, '')))
     .finally(() => (isImgLoading.value = false))
 }
 
@@ -462,12 +482,6 @@ function toggleSidebarTab(tab: 'files' | 'outline') {
   }
 }
 
-/** 右侧同时打开公众号预览和 CSS 编辑器时，窗口不够宽就先收起左侧边栏，保证编辑区可用 */
-function fitSidePanels() {
-  if (wb.sidebarOpen && window.innerWidth - wb.sidebarWidth - 436 - 360 < 480)
-    wb.sidebarOpen = false
-}
-
 function formatDocument() {
   if (!editor)
     return
@@ -546,10 +560,8 @@ function runCommand(id: string) {
       break
     case 'theme.customCss':
       wb.wechatOpen = true
-      if (!display.isShowCssEditor) {
+      if (!display.isShowCssEditor)
         display.toggleShowCssEditor()
-        fitSidePanels()
-      }
       setTimeout(() => store.cssEditor?.refresh(), 50)
       break
 
@@ -620,6 +632,19 @@ watch(() => wb.menuState, state => window.$api.updateMenuState?.(JSON.parse(JSON
 watch(() => [wb.docName, workspace.currentWorkspace?.name] as const, ([name, ws]) => {
   window.$api.setWindowTitle(name ? `${name}${ws ? ` — ${ws}` : ''}` : (ws ? `${ws} — ${APP_DISPLAY_NAME}` : APP_DISPLAY_NAME))
 }, { immediate: true })
+
+// 右侧同时打开公众号预览和 CSS 编辑器时，窗口不够宽就暂时收起左侧边栏；CSS 编辑器关闭后再恢复
+let sidebarAutoHidden = false
+watch(() => display.isShowCssEditor, (open) => {
+  if (open && wb.sidebarOpen && window.innerWidth - wb.sidebarWidth - 436 - 360 < 480) {
+    wb.sidebarOpen = false
+    sidebarAutoHidden = true
+  }
+  else if (!open && sidebarAutoHidden) {
+    wb.sidebarOpen = true
+    sidebarAutoHidden = false
+  }
+})
 
 // 打开公众号预览时立刻同步一次滚动位置
 watch(() => wb.wechatOpen, async (open) => {

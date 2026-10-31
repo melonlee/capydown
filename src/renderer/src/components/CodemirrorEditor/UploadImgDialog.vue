@@ -190,7 +190,7 @@ function r2Submit(formValues: any) {
 const options = [
   {
     value: `default`,
-    label: `默认`,
+    label: `本地 assets 文件夹（默认）`,
   },
   {
     value: `github`,

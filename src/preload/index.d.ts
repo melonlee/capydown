@@ -41,6 +41,8 @@ interface LazyBoxAPI {
   removeFile: (filePath: string) => Promise<string>
   readFile: (filePath: string) => Promise<string>
   readImageAsBase64: (filePath: string) => Promise<string>
+  /** 图片保存到文档旁的 assets/，返回 Markdown 相对路径 */
+  saveImageAsset: (docPath: string, fileName: string, mime: string, base64: string) => Promise<string>
   readPdfAsBase64: (filePath: string) => Promise<string>
   updateFile: (filePath: string, content: string) => Promise<string>
   moveFileOrFolder: (sourcePath: string, targetPath: string) => Promise<string>

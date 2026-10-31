@@ -66,11 +66,15 @@ export function useWeChatCopy() {
           await copyContent(temp)
         }
 
-        // 输出提示
+        // 输出提示；本地图片（相对路径）公众号后台无法读取，提醒用户重新上传
+        const hasLocalImages = /<img\b[^>]*\ssrc="(?!https?:|data:)[^"]+"/i.test(temp)
         toast.success(
           copyMode.value === `html`
             ? `已复制 HTML 源码，请进行下一步操作。`
             : `已复制渲染后的内容到剪贴板，可直接到公众号后台粘贴。`,
+          hasLocalImages
+            ? { description: `文章里有本地图片，粘贴后请在公众号后台重新上传这些图片（或在「格式 → 上传图片…」里配置图床）。`, duration: 5000 }
+            : undefined,
         )
 
         editorRefresh()

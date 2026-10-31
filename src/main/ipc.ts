@@ -17,6 +17,8 @@ import {
 } from './local'
 import * as path from 'path'
 import * as fs from 'fs/promises'
+import { existsSync } from 'fs'
+import { ASSET_DIR, assetFileName, markdownImagePath, uniqueAssetName } from '../shared/image-asset'
 
 export const initIpcMain = () => {
   // 旧版文件操作（保留向后兼容）
@@ -138,6 +140,22 @@ export const initIpcMain = () => {
       console.error('Failed to read image:', error);
       throw error;
     }
+  })
+
+  // 粘贴 / 拖入的图片保存到「文档所在目录/assets/」，返回写进 Markdown 的相对路径
+  ipcMain.handle('save-image-asset', async (_, { docPath, fileName, mime, base64 }) => {
+    if (typeof docPath !== 'string' || !path.isAbsolute(docPath))
+      throw new Error('请先打开一篇文档再插入图片')
+    if (typeof base64 !== 'string' || !base64)
+      throw new Error('图片内容为空')
+    const data = Buffer.from(base64.replace(/^data:[^;]+;base64,/, ''), 'base64')
+    if (data.length > 50 * 1024 * 1024)
+      throw new Error('图片超过 50 MB')
+    const dir = path.join(path.dirname(docPath), ASSET_DIR)
+    await fs.mkdir(dir, { recursive: true })
+    const name = uniqueAssetName(assetFileName(String(fileName ?? ''), String(mime ?? '')), n => existsSync(path.join(dir, n)))
+    await fs.writeFile(path.join(dir, name), data, { flag: 'wx' })
+    return markdownImagePath(ASSET_DIR, name)
   })
 
   ipcMain.handle('read-pdf-as-base64', async (_, { filePath }) => {

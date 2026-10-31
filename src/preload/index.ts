@@ -41,6 +41,8 @@ const api = {
     ipcRenderer.invoke('read-file', { filePath }),
   readImageAsBase64: (filePath: string) => 
     ipcRenderer.invoke('read-image-as-base64', { filePath }),
+  saveImageAsset: (docPath: string, fileName: string, mime: string, base64: string) =>
+    ipcRenderer.invoke('save-image-asset', { docPath, fileName, mime, base64 }),
   readPdfAsBase64: (filePath: string) => 
     ipcRenderer.invoke('read-pdf-as-base64', { filePath }),
   updateFile: (filePath: string, content: string) => 

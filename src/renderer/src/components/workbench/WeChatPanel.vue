@@ -44,9 +44,6 @@ function openStyle() {
 
 function openCss() {
   display.toggleShowCssEditor()
-  // 窗口不够宽时收起左侧边栏，避免编辑区被挤没
-  if (display.isShowCssEditor && wb.sidebarOpen && window.innerWidth - wb.sidebarWidth - 436 - 360 < 480)
-    wb.sidebarOpen = false
   setTimeout(() => store.cssEditor?.refresh(), 50)
 }
 </script>
