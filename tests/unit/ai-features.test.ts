@@ -5,7 +5,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { generateTitleSummary, proofreadDocument } from '../../src/main/ai/features'
 import { OpenAICompatibleProvider } from '../../src/main/ai/providers/openai-compatible'
-import { applyEdits } from '../../src/shared/ai/proofread'
+import { applyEdits, issueCategory } from '../../src/shared/ai/proofread'
 import { WECHAT_SUMMARY_MAX, WECHAT_TITLE_MAX, wechatLength } from '../../src/shared/ai/publish-meta'
 // @ts-expect-error 纯 JS 的开发脚本
 import { startMockServer } from '../../scripts/dev/mock-openai.mjs'
@@ -53,13 +53,25 @@ describe('proofreading through the real provider + mock server', () => {
     const fixed = applyEdits(ARTICLE, result.issues)
     expect(fixed.skipped).toEqual([])
     expect(fixed.text).toContain('# 我作为作者的一点体会')
-    expect(fixed.text).toContain('今天再次打开编辑器，发现 Markdown 写作很顺手。')
+    // 默认不报中英文空格（风格建议关闭）
+    expect(result.issues.some(i => i.type === 'spacing')).toBe(false)
+    expect(fixed.text).toContain('今天再次打开编辑器，发现Markdown写作很顺手。')
     expect(fixed.text).toContain('npm 按装 在次')
     expect(fixed.text).toContain('htps://example.com/doc')
     expect(fixed.text.split('\r\n').length).toBe(ARTICLE.split('\r\n').length)
 
     const calls = mock.requests.slice(before)
     expect(calls.every(r => r.task === 'proofread' && r.jsonMode)).toBe(true)
+  })
+
+  it('includes CJK/Latin spacing as style suggestions only when enabled', async () => {
+    const result = await proofreadDocument(provider(), ARTICLE, { includeStyle: true })
+    const style = result.issues.filter(i => issueCategory(i.type) === 'style')
+    expect(style.length).toBeGreaterThan(0)
+    expect(style.every(i => i.type === 'spacing')).toBe(true)
+    const fixed = applyEdits(ARTICLE, result.issues)
+    expect(fixed.skipped).toEqual([])
+    expect(fixed.text).toContain('今天再次打开编辑器，发现 Markdown 写作很顺手。')
   })
 
   it('falls back when the gateway rejects response_format', async () => {

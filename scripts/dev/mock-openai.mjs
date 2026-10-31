@@ -9,7 +9,8 @@
  *
  * 支持 POST /v1/chat/completions（stream: true 走 SSE，否则普通 JSON）和 GET /v1/models。
  * 根据系统提示词判断任务，返回确定性的结果：
- *   - 校对：按内置规则找「在次 / 做为 / 按装 / 的的 / ，，/ 中英文之间缺空格」，
+ *   - 校对：按内置规则找「在次 / 做为 / 按装 / 的的 / ，，」；系统提示词要求风格建议（含 spacing）时
+ *           才报「中英文之间缺空格」，
  *           另外故意返回两条应被客户端拒绝的条目（改链接、大幅改写），用来验证校验逻辑
  *   - 标题 + 摘要：5 个标题（其中 1 个超过 64 字，应被过滤）+ 一段超过 120 字的摘要（应被截断）
  *   - 其它（如「测试连接」）：回复「成功」
@@ -34,6 +35,7 @@ const RULES = [
     fix: m => m.replace(new RegExp(`([${CJK}])([A-Za-z0-9])`, 'g'), '$1 $2').replace(new RegExp(`([A-Za-z0-9])([${CJK}])`, 'g'), '$1 $2'),
     type: 'spacing',
     reason: '中文与英文之间加空格',
+    style: true,
   },
   // 下面两条是「坏」建议：客户端必须拒绝
   { re: /htps:\/\/[^\s)]+/g, fix: m => m.replace('htps', 'https'), type: 'typo', reason: '（应被拒绝：改动链接）' },
@@ -54,10 +56,12 @@ function uniqueSpan(text, start, end) {
   return [s, e]
 }
 
-export function mockProofread(paragraphs) {
+export function mockProofread(paragraphs, { includeStyle = false } = {}) {
   const issues = []
   for (const p of paragraphs) {
     for (const rule of RULES) {
+      if (rule.style && !includeStyle)
+        continue
       rule.re.lastIndex = 0
       for (const m of p.text.matchAll(rule.re)) {
         const fixed = rule.fix(m[0])
@@ -98,7 +102,8 @@ function decide(body) {
   const user = lastUserText(body.messages)
   if (system.includes('校对') && user.includes('"paragraphs"')) {
     const json = JSON.parse(user.slice(user.indexOf('{'), user.lastIndexOf('}') + 1))
-    return { task: 'proofread', content: JSON.stringify(mockProofread(json.paragraphs)) }
+    const includeStyle = /^- spacing/m.test(system)
+    return { task: 'proofread', content: JSON.stringify(mockProofread(json.paragraphs, { includeStyle })) }
   }
   if (system.includes('拟标题')) {
     return { task: 'titles', content: JSON.stringify(mockTitleSummary()) }

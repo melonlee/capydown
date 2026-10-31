@@ -204,7 +204,7 @@ watch(() => props.modelValue, async (open) => {
               先校对一遍再发
             </div>
             <div class="text-xs text-muted-foreground">
-              公众号发布后正文最多只能改 20 个字。AI 帮你找错别字、语病、标点 / 空格和重复用词，逐条确认。
+              公众号发布后正文最多只能改 20 个字。AI 帮你找错别字、语病、标点和重复用词，逐条确认。
             </div>
           </div>
           <Button size="sm" variant="outline" :disabled="!!busy" @click="emit('proofread')">

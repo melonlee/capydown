@@ -77,6 +77,7 @@ export function initAIIpcHandlers(): void {
     proofreadJobs.set(senderId, job);
     try {
       return await proofreadDocument(service, text, {
+        includeStyle: payload?.includeStyle === true,
         onProgress: (done, total) => {
           if (!event.sender.isDestroyed())
             event.sender.send('ai:proofread-progress', { done, total });

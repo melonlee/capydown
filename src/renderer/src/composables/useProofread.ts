@@ -7,6 +7,7 @@
  */
 import type { MarkdownEditor } from '@renderer/editor'
 import type { ProofreadIssue, ProofreadResult } from '../../../shared/ai/proofread'
+import { useStorage } from '@vueuse/core'
 import { computed, reactive } from 'vue'
 import { EditorSelection } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
@@ -33,6 +34,12 @@ const state = reactive({
   docPath: '',
   cancelling: false,
 })
+
+/**
+ * 设置「校对时包含风格建议」：打开后额外检查中英文之间的空格。默认关闭，
+ * 只报错别字、语病、标点和重复用词。偏好设置（AI 一节）和校对面板共用这个值。
+ */
+export const proofreadIncludeStyle = useStorage('lazybox-proofread-style', false)
 
 let getEditor: () => MarkdownEditor | null = () => null
 let getDocPath: () => string = () => ''
@@ -101,7 +108,7 @@ export function useProofread() {
     state.docPath = getDocPath()
     const off = window.$api.onAIProofreadProgress((p: { done: number, total: number }) => (state.progress = p))
     try {
-      const result: ProofreadResult = await window.$api.aiProofread(text)
+      const result: ProofreadResult = await window.$api.aiProofread(text, { includeStyle: proofreadIncludeStyle.value })
       state.issues = result.issues.map(i => ({ ...i, status: 'pending' as IssueStatus }))
       state.failed = result.failedChunks
       state.checkedChars = result.checkedChars

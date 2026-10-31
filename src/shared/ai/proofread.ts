@@ -21,8 +21,26 @@ export const ISSUE_TYPE_LABELS: Record<ProofreadIssueType, string> = {
   typo: '错别字',
   grammar: '语病',
   punctuation: '标点',
-  spacing: '空格',
+  spacing: '中英文空格',
   repetition: '重复',
+}
+
+/**
+ * 问题分两类：
+ *   error  确定的错误（错别字、语病、标点、重复），默认只报这一类
+ *   style  风格建议（目前只有中英文之间的空格），由设置「校对时包含风格建议」打开，默认关闭
+ */
+export type ProofreadCategory = 'error' | 'style'
+
+export const STYLE_ISSUE_TYPES: readonly ProofreadIssueType[] = ['spacing']
+
+export const CATEGORY_LABELS: Record<ProofreadCategory, string> = {
+  error: '错误',
+  style: '风格建议',
+}
+
+export function issueCategory(type: ProofreadIssueType): ProofreadCategory {
+  return STYLE_ISSUE_TYPES.includes(type) ? 'style' : 'error'
 }
 
 export interface ProofreadSegment {
@@ -392,16 +410,16 @@ export function protectedRanges(text: string): [number, number][] {
 // 提示词
 // ---------------------------------------------------------------------------
 
-export const PROOFREAD_SYSTEM_PROMPT = `你是一名严谨的中文校对编辑，负责公众号文章发布前的最后一遍校对。文章发布后正文最多只能修改 20 个字，所以只指出确定的错误。
+const PROMPT_HEAD = `你是一名严谨的中文校对编辑，负责公众号文章发布前的最后一遍校对。文章发布后正文最多只能修改 20 个字，所以只指出确定的错误。`
 
-只检查这五类问题：
-- typo：错别字、同音/形近字误用（如「在次」→「再次」、「做为」→「作为」）、明显的英文拼写错误
+const ERROR_RULES = `- typo：错别字、同音/形近字误用（如「在次」→「再次」、「做为」→「作为」）、明显的英文拼写错误
 - grammar：明显的语病（成分残缺、搭配不当、语序错误），只做最小改动
 - punctuation：标点误用（中文句子里用了半角标点、成对标点不匹配、重复标点）
-- spacing：中文与英文单词、中文与阿拉伯数字之间缺少空格，或多余的空格
-- repetition：重复用词（如「的的」「我们我们」），或相邻句子里明显多余的重复
+- repetition：重复用词（如「的的」「我们我们」），或相邻句子里明显多余的重复`
 
-严格遵守：
+const STYLE_RULE = `- spacing（风格建议）：中文与英文单词、中文与阿拉伯数字之间缺少空格，或多余的空格`
+
+const PROMPT_TAIL = `严格遵守：
 - 不润色、不改写风格、不替换同义词、不调整语气，不改动观点、事实、数据和专有名词
 - 不改动 Markdown 标记（# * _ \` [ ] > | 等）、链接地址、代码、公式、HTML
 - original 必须逐字摘自对应段落（包括空格和标点），长度 2～30 个字，并且在该段落中只出现一次；不够唯一就向前后多带几个字
@@ -411,11 +429,22 @@ export const PROOFREAD_SYSTEM_PROMPT = `你是一名严谨的中文校对编辑�
 只输出 JSON，不要任何解释，格式：
 {"issues":[{"p":"P1","type":"typo","original":"原文片段","suggestion":"改正后的片段","reason":"一句话说明"}]}`
 
+/** 系统提示词：默认只查四类错误；includeStyle 时额外检查中英文空格（风格建议） */
+export function buildProofreadSystemPrompt(includeStyle = false): string {
+  const rules = includeStyle
+    ? `只检查这五类问题：\n${ERROR_RULES}\n${STYLE_RULE}`
+    : `只检查这四类问题：\n${ERROR_RULES}\n\n中英文之间是否加空格属于个人风格，不要报告空格问题。`
+  return `${PROMPT_HEAD}\n\n${rules}\n\n${PROMPT_TAIL}`
+}
+
+/** 默认（只查错误）的系统提示词 */
+export const PROOFREAD_SYSTEM_PROMPT = buildProofreadSystemPrompt(false)
+
 /** 构造一批段落的提示词（用户消息是 JSON，段落边界不会混淆） */
-export function buildProofreadMessages(chunk: ProofreadChunk): { system: string, user: string } {
+export function buildProofreadMessages(chunk: ProofreadChunk, options: { includeStyle?: boolean } = {}): { system: string, user: string } {
   const paragraphs = chunk.segments.map(s => ({ id: s.id, text: s.text.replace(/\r\n/g, '\n') }))
   return {
-    system: PROOFREAD_SYSTEM_PROMPT,
+    system: buildProofreadSystemPrompt(options.includeStyle),
     user: `请校对下面的段落（JSON 数组，id 是段落编号）：\n${JSON.stringify({ paragraphs })}`,
   }
 }
@@ -628,6 +657,8 @@ export interface ProofreadOptions {
   maxSegmentChars?: number
   /** 同时进行的请求数 */
   concurrency?: number
+  /** 是否包含风格建议（中英文空格）。默认 false：只返回错别字、语病、标点、重复 */
+  includeStyle?: boolean
   onProgress?: (done: number, total: number) => void
   /** 返回 true 时不再发起新的请求（已经发出的会等它完成） */
   isCancelled?: () => boolean
@@ -645,6 +676,7 @@ export interface ProofreadResult {
 export async function proofreadText(generate: ProofreadGenerate, text: string, options: ProofreadOptions = {}): Promise<ProofreadResult> {
   const segments = extractSegments(text, options.maxSegmentChars)
   const chunks = chunkSegments(segments, options.maxChunkChars)
+  const includeStyle = options.includeStyle ?? false
   const issues: ProofreadIssue[] = []
   const failedChunks: ProofreadResult['failedChunks'] = []
   let done = 0
@@ -653,7 +685,7 @@ export async function proofreadText(generate: ProofreadGenerate, text: string, o
   options.onProgress?.(0, chunks.length)
 
   async function runChunk(chunk: ProofreadChunk) {
-    const { system, user } = buildProofreadMessages(chunk)
+    const { system, user } = buildProofreadMessages(chunk, { includeStyle })
     let lastError: unknown
     // JSON 解析失败时重试一次；网络 / 鉴权错误不重试，直接报给用户
     for (let attempt = 0; attempt < 2; attempt++) {
@@ -666,7 +698,9 @@ export async function proofreadText(generate: ProofreadGenerate, text: string, o
         break
       }
       try {
-        issues.push(...locateIssues(text, chunk, parseProofreadResponse(reply)))
+        // 模型偶尔不听话：风格建议关闭时，即使返回了空格类问题也丢掉
+        const located = locateIssues(text, chunk, parseProofreadResponse(reply))
+        issues.push(...(includeStyle ? located : located.filter(i => issueCategory(i.type) === 'error')))
         return
       }
       catch (error) {

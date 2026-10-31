@@ -1,10 +1,11 @@
 <script setup lang="ts">
 /**
- * 发布前校对面板（右侧）：错别字、语病、标点 / 空格、重复用词。
+ * 发布前校对面板（右侧）：错别字、语病、标点、重复用词；
+ * 打开「风格建议」设置后，中英文空格单独列在「风格建议」一组。
  * 每条可以定位、接受（写回编辑器，可撤销）、忽略；也可以一次全部接受。
  */
-import { ISSUE_TYPE_LABELS } from '../../../../shared/ai/proofread'
-import { openAISettings, type PanelIssue, useProofread } from '@renderer/composables/useProofread'
+import { CATEGORY_LABELS, ISSUE_TYPE_LABELS, issueCategory } from '../../../../shared/ai/proofread'
+import { openAISettings, type PanelIssue, proofreadIncludeStyle, useProofread } from '@renderer/composables/useProofread'
 import { useWorkbenchStore } from '@renderer/stores/workbench'
 import { Check, CheckCheck, Loader2, RotateCcw, X } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
@@ -14,8 +15,20 @@ const wb = useWorkbenchStore()
 
 watch(() => wb.docPath, onDocChanged)
 
+/** 分组：确定的错误在前，风格建议（可选）在后 */
+const groups = computed(() => {
+  const errors = state.issues.filter(i => issueCategory(i.type) === 'error')
+  const style = state.issues.filter(i => issueCategory(i.type) === 'style')
+  return [
+    { key: 'error', title: '', items: errors },
+    { key: 'style', title: CATEGORY_LABELS.style, items: style },
+  ].filter(g => g.items.length)
+})
+
 const counts = computed(() => ({
   total: state.issues.length,
+  errors: state.issues.filter(i => issueCategory(i.type) === 'error').length,
+  style: state.issues.filter(i => issueCategory(i.type) === 'style').length,
   accepted: state.issues.filter(i => i.status === 'accepted').length,
   ignored: state.issues.filter(i => i.status === 'ignored').length,
 }))
@@ -90,6 +103,10 @@ function tokens(s: string): { text: string, mark: boolean }[] {
         <button class="lb-btn is-primary" @click="start">
           开始校对
         </button>
+        <label class="lb-proof-opt">
+          <input v-model="proofreadIncludeStyle" type="checkbox">
+          同时给出风格建议（中英文之间的空格）
+        </label>
       </div>
 
       <!-- 进行中 -->
@@ -131,7 +148,7 @@ function tokens(s: string): { text: string, mark: boolean }[] {
       <template v-else-if="state.phase === 'done'">
         <div class="lb-proof-summary">
           <span v-if="counts.total">
-            {{ counts.total }} 处可能的问题<template v-if="counts.accepted || counts.ignored"> · 已改 {{ counts.accepted }} · 忽略 {{ counts.ignored }}</template>
+            {{ counts.errors }} 处可能的错误<template v-if="counts.style"> · {{ counts.style }} 条风格建议</template><template v-if="counts.accepted || counts.ignored"> · 已改 {{ counts.accepted }} · 忽略 {{ counts.ignored }}</template>
           </span>
           <span v-else>没有发现问题（检查了约 {{ state.checkedChars }} 字）</span>
           <button v-if="pending.length > 1" class="lb-btn is-primary is-small" @click="onAcceptAll">
@@ -147,9 +164,13 @@ function tokens(s: string): { text: string, mark: boolean }[] {
           </button>
         </p>
 
+        <template v-for="group in groups" :key="group.key">
+        <div v-if="group.title" class="lb-proof-group">
+          {{ group.title }}<span>可选，不影响发布</span>
+        </div>
         <ul class="lb-proof-list">
           <li
-            v-for="issue in state.issues"
+            v-for="issue in group.items"
             :key="issue.id"
             class="lb-proof-item"
             :class="[`is-${issue.status}`, { 'is-active': state.activeId === issue.id }]"
@@ -179,12 +200,41 @@ function tokens(s: string): { text: string, mark: boolean }[] {
             </div>
           </li>
         </ul>
+        </template>
       </template>
     </div>
   </aside>
 </template>
 
 <style scoped>
+.lb-proof-opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--lb-muted);
+  cursor: pointer;
+}
+
+.lb-proof-opt input {
+  accent-color: var(--lb-accent);
+}
+
+.lb-proof-group {
+  margin: 18px 4px 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--lb-fg-strong);
+}
+
+.lb-proof-group span {
+  margin-left: 8px;
+  font-weight: 400;
+  color: var(--lb-faint);
+}
+
 .lb-proof {
   display: flex;
   flex-direction: column;

@@ -15,9 +15,15 @@ import {
   SelectValue,
 } from '@renderer/components/ui/select';
 import { Input } from '@renderer/components/ui/input';
+import { Switch } from '@renderer/components/ui/switch';
+import { proofreadIncludeStyle } from '@renderer/composables/useProofread';
 import { toast } from 'vue-sonner';
 
 type Provider = 'claude' | 'openai';
+
+function setIncludeStyle(v: boolean) {
+  proofreadIncludeStyle.value = v;
+}
 
 const {
   aiConfig,
@@ -169,7 +175,7 @@ const testConnection = async () => {
     </h2>
 
     <p class="text-xs text-muted-foreground leading-relaxed">
-      AI 只做两件事：<strong class="font-medium text-foreground">发布前校对</strong>（错别字、语病、标点 / 空格、重复用词）和在发布对话框里<strong class="font-medium text-foreground">拟标题、写摘要</strong>。请求由本机直接发给你选择的服务商，懒排不经手、不保存你的文章。
+      AI 只做两件事：<strong class="font-medium text-foreground">发布前校对</strong>（错别字、语病、标点、重复用词）和在发布对话框里<strong class="font-medium text-foreground">拟标题、写摘要</strong>。请求由本机直接发给你选择的服务商，懒排不经手、不保存你的文章。
     </p>
 
     <div v-if="configured" class="flex items-center gap-1 text-xs text-muted-foreground">
@@ -272,6 +278,18 @@ const testConnection = async () => {
         placeholder="例如 deepseek-chat、qwen-plus、gpt-4o-mini"
         :disabled="isLoading"
       />
+    </div>
+
+    <div class="flex items-start justify-between gap-3 pt-1">
+      <div>
+        <div class="text-sm font-medium">
+          校对时包含风格建议
+        </div>
+        <p class="text-xs text-muted-foreground mt-0.5">
+          额外检查中文与英文、数字之间的空格。默认关闭，只报确定的错误。
+        </p>
+      </div>
+      <Switch :checked="proofreadIncludeStyle" @update:checked="setIncludeStyle" />
     </div>
 
     <div class="flex gap-2 pt-2">

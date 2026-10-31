@@ -5,6 +5,7 @@ import {
   buildProofreadMessages,
   chunkSegments,
   extractSegments,
+  issueCategory,
   locateIssues,
   parseProofreadResponse,
   planEdits,
@@ -121,6 +122,25 @@ describe('chunkSegments', () => {
     const chunk = chunkOf('一\r\n二\r\n')
     const { user } = buildProofreadMessages(chunk)
     expect(user).toContain('"text":"一\\n二"')
+  })
+
+  it('only asks for spacing (style) when includeStyle is on', () => {
+    const chunk = chunkOf('正文。\n')
+    const off = buildProofreadMessages(chunk).system
+    const on = buildProofreadMessages(chunk, { includeStyle: true }).system
+    expect(off).not.toMatch(/^- spacing/m)
+    expect(off).toContain('不要报告空格问题')
+    expect(on).toMatch(/^- spacing/m)
+    for (const t of ['typo', 'grammar', 'punctuation', 'repetition']) {
+      expect(off).toContain(`- ${t}：`)
+      expect(on).toContain(`- ${t}：`)
+    }
+  })
+
+  it('classifies spacing as a style suggestion and the rest as errors', () => {
+    expect(issueCategory('spacing')).toBe('style')
+    for (const t of ['typo', 'grammar', 'punctuation', 'repetition'] as const)
+      expect(issueCategory(t)).toBe('error')
   })
 })
 
@@ -313,6 +333,18 @@ describe('proofreadText (fake model)', () => {
     expect(fixed).toContain("const s = '在次 做为 按装'")
     expect(fixed).toContain('补充段落0作为结尾')
     expect(fixed).toContain('补充段落5做为结尾') // 失败批次里的段落保持原样
+  })
+
+  it('drops spacing issues unless style suggestions are enabled', async () => {
+    const reply = JSON.stringify({ issues: [
+      { p: 'P1', type: 'spacing', original: '用Markdown', suggestion: '用 Markdown', reason: '' },
+      { p: 'P1', type: 'typo', original: '在次写', suggestion: '再次写', reason: '' },
+    ] })
+    const md = '我在次写文章，用Markdown排版。'
+    const off = await proofreadText(async () => reply, md)
+    expect(off.issues.map(i => i.type)).toEqual(['typo'])
+    const on = await proofreadText(async () => reply, md, { includeStyle: true })
+    expect(on.issues.map(i => i.type).sort()).toEqual(['spacing', 'typo'])
   })
 
   it('retries once when the reply is not JSON', async () => {
