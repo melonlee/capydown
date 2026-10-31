@@ -5,6 +5,8 @@ import { Edit3, Plus, X } from 'lucide-vue-next'
 const store = useStore()
 const displayStore = useDisplayStore()
 
+onMounted(() => store.initCssEditor())
+
 const isOpenEditDialog = ref(false)
 const editInputVal = ref(``)
 const tabHistory = ref([``, store.cssContentConfig.active])

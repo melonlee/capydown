@@ -34,7 +34,8 @@ export function initAIIpcHandlers(): void {
 
   // 获取 AI 服务配置
   ipcMain.handle('ai:get-service-config', async () => {
-    const active = getActiveAIServiceConfig();
+    // 已初始化的服务优先；否则读取已保存的配置（服务是首次调用时才懒加载的）
+    const active = getActiveAIServiceConfig() ?? getAIServiceConfig();
     // 不把 API Key 回传给渲染进程
     return active ? { provider: active.provider, model: active.model, baseURL: active.baseURL } : null;
   });

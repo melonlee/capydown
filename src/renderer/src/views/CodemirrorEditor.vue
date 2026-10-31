@@ -203,9 +203,14 @@ function onDropFiles(evt: DragEvent) {
   for (const item of items) {
     if (item.kind !== 'file')
       continue
-    const handlePromise = (item as any).getAsFileSystemHandle?.()
+    // getAsFileSystemHandle 可能不存在或被拒绝（非真实文件系统拖放），此时按普通文件处理
+    let handlePromise: Promise<any> | undefined
+    try {
+      handlePromise = (item as any).getAsFileSystemHandle?.()
+    }
+    catch {}
     const file = item.getAsFile()
-    Promise.resolve(handlePromise).then(async (handle: any) => {
+    Promise.resolve(handlePromise).catch(() => null).then(async (handle: any) => {
       if (handle?.kind === 'directory') {
         const list = await readDirectoryHandle(handle)
         const md = await readFirstMarkdown(list)

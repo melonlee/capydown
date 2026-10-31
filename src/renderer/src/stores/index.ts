@@ -148,7 +148,10 @@ export const useStore = defineStore(`store`, () => {
   // 自义定 CSS 编辑器
   const cssEditor = ref<CodeMirror.EditorFromTextArea | null>(null)
   const setCssEditorValue = (content: string) => {
-    (cssEditor.value!).setValue(content)
+    if (cssEditor.value)
+      cssEditor.value.setValue(content)
+    else
+      getCurrentTab().content = content
   }
   // 自定义 CSS 内容
   const cssContent = useStorage(`__css_content`, DEFAULT_CSS_CONTENT)
@@ -260,7 +263,7 @@ export const useStore = defineStore(`store`, () => {
 
   // 更新 CSS
   const updateCss = () => {
-    const json = css2json(cssEditor.value!.getValue())
+    const json = css2json(cssEditor.value ? cssEditor.value.getValue() : getCurrentTab().content)
     const newTheme = customCssWithTemplate(json, primaryColor.value, customizeTheme(themeMap[theme.value], { fontSize: fontSizeNumber.value, color: primaryColor.value }))
     renderer.setOptions({
       theme: newTheme,
@@ -268,13 +271,15 @@ export const useStore = defineStore(`store`, () => {
 
     editorRefresh()
   }
-  // 初始化 CSS 编辑器
-  onMounted(() => {
+  // 初始化 CSS 编辑器：由 CssEditor.vue 挂载时调用。
+  // 以前放在 store 的 onMounted 里，若 store 先在欢迎页被使用，#cssEditor 还不存在，编辑器就永远不会初始化。
+  const initCssEditor = () => {
     const cssEditorDom = document.querySelector<HTMLTextAreaElement>(`#cssEditor`)
-    if (!cssEditorDom) {
-      console.warn('CSS editor DOM element not found, skipping initialization')
+    if (!cssEditorDom)
       return
-    }
+    // 同一个 textarea 已经初始化过（重新打开工作区会重新挂载组件，届时是新的 textarea）
+    if (cssEditor.value && cssEditor.value.getTextArea() === cssEditorDom)
+      return
     
     cssEditorDom.value = getCurrentTab().content
     const theme = isDark.value ? `darcula` : `xq-light`
@@ -286,7 +291,7 @@ export const useStore = defineStore(`store`, () => {
         lineWrapping: true,
         styleActiveLine: true,
         matchBrackets: true,
-        autofocus: true,
+        autofocus: false,
         extraKeys: {
           [`${shiftKey}-${altKey}-F`]: function autoFormat(editor: CodeMirror.Editor) {
             formatDoc(editor.getValue(), `css`).then((doc) => {
@@ -307,10 +312,10 @@ export const useStore = defineStore(`store`, () => {
 
     // 实时保存
     cssEditor.value.on(`update`, () => {
-      updateCss()
       getCurrentTab().content = cssEditor.value!.getValue()
+      updateCss()
     })
-  })
+  }
 
   watch(isDark, () => {
     const theme = isDark.value ? `darcula` : `xq-light`
@@ -494,6 +499,7 @@ export const useStore = defineStore(`store`, () => {
     output,
     editor,
     cssEditor,
+    initCssEditor,
     theme,
     fontFamily,
     fontSize,
