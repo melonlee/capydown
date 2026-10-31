@@ -17,6 +17,8 @@ interface LazyBoxAPI {
 
   // 应用信息 / 设置
   getDefaultDocument: () => Promise<{ name: string; path: string }>
+  getExperimentalEnabled: () => Promise<boolean>
+  setExperimentalEnabled: (enabled: boolean) => Promise<{ success: boolean; requiresRestart: boolean }>
   
   // 旧版 API
   addPost2Local: (title: string, content: string) => Promise<string>

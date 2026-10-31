@@ -9,6 +9,8 @@ const api = {
 
   // 应用信息 / 设置
   getDefaultDocument: () => ipcRenderer.invoke('app:get-default-document'),
+  getExperimentalEnabled: () => ipcRenderer.invoke('app:get-experimental'),
+  setExperimentalEnabled: (enabled: boolean) => ipcRenderer.invoke('app:set-experimental', enabled),
   
   // 旧版 API（保留向后兼容）
   addPost2Local: (title, content) => ipcRenderer.invoke('add-post', { title, content }),

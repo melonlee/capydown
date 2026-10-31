@@ -11,6 +11,7 @@ import { initImageIPCHandlers } from './ipc-image'
 import { initTemplateIPCHandlers } from './ipc-template'
 import { initVectorIPCHandlers } from './ipc-vector'
 import { initMCPSkillIPCHandlers } from './ipc-mcp-skill'
+import { isExperimentalEnabled, setExperimentalEnabled } from './config/experimental'
 import { isSafeExternalUrl } from './security'
 
 function createWindow(): void {
@@ -86,15 +87,25 @@ app.whenReady().then(() => {
     path: defaultDocumentPath,
   }))
 
+  // 实验功能开关（MCP / Skill / 知识库 / 模板 / AI 生图等未完成模块）
+  ipcMain.handle('app:get-experimental', () => isExperimentalEnabled())
+  ipcMain.handle('app:set-experimental', (_, enabled: boolean) => {
+    setExperimentalEnabled(!!enabled)
+    return { success: true, requiresRestart: true }
+  })
+
   // IPC handlers
   initIpcMain()
   initAIIpcHandlers()
   initPublishIPCHandlers()
 
-  initImageIPCHandlers()
-  initTemplateIPCHandlers()
-  initVectorIPCHandlers()
-  initMCPSkillIPCHandlers()
+  // 未完成的实验模块：默认不注册，只有在设置中开启「实验功能」并重启后才可用
+  if (isExperimentalEnabled()) {
+    initImageIPCHandlers()
+    initTemplateIPCHandlers()
+    initVectorIPCHandlers()
+    initMCPSkillIPCHandlers()
+  }
 
   initDocumentDir()
 
