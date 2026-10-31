@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<link rel="stylesheet" href="_base.css">
+<style>
+  body { width: 1600px; height: 900px; position: relative; color: #16132E;
+    background: radial-gradient(900px 500px at 50% -10%, rgba(196,181,253,.55), transparent 65%), #F7F5FF; }
+  header { position: absolute; top: 60px; left: 0; right: 0; text-align: center; }
+  header img { height: 44px; }
+  header h1 { margin-top: 18px; font-size: 46px; font-weight: 800; }
+  header p { margin-top: 10px; font-size: 22px; color: #5B5880; }
+  .steps { position: absolute; left: 70px; right: 70px; top: 270px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 36px; }
+  .step { position: relative; }
+  .step + .step::before { content: "→"; position: absolute; left: -30px; top: 168px; font-size: 26px; color: #7C3AED; font-weight: 700; }
+  .card { height: 360px; border-radius: 18px; overflow: hidden; background: #1f2433; box-shadow: 0 24px 50px -24px rgba(45,20,110,.45), 0 0 0 1px rgba(124,58,237,.12); }
+  .card img { width: 100%; height: 100%; object-fit: cover; object-position: top left; display: block; }
+  .card.light { background: #fff; }
+  .num { margin-top: 26px; display: flex; align-items: center; gap: 12px; }
+  .num b { width: 40px; height: 40px; border-radius: 12px; background: #7C3AED; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 20px; }
+  .num span { font-size: 30px; font-weight: 700; }
+  .desc { margin-top: 10px; font-size: 19px; color: #5B5880; line-height: 1.6; }
+</style></head>
+<body>
+  <header>
+    <img src="../logo-wordmark-light.svg" alt="LazyBox">
+    <h1>一篇公众号文章，在 LazyBox 里走完全程</h1>
+    <p>以下均为应用内真实截图</p>
+  </header>
+  <div class="steps">
+    <div class="step"><div class="card"><img src="crops/editor.jpg"></div>
+      <div class="num"><b>1</b><span>写作</span></div>
+      <p class="desc">文章就是本地文件夹里的 .md 文件，用 Markdown 专心写。</p></div>
+    <div class="step"><div class="card light"><img src="crops/preview-green.jpg"></div>
+      <div class="num"><b>2</b><span>排版</span></div>
+      <p class="desc">实时预览公众号效果，主题、字体、主题色一键切换。</p></div>
+    <div class="step"><div class="card light"><img src="crops/upload-tabs.jpg"></div>
+      <div class="num"><b>3</b><span>图片</span></div>
+      <p class="desc">拖入图片上传到 GitHub、阿里云、腾讯云、七牛等图床。</p></div>
+    <div class="step"><div class="card light"><img src="crops/publish-wechat.jpg"></div>
+      <div class="num"><b>4</b><span>发布</span></div>
+      <p class="desc">复制到公众号后台粘贴；也可导出带 Front Matter 的 .md。</p></div>
+  </div>
+</body></html>

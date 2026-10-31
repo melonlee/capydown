@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<link rel="stylesheet" href="_base.css">
+<style>
+  body { width: 1280px; height: 640px; position: relative; }
+  .left { position: absolute; left: 80px; top: 0; bottom: 0; width: 520px; display: flex; flex-direction: column; justify-content: center; z-index: 2; }
+  .logo { height: 72px; align-self: flex-start; margin-bottom: 36px; }
+  h1 { font-size: 54px; font-weight: 700; line-height: 1.25; letter-spacing: .02em; }
+  h1 em { font-style: normal; background: linear-gradient(90deg, #C4B5FD, #8B5CF6); -webkit-background-clip: text; color: transparent; }
+  p.sub { margin-top: 18px; font-size: 22px; color: var(--muted); line-height: 1.6; }
+  .flow { margin-top: 30px; display: flex; gap: 10px; align-items: center; font-size: 17px; color: #DDD6FE; }
+  .flow b { font-weight: 500; padding: 6px 14px; border-radius: 9px; background: rgba(139,92,246,.16); border: 1px solid rgba(167,139,250,.3); }
+  .flow span { color: #6E6A9E; }
+  .foot { position: absolute; left: 80px; bottom: 40px; font-size: 16px; color: #6E6A9E; letter-spacing: .02em; }
+  .shot { position: absolute; left: 640px; top: 90px; width: 760px; transform: perspective(1800px) rotateY(-11deg) rotateX(3deg); transform-origin: left center; }
+</style></head>
+<body class="bg-dark grid">
+  <div class="left">
+    <img class="logo" src="../logo-wordmark-dark.svg" alt="LazyBox">
+    <h1>格式，<br><em>本该如此简单。</em></h1>
+    <p class="sub">给公众号作者的 Markdown 桌面编辑器<br>本地写作 · 主题排版 · 图床上传 · 一键复制到公众号</p>
+    <div class="flow"><b>写作</b><span>→</span><b>排版</b><span>→</span><b>图片</b><span>→</span><b>发布</b></div>
+  </div>
+  <div class="foot">github.com/melonlee/LazyBox · 开源 · MIT</div>
+  <div class="shot window"><div class="bar"><i></i><i></i><i></i></div><img src="../../screenshots/02-editor-split.png"></div>
+</body></html>
