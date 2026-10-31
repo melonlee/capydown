@@ -39,3 +39,12 @@
 - HTML 块与数学公式不做渲染，按源码显示。
 - 粘贴网页富文本时按纯文本插入，不会转成 Markdown。
 - 公众号预览面板与编辑区是单向滚动同步（编辑区 → 预览）。
+
+## 视觉：黑白灰（2026-11）
+
+- 产品名「LazyBox · 墨排」（`src/shared/brand.ts`）；安装包名仍是 `LazyBox`。
+- 界面不使用彩色强调色：主题变量见 `src/renderer/src/assets/workbench.css`，`--lb-accent` 在浅色主题是黑、Night 是白；Night 为灰阶反相。代码高亮、mermaid 预览、CSS 编辑器（CM5 `lb-mono` 主题）也是灰阶。
+- 公众号文章主题（`config/theme.ts`）是输出内容，颜色不受影响。
+- 临时标志：`src/renderer/src/assets/images/logo-mark.svg`（只用 `currentColor`，由 `components/brand/BrandMark.vue` 内联），品牌任务替换这一个文件即可。
+- 粘贴 / 拖入图片默认保存到「文档目录/assets/」并写相对路径（Typora 做法）；配置了图床时仍上传。
+- 端到端测试：以 `LAZYBOX_E2E=1` 启动时暴露 `window.__lbEditor`（开发模式也有）。
