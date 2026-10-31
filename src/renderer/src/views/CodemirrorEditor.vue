@@ -13,6 +13,7 @@ import CodeMirror from 'codemirror'
 import AICommandPalette from '@renderer/components/AICommandPalette.vue'
 import PublishDialog from '@renderer/components/PublishDialog.vue'
 import { initInlineAI, getInlineAI } from '@renderer/utils/inline-ai'
+import emitter from '@renderer/utils/event'
 
 const store = useStore()
 const displayStore = useDisplayStore()
@@ -1077,6 +1078,11 @@ async function handleAITranslate(text: string, style: string) {
 
 .codeMirror-wrapper :deep(.CodeMirror-guttermarker) {
   color: #a78bfa;
+}
+
+// 编辑区始终是深色背景：xq-light 主题的浅色当前行高亮会让这一行文字看不清
+.codeMirror-wrapper :deep(.CodeMirror-activeline-background) {
+  background: rgba(139, 92, 246, 0.1) !important;
 }
 
 .codeMirror-wrapper :deep(.CodeMirror-activeline) {

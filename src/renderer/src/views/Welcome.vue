@@ -121,9 +121,9 @@ const openInFinder = async (workspace: Workspace) => {
 <template>
   <div class="welcome-container">
     <!-- 左侧：最近打开 -->
-    <div class="left-section">
-      <div v-if="workspaceStore.recentWorkspaces.length > 0" class="recent-section">
-        <h2 class="section-title">Recently Opened</h2>
+    <div v-if="workspaceStore.recentWorkspaces.length > 0" class="left-section">
+      <div class="recent-section">
+        <h2 class="section-title">最近打开</h2>
         
         <div class="recent-list">
           <div
@@ -185,7 +185,7 @@ const openInFinder = async (workspace: Workspace) => {
         <h1 class="app-title">
           <span class="first-letter">L</span><span class="rest-letters">azyBox</span>
         </h1>
-        <p class="app-subtitle">Your local-first notes workspace.</p>
+        <p class="app-subtitle">格式，本该如此简单。<br>公众号文章的写作、排版、发布，一个应用搞定。</p>
       </div>
 
       <div class="action-cards">
@@ -197,8 +197,8 @@ const openInFinder = async (workspace: Workspace) => {
             </svg>
           </div>
           <div class="action-text">
-            <h3 class="action-title">Create New Workspace</h3>
-            <p class="action-desc">Start fresh with a new folder for your notes and ideas</p>
+            <h3 class="action-title">新建工作空间</h3>
+            <p class="action-desc">选一个文件夹，开始存放你的文章和素材</p>
           </div>
         </div>
 
@@ -209,8 +209,8 @@ const openInFinder = async (workspace: Workspace) => {
             </svg>
           </div>
           <div class="action-text">
-            <h3 class="action-title">Open Existing Workspace</h3>
-            <p class="action-desc">Continue working with an existing folder of notes</p>
+            <h3 class="action-title">打开已有文件夹</h3>
+            <p class="action-desc">直接打开一个装着 Markdown 文章的文件夹</p>
           </div>
         </div>
       </div>
@@ -222,7 +222,7 @@ const openInFinder = async (workspace: Workspace) => {
         <DialogHeader>
           <DialogTitle>创建新工作空间</DialogTitle>
           <DialogDescription>
-            为您的笔记创建一个新的工作空间
+            输入名称后选择一个文件夹，文章会以 .md 文件保存在里面
           </DialogDescription>
         </DialogHeader>
         
@@ -232,7 +232,7 @@ const openInFinder = async (workspace: Workspace) => {
             <Input
               id="workspace-name"
               v-model="newWorkspaceName"
-              placeholder="例如：我的笔记"
+              placeholder="例如：我的公众号"
               @keyup.enter="handleCreateWorkspace"
             />
           </div>
@@ -529,6 +529,8 @@ const openInFinder = async (workspace: Workspace) => {
 
 .app-subtitle {
   font-size: 1rem;
+  line-height: 1.7;
+  text-align: center;
   color: #94a3b8;
   margin: 0;
   letter-spacing: -0.01em;
