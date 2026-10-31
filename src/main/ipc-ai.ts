@@ -3,8 +3,8 @@
  */
 
 import { ipcMain, BrowserWindow } from 'electron';
-import { createAIService, getAIService, hasAIService, getAIServiceConfig } from './ai';
-import { getAIConfig, setAIConfig, isAIEnabled } from './config/ai';
+import { ensureAIService, getAIService, resetAIService, getActiveAIServiceConfig } from './ai';
+import { getAIConfig, setAIConfig, isAIEnabled, getAIServiceConfig } from './config/ai';
 import { buildWritingContext } from './ai/context';
 
 /**
@@ -23,6 +23,7 @@ export function initAIIpcHandlers(): void {
   // 更新 AI 配置
   ipcMain.handle('ai:set-config', async (_, config) => {
     setAIConfig(config);
+    resetAIService();
     return { success: true };
   });
 
@@ -33,7 +34,9 @@ export function initAIIpcHandlers(): void {
 
   // 获取 AI 服务配置
   ipcMain.handle('ai:get-service-config', async () => {
-    return getAIServiceConfig();
+    const active = getActiveAIServiceConfig();
+    // 不把 API Key 回传给渲染进程
+    return active ? { provider: active.provider, model: active.model, baseURL: active.baseURL } : null;
   });
 
   // ========== AI 文本生成 ==========
@@ -221,11 +224,10 @@ export function initAIIpcHandlers(): void {
  * 确保 AI 服务已初始化
  */
 async function ensureAIInitialized(): Promise<void> {
-  if (!hasAIService()) {
-    const config = getAIServiceConfig();
-    if (!config) {
-      throw new Error('AI 服务未配置，请先在设置中配置 API Key');
-    }
-    createAIService(config);
+  // 每次都读取已保存的配置：用户在设置里换了 Key / 模型后无需重启
+  const config = getAIServiceConfig();
+  if (!config) {
+    throw new Error('AI 服务未配置，请先在设置中填写 API Key 并启用 AI');
   }
+  ensureAIService(config);
 }

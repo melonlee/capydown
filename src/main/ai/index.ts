@@ -3,5 +3,7 @@
  */
 
 export * from './types';
+export * from './providers/base';
 export * from './providers/claude';
-export { default as Anthropic } from '@anthropic-ai/sdk';
+export * from './providers/openai-compatible';
+export * from './service';

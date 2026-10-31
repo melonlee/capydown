@@ -3,7 +3,8 @@
  */
 
 import { getStore, setStore } from '../store';
-import type { AIServiceConfig } from '../ai';
+import type { AIServiceConfig } from '../ai/types';
+import { DEFAULT_CLAUDE_MODEL } from '../ai/providers/claude';
 
 const AI_CONFIG_KEY = 'ai_config';
 const AI_ENABLED_KEY = 'ai_enabled';
@@ -16,15 +17,23 @@ const DEFAULT_AI_CONFIG: AIConfig = {
   enabled: false,
   provider: 'claude',
   apiKey: '',
-  model: 'claude-3-5-sonnet-20241022',
+  model: DEFAULT_CLAUDE_MODEL,
 };
+
+// Claude 3.x 系列已全部下线，旧配置里保存的模型名需要换成当前可用的模型
+function migrateRetiredModel(config: AIConfig): AIConfig {
+  if (config.provider === 'claude' && /^claude-(3|2)/.test(config.model ?? '')) {
+    return { ...config, model: DEFAULT_CLAUDE_MODEL };
+  }
+  return config;
+}
 
 /**
  * 获取 AI 配置
  */
 export function getAIConfig(): AIConfig {
   const config = getStore(AI_CONFIG_KEY);
-  return config ? { ...DEFAULT_AI_CONFIG, ...config } : { ...DEFAULT_AI_CONFIG };
+  return config ? migrateRetiredModel({ ...DEFAULT_AI_CONFIG, ...config }) : { ...DEFAULT_AI_CONFIG };
 }
 
 /**

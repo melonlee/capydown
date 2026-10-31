@@ -10,11 +10,12 @@ const aiConfig = ref<{
   provider: 'claude' | 'openai' | 'custom';
   apiKey: string;
   model?: string;
+  baseURL?: string;
 }>({
   enabled: false,
   provider: 'claude',
   apiKey: '',
-  model: 'claude-3-5-sonnet-20241022',
+  model: 'claude-opus-4-7',
 });
 
 // 加载状态
