@@ -1,5 +1,3 @@
-import { ElectronAPI } from '@electron-toolkit/preload'
-
 interface FileNodeData {
   id: string
   name: string
@@ -16,6 +14,9 @@ interface FileNodeData {
 
 interface LazyBoxAPI {
   onMessage: (callback: (...args: any[]) => void) => void
+
+  // 应用信息 / 设置
+  getDefaultDocument: () => Promise<{ name: string; path: string }>
   
   // 旧版 API
   addPost2Local: (title: string, content: string) => Promise<string>
@@ -45,7 +46,8 @@ interface LazyBoxAPI {
   createWorkspace: (path: string) => Promise<boolean>
   validateWorkspace: (path: string) => Promise<boolean>
   getDefaultWorkspacePath: () => Promise<string>
-  openWorkspaceFolder: (path: string) => Promise<void>
+  openWorkspaceFolder: (path: string) => Promise<boolean>
+  openPdfExternally: (filePath: string) => Promise<boolean>
 
   // 窗口管理 API
   setWindowTitle: (title: string) => Promise<void>
@@ -573,7 +575,6 @@ interface LazyBoxAPI {
 
 declare global {
   interface Window {
-    electron: ElectronAPI
     $api: LazyBoxAPI
   }
 }

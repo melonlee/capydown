@@ -30,6 +30,5 @@ app.mount(`#app`)
 declare global {
   interface Window {
     $api: any;
-    $globalData: any;
   }
 }

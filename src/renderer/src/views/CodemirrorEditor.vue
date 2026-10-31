@@ -141,7 +141,9 @@ const loadPdf = async (filePath: string) => {
 const openPdfExternally = async () => {
   if (store.currentFilePath && store.currentFileType === 'pdf') {
     try {
-      await window.electron.shell.openPath(store.currentFilePath)
+      const ok = await window.$api.openPdfExternally(store.currentFilePath)
+      if (!ok)
+        toast.error('无法打开 PDF 文件')
     } catch (error) {
       console.error('Failed to open PDF externally:', error)
       toast.error('无法打开 PDF 文件')

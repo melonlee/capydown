@@ -206,11 +206,34 @@ export const initIpcMain = () => {
     return defaultAppDir;
   })
 
+  // shell.openPath 会“执行”目标（.app / .exe / .command 都会被启动），
+  // 因此这里只允许打开目录
   ipcMain.handle('open-workspace-folder', async (_, { path: workspacePath }) => {
     try {
-      await shell.openPath(workspacePath);
+      if (typeof workspacePath !== 'string' || !(await checkIfDirExist(workspacePath))) {
+        return false;
+      }
+      const err = await shell.openPath(workspacePath);
+      return !err;
     } catch (error) {
       console.error('Failed to open workspace folder:', error);
+      return false;
+    }
+  })
+
+  // 用系统默认应用打开 PDF（仅限已存在的 .pdf 文件）
+  ipcMain.handle('open-pdf-externally', async (_, { filePath }) => {
+    try {
+      if (typeof filePath !== 'string' || path.extname(filePath).toLowerCase() !== '.pdf') {
+        return false;
+      }
+      const stats = await fs.stat(filePath);
+      if (!stats.isFile()) return false;
+      const err = await shell.openPath(filePath);
+      return !err;
+    } catch (error) {
+      console.error('Failed to open PDF externally:', error);
+      return false;
     }
   })
 

@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, Menu } from 'electron'
+import { app, shell, BrowserWindow, Menu, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -11,6 +11,7 @@ import { initImageIPCHandlers } from './ipc-image'
 import { initTemplateIPCHandlers } from './ipc-template'
 import { initVectorIPCHandlers } from './ipc-vector'
 import { initMCPSkillIPCHandlers } from './ipc-mcp-skill'
+import { isSafeExternalUrl } from './security'
 
 function createWindow(): void {
   // Create the browser window.
@@ -24,26 +25,36 @@ function createWindow(): void {
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.cjs'),
-      sandbox: false
-    }
+      // 预加载脚本只依赖 contextBridge / ipcRenderer，可以在沙箱中运行
+      sandbox: true,
+      contextIsolation: true,
+      nodeIntegration: false,
+    },
   })
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
-
-    Menu.setApplicationMenu(menu);
-
-    mainWindow.webContents.executeJavaScript(`
-      window.$globalData = {
-        defaultDocumentName: '${defaultDocumentName}',
-        defaultDocumentPath: '${defaultDocumentPath}'
-      }
-    `);
+    Menu.setApplicationMenu(menu)
   })
 
+  // 只允许用系统浏览器打开 http(s)/mailto 链接，其余协议（file:、smb:、自定义 scheme 等）一律拒绝
   mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
+    if (isSafeExternalUrl(details.url)) {
+      shell.openExternal(details.url)
+    }
     return { action: 'deny' }
+  })
+
+  // 预览区里的普通链接不应把整个应用导航走
+  mainWindow.webContents.on('will-navigate', (event, url) => {
+    const current = mainWindow.webContents.getURL()
+    if (url === current || (is.dev && process.env['ELECTRON_RENDERER_URL'] && url.startsWith(process.env['ELECTRON_RENDERER_URL']))) {
+      return
+    }
+    event.preventDefault()
+    if (isSafeExternalUrl(url)) {
+      shell.openExternal(url)
+    }
   })
 
   // HMR for renderer base on electron-vite cli.
@@ -69,16 +80,23 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC handlers
-  initIpcMain();
-  initAIIpcHandlers();
-  initPublishIPCHandlers();
-  initImageIPCHandlers();
-  initTemplateIPCHandlers();
-  initVectorIPCHandlers();
-  initMCPSkillIPCHandlers();
+  // 通过 IPC 提供默认文档信息（取代以前把路径拼进 executeJavaScript 字符串的做法）
+  ipcMain.handle('app:get-default-document', () => ({
+    name: defaultDocumentName,
+    path: defaultDocumentPath,
+  }))
 
-  initDocumentDir();
+  // IPC handlers
+  initIpcMain()
+  initAIIpcHandlers()
+  initPublishIPCHandlers()
+
+  initImageIPCHandlers()
+  initTemplateIPCHandlers()
+  initVectorIPCHandlers()
+  initMCPSkillIPCHandlers()
+
+  initDocumentDir()
 
   createWindow()
 
@@ -97,6 +115,3 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.

@@ -1,9 +1,14 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import { electronAPI } from '@electron-toolkit/preload'
+
+// 注意：本预加载脚本运行在 sandbox 中，只能使用 contextBridge / ipcRenderer。
+// 不再暴露 @electron-toolkit/preload 的通用 ipcRenderer（它允许渲染进程调用任意通道）。
 
 // Custom APIs for renderer
 const api = {
-  onMessage: (callback) => ipcRenderer.on('message-to-renderer', (_, ...args) => callback(...args)),
+  onMessage: (callback: (...args: any[]) => void) => ipcRenderer.on('message-to-renderer', (_, ...args) => callback(...args)),
+
+  // 应用信息 / 设置
+  getDefaultDocument: () => ipcRenderer.invoke('app:get-default-document'),
   
   // 旧版 API（保留向后兼容）
   addPost2Local: (title, content) => ipcRenderer.invoke('add-post', { title, content }),
@@ -50,6 +55,8 @@ const api = {
     ipcRenderer.invoke('get-default-workspace-path'),
   openWorkspaceFolder: (path: string) => 
     ipcRenderer.invoke('open-workspace-folder', { path }),
+  openPdfExternally: (filePath: string) =>
+    ipcRenderer.invoke('open-pdf-externally', { filePath }),
   
   // 窗口管理 API
   setWindowTitle: (title: string) =>
@@ -224,14 +231,11 @@ const api = {
 // just add to the DOM global.
 if (process.contextIsolated) {
   try {
-    contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('$api', api)
   } catch (error) {
     console.error(error)
   }
 } else {
-  // @ts-ignore (define in dts)
-  window.electron = electronAPI
   // @ts-ignore (define in dts)
   window.$api = api
 }
