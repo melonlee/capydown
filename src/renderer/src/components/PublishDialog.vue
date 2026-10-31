@@ -7,7 +7,7 @@
   其它平台显示为「暂不支持」。
 -->
 <script setup lang="ts">
-import { AlertTriangle, Check, ClipboardCopy, Download, ExternalLink, Loader2, Sparkles } from 'lucide-vue-next'
+import { AlertTriangle, Check, ClipboardCopy, Copy, Download, ExternalLink, Loader2, RotateCcw, ScanText, Sparkles } from 'lucide-vue-next'
 import { Button } from '@renderer/components/ui/button'
 import {
   Dialog,
@@ -18,6 +18,8 @@ import {
 } from '@renderer/components/ui/dialog'
 import { toast } from 'vue-sonner'
 import emitter from '@renderer/utils/event'
+import { cleanAIError, openAISettings } from '@renderer/composables/useProofread'
+import { type TitleSummaryResult, WECHAT_SUMMARY_MAX, WECHAT_TITLE_MAX, wechatLength } from '../../../shared/ai/publish-meta'
 
 const props = defineProps<{
   modelValue: boolean
@@ -26,6 +28,8 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
+  /** 关闭对话框并打开「发布前校对」面板 */
+  'proofread': []
 }>()
 
 interface PlatformInfo {
@@ -44,8 +48,6 @@ interface PublishResult {
   error?: string
 }
 
-const WECHAT_SUMMARY_LIMIT = 120
-
 const platforms = ref<PlatformInfo[]>([])
 const unsupported = computed(() => platforms.value.filter(p => !p.supported))
 
@@ -54,11 +56,12 @@ const author = ref('')
 const tags = ref('')
 const summary = ref('')
 
-const busy = ref<'' | 'wechat' | 'markdown' | 'summary' | 'title'>('')
+const busy = ref<'' | 'wechat' | 'markdown' | 'meta'>('')
 const result = ref<PublishResult | null>(null)
 
 const aiEnabled = ref(false)
-const titleSuggestions = ref<string[]>([])
+const meta = ref<TitleSummaryResult | null>(null)
+const metaError = ref('')
 
 function metadata() {
   return {
@@ -129,51 +132,42 @@ async function exportMarkdown() {
   }
 }
 
-async function aiSummary() {
-  busy.value = 'summary'
+// AI 拟标题（3～5 个不同角度）+ 摘要（120 字以内），一次请求
+async function generateMeta() {
+  busy.value = 'meta'
+  metaError.value = ''
   try {
-    const text = await window.$api.aiGenerateText(
-      `为下面这篇公众号文章写一段摘要，用于公众号的「摘要」栏。要求：中文，${WECHAT_SUMMARY_LIMIT} 字以内，一段话，不要加引号和前缀，直接输出摘要。\n\n${props.content.slice(0, 8000)}`,
-      { maxTokens: 400 },
-    )
-    summary.value = String(text).trim().replace(/^["“「]|["”」]$/g, '').slice(0, WECHAT_SUMMARY_LIMIT)
+    meta.value = await window.$api.aiTitleSummary(props.content)
   }
   catch (error) {
-    toast.error(`生成摘要失败：${errorMessage(error)}`)
+    metaError.value = cleanAIError(error)
   }
   finally {
     busy.value = ''
   }
 }
 
-async function aiTitles() {
-  busy.value = 'title'
+async function copyText(text: string, what: string) {
   try {
-    const text = await window.$api.aiGenerateText(
-      `为下面这篇公众号文章拟 3 个标题。要求：中文，每个不超过 30 字，准确概括内容、不做标题党。每行一个标题，不要编号、不要引号、不要其它说明。\n\n${props.content.slice(0, 8000)}`,
-      { maxTokens: 300 },
-    )
-    titleSuggestions.value = String(text)
-      .split('\n')
-      .map(line => line.replace(/^\s*(\d+[.、)]|[-*•])\s*/, '').replace(/^["“「《]|["”」》]$/g, '').trim())
-      .filter(Boolean)
-      .slice(0, 3)
-    if (titleSuggestions.value.length === 0)
-      toast.error('模型没有返回可用的标题')
+    await navigator.clipboard.writeText(text)
+    toast.success(`${what}已复制`)
   }
-  catch (error) {
-    toast.error(`生成标题失败：${errorMessage(error)}`)
+  catch {
+    toast.error('复制失败')
   }
-  finally {
-    busy.value = ''
-  }
+}
+
+function goAISettings() {
+  emit('update:modelValue', false)
+  openAISettings()
 }
 
 watch(() => props.modelValue, async (open) => {
   if (!open)
     return
   result.value = null
-  titleSuggestions.value = []
+  meta.value = null
+  metaError.value = ''
   const titleMatch = props.content.match(/^#\s+(.+)$/m)
   title.value = titleMatch ? titleMatch[1].trim() : ''
   try {
@@ -202,33 +196,83 @@ watch(() => props.modelValue, async (open) => {
       </DialogHeader>
 
       <div class="flex-1 overflow-y-auto space-y-5 pr-1">
+        <!-- 发布前校对：公众号发布后正文最多只能改 20 个字 -->
+        <section class="proof-callout">
+          <ScanText class="h-4 w-4 shrink-0" />
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-medium">
+              先校对一遍再发
+            </div>
+            <div class="text-xs text-muted-foreground">
+              公众号发布后正文最多只能改 20 个字。AI 帮你找错别字、语病、标点 / 空格和重复用词，逐条确认。
+            </div>
+          </div>
+          <Button size="sm" variant="outline" :disabled="!!busy" @click="emit('proofread')">
+            发布前校对
+          </Button>
+        </section>
+
         <!-- 文章信息 -->
         <section class="space-y-3">
           <div class="space-y-1.5">
             <div class="flex items-center justify-between">
-              <label class="text-sm font-medium">标题</label>
+              <label class="text-sm font-medium">标题 <span class="count" :class="{ over: wechatLength(title) > WECHAT_TITLE_MAX }">{{ wechatLength(title) }}/{{ WECHAT_TITLE_MAX }}</span></label>
               <button
                 v-if="aiEnabled"
                 class="ai-link"
                 :disabled="!!busy"
-                @click="aiTitles"
+                @click="generateMeta"
               >
-                <Loader2 v-if="busy === 'title'" class="h-3 w-3 animate-spin" />
+                <Loader2 v-if="busy === 'meta'" class="h-3 w-3 animate-spin" />
                 <Sparkles v-else class="h-3 w-3" />
-                AI 拟标题
+                {{ meta ? '重新生成' : 'AI 拟标题和摘要' }}
               </button>
             </div>
             <input v-model="title" type="text" class="field" placeholder="文章标题">
-            <div v-if="titleSuggestions.length" class="flex flex-col gap-1">
-              <button
-                v-for="t in titleSuggestions"
-                :key="t"
-                class="suggestion"
-                @click="title = t"
-              >
-                {{ t }}
+          </div>
+
+          <!-- AI 候选：点击填入，右侧按钮复制 -->
+          <div v-if="metaError" class="meta-error">
+            {{ metaError }}
+            <button class="ai-link ml-1" @click="goAISettings">
+              检查 AI 设置
+            </button>
+          </div>
+          <div v-if="meta" class="meta-box">
+            <div class="meta-label">
+              候选标题 · 点击填入
+            </div>
+            <div
+              v-for="t in meta.titles"
+              :key="t.title"
+              class="suggestion"
+              :class="{ 'is-current': t.title === title }"
+              role="button"
+              @click="title = t.title"
+            >
+              <span class="suggestion-text">{{ t.title }}</span>
+              <span v-if="t.angle" class="angle">{{ t.angle }}</span>
+              <span class="count">{{ wechatLength(t.title) }}/{{ WECHAT_TITLE_MAX }}</span>
+              <button class="copy-btn" title="复制标题" @click.stop="copyText(t.title, '标题')">
+                <Copy class="h-3.5 w-3.5" />
               </button>
             </div>
+            <template v-if="meta.summary">
+              <div class="meta-label mt-2">
+                摘要
+              </div>
+              <div class="suggestion is-summary" :class="{ 'is-current': meta.summary === summary }" role="button" @click="summary = meta.summary">
+                <span class="suggestion-text">{{ meta.summary }}</span>
+                <span class="count">{{ wechatLength(meta.summary) }}/{{ WECHAT_SUMMARY_MAX }}</span>
+                <button class="copy-btn" title="复制摘要" @click.stop="copyText(meta.summary, '摘要')">
+                  <Copy class="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </template>
+            <button class="ai-link mt-1" :disabled="!!busy" @click="generateMeta">
+              <RotateCcw class="h-3 w-3" />
+              换一批
+            </button>
           </div>
 
           <div class="grid grid-cols-2 gap-3">
@@ -243,28 +287,19 @@ watch(() => props.modelValue, async (open) => {
           </div>
 
           <div class="space-y-1.5">
-            <div class="flex items-center justify-between">
-              <label class="text-sm font-medium">摘要 <span class="text-xs text-muted-foreground">{{ summary.length }}/{{ WECHAT_SUMMARY_LIMIT }}</span></label>
-              <button
-                v-if="aiEnabled"
-                class="ai-link"
-                :disabled="!!busy"
-                @click="aiSummary"
-              >
-                <Loader2 v-if="busy === 'summary'" class="h-3 w-3 animate-spin" />
-                <Sparkles v-else class="h-3 w-3" />
-                AI 写摘要
-              </button>
-            </div>
+            <label class="text-sm font-medium">摘要 <span class="count">{{ wechatLength(summary) }}/{{ WECHAT_SUMMARY_MAX }}</span></label>
             <textarea
               v-model="summary"
-              :maxlength="WECHAT_SUMMARY_LIMIT"
+              :maxlength="WECHAT_SUMMARY_MAX"
               class="field min-h-[72px] resize-none"
               placeholder="公众号「摘要」栏最多 120 字；导出 Markdown 时写入 description"
             />
           </div>
           <p v-if="!aiEnabled" class="text-xs text-muted-foreground">
-            在「设置 → AI 设置」里填好 API Key，可以让 AI 帮你拟标题、写摘要。
+            在「偏好设置 → AI」里填好 API Key，可以让 AI 帮你拟标题、写摘要和发布前校对。
+            <button class="ai-link" @click="goAISettings">
+              去设置
+            </button>
           </p>
         </section>
 
@@ -360,15 +395,91 @@ watch(() => props.modelValue, async (open) => {
 .ai-link:disabled {
   opacity: 0.5;
 }
+.proof-callout {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+}
+.count {
+  margin-left: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: hsl(var(--muted-foreground));
+  font-variant-numeric: tabular-nums;
+}
+.count.over {
+  color: hsl(var(--foreground));
+  font-weight: 600;
+}
+.meta-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.625rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+}
+.meta-label {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+}
+.meta-error {
+  font-size: 0.75rem;
+  padding: 0.5rem 0.625rem;
+  border: 1px dashed hsl(var(--foreground) / 0.4);
+  border-radius: 0.375rem;
+}
 .suggestion {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   text-align: left;
   font-size: 0.8125rem;
-  padding: 0.375rem 0.625rem;
+  padding: 0.375rem 0.375rem 0.375rem 0.625rem;
   border: 1px dashed hsl(var(--border));
   border-radius: 0.375rem;
+  cursor: pointer;
 }
 .suggestion:hover {
   background: hsl(var(--accent));
+}
+.suggestion.is-current {
+  border-style: solid;
+  border-color: hsl(var(--foreground) / 0.6);
+}
+.suggestion.is-summary {
+  align-items: flex-start;
+  line-height: 1.6;
+}
+.suggestion-text {
+  flex: 1;
+  min-width: 0;
+}
+.angle {
+  flex-shrink: 0;
+  font-size: 0.6875rem;
+  padding: 0 0.375rem;
+  line-height: 1.125rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.25rem;
+  color: hsl(var(--muted-foreground));
+}
+.copy-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.25rem;
+  color: hsl(var(--muted-foreground));
+}
+.copy-btn:hover {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
 }
 .target-card {
   border: 1px solid hsl(var(--border));

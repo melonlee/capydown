@@ -17,8 +17,10 @@ import CommandPalette from '@renderer/components/workbench/CommandPalette.vue'
 import OutlinePanel from '@renderer/components/workbench/OutlinePanel.vue'
 import StatusBar from '@renderer/components/workbench/StatusBar.vue'
 import TitleBar from '@renderer/components/workbench/TitleBar.vue'
+import ProofreadPanel from '@renderer/components/workbench/ProofreadPanel.vue'
 import WeChatPanel from '@renderer/components/workbench/WeChatPanel.vue'
 import { loadedTick, useDocument } from '@renderer/composables/useDocument'
+import { bindProofreadEditor, useProofread } from '@renderer/composables/useProofread'
 import { registerWeChatHtmlProvider, useWeChatCopy } from '@renderer/composables/useWeChatCopy'
 import { computeTextStats, extractOutline, type FormatCommand, MarkdownEditor } from '@renderer/editor'
 import { activeOutlineIndex } from '@renderer/editor/markdown-utils'
@@ -29,7 +31,6 @@ import { checkImage, formatDoc, toBase64 } from '@renderer/utils'
 import emitter from '@renderer/utils/event'
 import fileApi from '@renderer/utils/file'
 import { loadLocalImage } from '@renderer/utils/local-image'
-import { getInlineAI, initInlineAI } from '@renderer/utils/inline-ai'
 import DOMPurify from 'dompurify'
 import { Marked } from 'marked'
 import mermaid from 'mermaid'
@@ -298,123 +299,17 @@ async function uploadMarkdownImages(md: { str: string, path: string }, list: { p
   editor?.setValue(str)
 }
 
-// ------------------------------------------------------------------ AI
+// ------------------------------------------------------------------ 发布 / 发布前校对
 
 const showPublishDialog = ref(false)
 const publishContent = ref('')
+const proofread = useProofread()
+bindProofreadEditor(() => editor, () => wb.docPath)
 
-/** 未配置 AI 时给出友好提示（带「去设置」入口），而不是在调用后才报错 */
-async function ensureAIReady(): Promise<boolean> {
-  try {
-    if (await window.$api.aiGetServiceConfig())
-      return true
-  }
-  catch {}
-  toast.info('还没有配置 AI', {
-    description: '在「偏好设置 → AI 设置」里填写 API Key 后即可使用 AI 写作。',
-    action: { label: '去设置', onClick: () => (store.isOpenRightSlider = true) },
-  })
-  return false
+function startProofread() {
+  showPublishDialog.value = false
+  proofread.start()
 }
-
-async function handleAICommand(commandId: string) {
-  if (!editor)
-    return
-  const selected = editor.getSelection()
-  const needsSelection = !['continue', 'outline'].includes(commandId)
-  if (needsSelection && !selected) {
-    toast.error('请先选中要处理的文字')
-    return
-  }
-  if (commandId !== 'continue' && !(await ensureAIReady()))
-    return
-  try {
-    switch (commandId) {
-      case 'continue':
-        await handleAIContinue()
-        break
-      case 'polish-professional':
-      case 'polish-casual':
-      case 'polish-concise':
-        editor.replaceSelection(await window.$api.aiPolishText(selected, commandId.replace('polish-', '')), 'around')
-        toast.success('润色完成')
-        break
-      case 'expand':
-        editor.replaceSelection(await window.$api.aiExpandText(selected), 'around')
-        toast.success('扩写完成')
-        break
-      case 'summarize': {
-        const result = await window.$api.aiSummarizeText(selected)
-        const end = editor.view.state.selection.main.to
-        editor.view.dispatch({ changes: { from: end, insert: `\n\n**摘要：**\n${result}\n` } })
-        toast.success('摘要已生成')
-        break
-      }
-      case 'outline':
-        await handleAIGenerateOutline()
-        break
-      case 'analyze': {
-        const r = await window.$api.aiAnalyzeContent(selected)
-        const text = `\n\n## 内容分析\n\n**摘要：** ${r.summary}\n\n**关键词：** ${r.keywords.join('、')}\n\n**话题：** ${r.topics.join('、')}\n\n**情感：** ${r.sentiment}\n\n**可读性分数：** ${r.readabilityScore}/100\n\n**建议标签：** ${r.suggestedTags.join('、')}\n`
-        editor.view.dispatch({ changes: { from: editor.view.state.doc.length, insert: text } })
-        toast.success('分析完成')
-        break
-      }
-      case 'translate-en':
-      case 'translate-zh':
-        editor.replaceSelection(await window.$api.aiPolishText(selected, commandId), 'around')
-        toast.success('翻译完成')
-        break
-    }
-  }
-  catch (error: any) {
-    toast.error(`AI 处理失败：${String(error?.message || error).replace(/^Error invoking remote method '[^']+': (Error: )?/, '')}`)
-  }
-}
-
-async function handleAIContinue() {
-  const inlineAI = getInlineAI()
-  if (!inlineAI || !editor || !(await ensureAIReady()))
-    return
-  await inlineAI.continueWriting({
-    content: editor.getValue(),
-    cursorPosition: editor.getCursor(),
-    documentPath: wb.docPath,
-  })
-}
-
-async function handleAIGenerateOutline() {
-  // eslint-disable-next-line no-alert
-  const topic = prompt('请输入文章主题：')
-  if (!topic || !editor)
-    return
-  const result = await window.$api.aiGenerateOutline(topic, 'blog')
-  let markdown = `# ${result.title}\n\n`
-  const formatSections = (sections: any[], level = 1) => {
-    for (const section of sections) {
-      markdown += `${'#'.repeat(level + 1)} ${section.title}\n\n`
-      if (section.children)
-        formatSections(section.children, level + 1)
-    }
-  }
-  if (result.outline?.sections)
-    formatSections(result.outline.sections)
-  editor.setValue(markdown)
-  toast.success('大纲已生成')
-}
-
-const AI_COMMANDS: (PaletteItem & { needsSelection: boolean })[] = [
-  { id: 'continue', label: 'AI 续写', hint: '根据上下文继续写作，Tab 接受', group: 'AI', shortcut: isMac ? '⌘L' : 'Ctrl+L', needsSelection: false },
-  { id: 'polish-professional', label: '润色为专业风格', hint: '更专业正式', group: 'AI', needsSelection: true },
-  { id: 'polish-casual', label: '润色为轻松风格', hint: '更轻松口语', group: 'AI', needsSelection: true },
-  { id: 'polish-concise', label: '精简文本', hint: '去除冗余，保留核心', group: 'AI', needsSelection: true },
-  { id: 'expand', label: '扩写内容', hint: '增加细节和说明', group: 'AI', needsSelection: true },
-  { id: 'summarize', label: '生成摘要', hint: '提取核心观点', group: 'AI', needsSelection: true },
-  { id: 'translate-en', label: '翻译成英文', group: 'AI', needsSelection: true },
-  { id: 'translate-zh', label: '翻译成中文', group: 'AI', needsSelection: true },
-  { id: 'analyze', label: '分析内容', hint: '关键词、话题、可读性', group: 'AI', needsSelection: true },
-  { id: 'outline', label: '生成大纲', hint: '为一个主题生成文章大纲（会替换当前内容）', group: 'AI', needsSelection: false },
-]
 
 // ------------------------------------------------------------------ 命令面板
 
@@ -431,7 +326,7 @@ function openPalette(mode: PaletteMode) {
 }
 
 const paletteCommands = computed<PaletteItem[]>(() => APP_COMMANDS
-  .filter(c => c.palette !== false && c.category !== 'AI')
+  .filter(c => c.palette !== false)
   .map(c => ({
     id: c.id,
     label: c.label,
@@ -439,15 +334,8 @@ const paletteCommands = computed<PaletteItem[]>(() => APP_COMMANDS
     shortcut: c.accelerator ? formatAccelerator(c.accelerator, isMac) : undefined,
   })))
 
-const paletteAICommands = computed<PaletteItem[]>(() => AI_COMMANDS
-  .filter(c => palette.hasSelection || !c.needsSelection)
-  .map(c => ({ ...c, id: `ai:${c.id}` })))
-
 function onPaletteRun(id: string) {
-  if (id.startsWith('ai:'))
-    handleAICommand(id.slice(3))
-  else
-    runCommand(id)
+  runCommand(id)
 }
 
 function onPaletteOpenFile(node: FileNode) {
@@ -572,8 +460,7 @@ function runCommand(id: string) {
       showPublishDialog.value = true
       break
 
-    case 'ai.palette': openPalette('ai'); break
-    case 'ai.continue': handleAIContinue(); break
+    case 'ai.proofread': startProofread(); break
   }
   if (id !== 'file.rename' && !id.startsWith('file.') && !palette.open)
     editor?.focus()
@@ -728,7 +615,6 @@ onMounted(() => {
   // 端到端测试钩子：只在开发模式或 LAZYBOX_E2E=1 启动时暴露
   if (import.meta.env.DEV || window.$api?.isE2E)
     (window as any).__lbEditor = editor
-  initInlineAI(editor)
   editor.setSourceMode(wb.sourceMode)
   editor.setFocusMode(wb.focusMode)
   editor.setTypewriterMode(wb.typewriterMode)
@@ -736,8 +622,6 @@ onMounted(() => {
 
   window.addEventListener('keydown', onKeydown, true)
   emitter.on('command', onMenuCommand)
-  emitter.on('ai:command-palette', () => openPalette('ai'))
-  emitter.on('ai:continue-writing', handleAIContinue)
   emitter.on('publish:open-dialog', () => runCommand('wechat.publish'))
 
   if (fileTree.fileTree.length && !initialOpened) {
@@ -750,8 +634,6 @@ onBeforeUnmount(() => {
   doc.flushSave()
   window.removeEventListener('keydown', onKeydown, true)
   emitter.off('command', onMenuCommand)
-  emitter.off('ai:command-palette')
-  emitter.off('ai:continue-writing')
   emitter.off('publish:open-dialog')
   editor?.destroy()
   editor = null
@@ -827,6 +709,7 @@ window.addEventListener('beforeunload', () => {
         </main>
 
         <WeChatPanel ref="wechatPanel" @publish="runCommand('wechat.publish')" />
+        <ProofreadPanel />
         <CssEditor class="lb-side-panel" />
         <RightSlider />
       </div>
@@ -857,14 +740,13 @@ window.addEventListener('beforeunload', () => {
       v-model="palette.open"
       :mode="palette.mode"
       :commands="paletteCommands"
-      :ai-commands="paletteAICommands"
       :recent-files="doc.recentFiles.value"
       :current-path="wb.docPath"
       @open-file="onPaletteOpenFile"
       @run="onPaletteRun"
     />
 
-    <PublishDialog v-model="showPublishDialog" :content="publishContent" />
+    <PublishDialog v-model="showPublishDialog" :content="publishContent" @proofread="startProofread" />
 
   </div>
 </template>

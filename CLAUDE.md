@@ -16,6 +16,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Docs: user guide `docs/usage.md`, roadmap `docs/ROADMAP.md`, changelog `CHANGELOG.md`, archived planning docs in `docs/dev/`. Brand assets and their sources live in `docs/assets/brand/`.
 
+AI is limited to two features — pre-publish proofreading and title/summary generation (see `docs/dev/ai.md`; mock server `scripts/dev/mock-openai.mjs`, live smoke test `scripts/dev/ai-smoke.mjs`). The old writing helpers (continue, polish, outline…) keep their source but are only registered with the experimental flag.
+
 Experimental modules (MCP, Skill, vector/knowledge graph, templates, AI image generation) are only registered when the `experimental_features_enabled` store key is true (`src/main/config/experimental.ts`). Publishing is honest: only WeChat (clipboard) and Markdown export are implemented (`src/main/publish/`).
 
 ## Project Architecture

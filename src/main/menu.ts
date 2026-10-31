@@ -75,6 +75,7 @@ function template(): MenuItemConstructorOptions[] {
         },
         sep,
         cmd('wechat.copy'),
+        cmd('ai.proofread'),
         cmd('wechat.publish'),
         sep,
         cmd('app.commandPalette'),
@@ -98,11 +99,6 @@ function template(): MenuItemConstructorOptions[] {
         sep,
         cmd('edit.find', { label: '查找与替换' }),
         cmd('edit.format'),
-        sep,
-        {
-          label: 'AI',
-          submenu: [cmd('ai.palette'), cmd('ai.continue')],
-        },
       ],
     },
     {

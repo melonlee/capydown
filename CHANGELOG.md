@@ -11,7 +11,9 @@
 - **发布对话框**：两个真实可用的出口
   - 复制到公众号：用当前主题渲染、内联样式后写入剪贴板，到公众号后台直接粘贴；如果文中有本地图片、相对路径或 data URI 图片，会提醒先上传图床
   - 导出 Markdown：生成带 Front Matter（标题、作者、日期、标签、摘要）的 `.md`，适合 Hexo / Hugo / VitePress
-- **AI 起标题、写摘要**：在发布对话框里一键生成（需在设置里填写自己的 API Key）
+- **AI 只做两件事**（需在设置里填写自己的 API Key）：
+  - 发布前校对：错别字、语病、标点 / 中英文空格、重复用词，逐条定位 / 接受 / 忽略，可撤销；不碰代码块、链接和 Front Matter
+  - 发布对话框里拟 3～5 个标题（≤ 64 字）和一段 120 字以内的摘要
 - **OpenAI 兼容接口**：除 Claude 外，支持 DeepSeek、Kimi、通义千问、OpenAI 等任何 `chat/completions` 兼容服务，设置里提供一键预填
 - Claude 模型更新为 Claude Opus 4.7 / Sonnet 4.6 / Haiku 4.5（旧的 Claude 3.x 已下线，已保存的旧配置会自动迁移）
 - 全新的 Logo 与应用图标；欢迎页中文化
@@ -37,6 +39,7 @@
 
 ### 调整
 
+- 移除通用 AI 命令面板（⌘K）、续写（⌘L）、润色 / 扩写 / 大纲等入口；对应接口只在开启实验功能后注册
 - MCP 插件、Skill、向量检索 / 知识图谱、排版模板、AI 生图等原型模块默认关闭（源码保留，设置项 `experimental_features_enabled` 打开并重启后才会注册）
 - 知乎、掘金、语雀、飞书、Notion 的「一键发布」尚未实现，界面上明确标注「暂不支持」
 - 文档整理：使用指南见 [docs/usage.md](docs/usage.md)，路线图见 [docs/ROADMAP.md](docs/ROADMAP.md)，历史开发文档归档到 [docs/dev/](docs/dev/)

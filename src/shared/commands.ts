@@ -5,7 +5,7 @@
  * accelerator 使用 Electron 的写法（CmdOrCtrl+Shift+L、F8、Ctrl+` …）。
  */
 
-export type CommandCategory = '文件' | '编辑' | '段落' | '格式' | '视图' | '主题' | 'AI' | '公众号'
+export type CommandCategory = '文件' | '编辑' | '段落' | '格式' | '视图' | '主题' | '公众号'
 
 export interface AppCommand {
   id: string
@@ -83,10 +83,8 @@ export const APP_COMMANDS: AppCommand[] = [
   // 公众号
   { id: 'wechat.copy', label: '复制到公众号', category: '公众号', accelerator: 'Shift+CmdOrCtrl+C' },
   { id: 'wechat.publish', label: '发布…', category: '公众号' },
-
-  // AI
-  { id: 'ai.palette', label: 'AI 命令…', category: 'AI', accelerator: 'CmdOrCtrl+K', palette: false },
-  { id: 'ai.continue', label: 'AI 续写', category: 'AI', accelerator: 'CmdOrCtrl+L', editor: true },
+  // AI 只保留两个功能：发布前校对（这里）和发布对话框里的「拟标题和摘要」
+  { id: 'ai.proofread', label: '发布前校对…', category: '公众号' },
 ]
 
 export const COMMAND_MAP: Record<string, AppCommand> = Object.fromEntries(APP_COMMANDS.map(c => [c.id, c]))

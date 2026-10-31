@@ -72,7 +72,7 @@ const formatOptions = ref<Format[]>([`rgb`, `hex`, `hsl`, `hsv`])
         </label>
       </section>
 
-      <section class="lb-prefs-section">
+      <section id="lb-prefs-ai" class="lb-prefs-section">
         <AISettings />
       </section>
 

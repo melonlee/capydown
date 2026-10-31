@@ -1,6 +1,7 @@
 <!--
-  AI 设置面板组件
-  支持 Claude，以及任意 OpenAI 兼容接口（DeepSeek / Kimi / 通义千问 / OpenAI 等）
+  AI 设置（尽量少）：服务商、Base URL（OpenAI 兼容）、API Key、模型、测试连接。
+  AI 只用于两件事：发布前校对、发布对话框里的拟标题和摘要。
+  支持 Claude，以及任意 OpenAI 兼容接口（DeepSeek / Kimi / 通义千问 / OpenAI / 自建网关）。
 -->
 <script setup lang="ts">
 import { Check, Eye, EyeOff, Sparkles } from 'lucide-vue-next';
@@ -14,7 +15,6 @@ import {
   SelectValue,
 } from '@renderer/components/ui/select';
 import { Input } from '@renderer/components/ui/input';
-import { Switch } from '@renderer/components/ui/switch';
 import { toast } from 'vue-sonner';
 
 type Provider = 'claude' | 'openai';
@@ -25,8 +25,10 @@ const {
   initAIConfig,
   updateAIConfig,
   checkAIEnabled,
-  isAIEnabled,
 } = useAI();
+
+/** 已保存的配置里有 Key：显示「已配置」 */
+const configured = computed(() => !!aiConfig.value.apiKey);
 
 const showAPIKey = ref(false);
 
@@ -64,8 +66,11 @@ function applyPreset(preset: typeof openaiPresets[number]) {
   formData.value.model = preset.model;
 }
 
+// 载入已保存的配置时不触发「切换服务商 → 预填」，否则会覆盖保存的 Base URL 和模型
+let hydrating = true;
+
 watch(() => formData.value.provider, (provider, prev) => {
-  if (!prev || provider === prev)
+  if (hydrating || !prev || provider === prev)
     return;
   if (provider === 'claude') {
     formData.value.model = claudeModels[0].value;
@@ -85,6 +90,8 @@ onMounted(async () => {
     model: aiConfig.value.model || (provider === 'claude' ? claudeModels[0].value : ''),
     baseURL: aiConfig.value.baseURL || '',
   };
+  await nextTick();
+  hydrating = false;
 });
 
 function validate(): boolean {
@@ -132,26 +139,6 @@ const saveConfig = async () => {
   }
 };
 
-const toggleAI = async (enabled: boolean) => {
-  try {
-    isLoading.value = true;
-    if (enabled && !formData.value.apiKey) {
-      toast.error('请先输入 API Key');
-      return;
-    }
-    await updateAIConfig({ enabled });
-    await checkAIEnabled();
-    toast.success(enabled ? 'AI 已启用' : 'AI 已禁用');
-  }
-  catch (e) {
-    console.error('Failed to toggle AI:', e);
-    toast.error('操作失败，请重试');
-  }
-  finally {
-    isLoading.value = false;
-  }
-};
-
 // 测试连接：保存当前表单并发送一条极短的请求
 const testConnection = async () => {
   if (!validate())
@@ -178,25 +165,16 @@ const testConnection = async () => {
   <div class="ai-settings space-y-4">
     <h2 class="lb-prefs-h2 flex items-center gap-1.5">
       <Sparkles class="h-3.5 w-3.5" />
-      AI 设置
+      AI
     </h2>
 
     <p class="text-xs text-muted-foreground leading-relaxed">
-      AI 用于起标题、写摘要、润色和续写。请求由本机直接发给你选择的服务商，懒排不经手、不保存你的文章。
+      AI 只做两件事：<strong class="font-medium text-foreground">发布前校对</strong>（错别字、语病、标点 / 空格、重复用词）和在发布对话框里<strong class="font-medium text-foreground">拟标题、写摘要</strong>。请求由本机直接发给你选择的服务商，懒排不经手、不保存你的文章。
     </p>
 
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <Switch
-          :checked="isAIEnabled"
-          @update:checked="toggleAI"
-        />
-        <span class="text-sm">启用 AI 功能</span>
-      </div>
-      <div v-if="isAIEnabled" class="flex items-center gap-1 text-xs text-muted-foreground">
-        <Check class="h-3 w-3" />
-        <span>已启用</span>
-      </div>
+    <div v-if="configured" class="flex items-center gap-1 text-xs text-muted-foreground">
+      <Check class="h-3 w-3" />
+      <span>已配置</span>
     </div>
 
     <div class="space-y-2">
@@ -210,32 +188,34 @@ const testConnection = async () => {
             Claude (Anthropic)
           </SelectItem>
           <SelectItem value="openai">
-            OpenAI 兼容（DeepSeek / Kimi / 通义千问 / OpenAI）
+            OpenAI 兼容（DeepSeek / Kimi / 通义千问 / OpenAI / 网关）
           </SelectItem>
         </SelectContent>
       </Select>
     </div>
 
     <div v-if="formData.provider === 'openai'" class="space-y-2">
-      <label class="text-sm font-medium">快速填写</label>
-      <div class="flex flex-wrap gap-2">
-        <Button
-          v-for="preset in openaiPresets"
-          :key="preset.name"
-          size="sm"
-          :variant="formData.baseURL === preset.baseURL ? 'default' : 'outline'"
-          :disabled="isLoading"
-          @click="applyPreset(preset)"
-        >
-          {{ preset.name }}
-        </Button>
-      </div>
-      <label class="text-sm font-medium block pt-1">Base URL</label>
+      <label class="text-sm font-medium block">Base URL</label>
       <Input
         v-model="formData.baseURL"
         placeholder="https://api.deepseek.com/v1"
         :disabled="isLoading"
       />
+      <p class="text-xs text-muted-foreground">
+        快速填写：
+        <template v-for="(preset, i) in openaiPresets" :key="preset.name">
+          <span v-if="i" class="opacity-50"> · </span>
+          <button
+            type="button"
+            class="underline-offset-2 hover:underline"
+            :class="formData.baseURL === preset.baseURL ? 'text-foreground font-medium underline' : ''"
+            :disabled="isLoading"
+            @click="applyPreset(preset)"
+          >
+            {{ preset.name }}
+          </button>
+        </template>
+      </p>
     </div>
 
     <div class="space-y-2">
@@ -302,7 +282,7 @@ const testConnection = async () => {
         @click="saveConfig"
       >
         <Check v-if="!isLoading" class="h-4 w-4 mr-1" />
-        {{ isLoading ? '处理中...' : '保存配置' }}
+        {{ isLoading ? '处理中…' : '保存' }}
       </Button>
       <Button
         variant="outline"

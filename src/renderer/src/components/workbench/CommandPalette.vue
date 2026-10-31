@@ -2,13 +2,12 @@
 /**
  * 统一面板：
  * - ⌘P 快速打开：模糊搜索工作区里的文件（输入 ">" 切到命令）
- * - ⇧⌘P 命令面板：所有菜单命令 + AI 命令
- * - ⌘K AI 命令：续写、润色、扩写、翻译…（与原来的 AI 面板一致）
+ * - ⇧⌘P 命令面板：所有菜单命令
  */
 import type { FileNode } from '@renderer/types'
 import { fuzzyScore } from '@renderer/editor/markdown-utils'
 import { useFileTreeStore } from '@renderer/stores/fileTree'
-import { FileImage, FileText, Search, Sparkles, TerminalSquare } from 'lucide-vue-next'
+import { FileImage, FileText, Search, TerminalSquare } from 'lucide-vue-next'
 
 export interface PaletteItem {
   id: string
@@ -18,13 +17,12 @@ export interface PaletteItem {
   shortcut?: string
 }
 
-export type PaletteMode = 'files' | 'commands' | 'ai'
+export type PaletteMode = 'files' | 'commands'
 
 const props = defineProps<{
   modelValue: boolean
   mode: PaletteMode
   commands: PaletteItem[]
-  aiCommands: PaletteItem[]
   recentFiles: string[]
   currentPath: string
 }>()
@@ -54,7 +52,7 @@ interface Row {
   hint?: string
   shortcut?: string
   group?: string
-  kind: 'file' | 'image' | 'command' | 'ai'
+  kind: 'file' | 'image' | 'command'
   node?: FileNode
   id?: string
 }
@@ -106,20 +104,18 @@ const rows = computed<Row[]>(() => {
       .slice(0, 50)
       .map(x => toRow(x.n))
   }
-  const source = effectiveMode.value === 'ai' ? props.aiCommands : [...props.commands, ...props.aiCommands]
-  const kind = (item: PaletteItem): Row['kind'] => (item.group === 'AI' ? 'ai' : 'command')
+  const source = props.commands
+  const kind = (): Row['kind'] => 'command'
   if (!q.value)
-    return source.map(c => ({ key: c.id, id: c.id, label: c.label, hint: c.hint, shortcut: c.shortcut, group: c.group, kind: kind(c) }))
+    return source.map(c => ({ key: c.id, id: c.id, label: c.label, hint: c.hint, shortcut: c.shortcut, group: c.group, kind: kind() }))
   return source
     .map(c => ({ c, s: Math.max(fuzzyScore(q.value, c.label), fuzzyScore(q.value, `${c.group} ${c.label} ${c.hint ?? ''}`) - 10) }))
     .filter(x => x.s > 0)
     .sort((a, b) => b.s - a.s)
-    .map(({ c }) => ({ key: c.id, id: c.id, label: c.label, hint: c.hint, shortcut: c.shortcut, group: c.group, kind: kind(c) }))
+    .map(({ c }) => ({ key: c.id, id: c.id, label: c.label, hint: c.hint, shortcut: c.shortcut, group: c.group, kind: kind() }))
 })
 
 const placeholder = computed(() => {
-  if (props.mode === 'ai')
-    return '让 AI 帮你：续写、润色、扩写、翻译…'
   if (props.mode === 'commands')
     return '输入命令…'
   return '搜索文件，输入 > 执行命令'
@@ -183,8 +179,7 @@ function onKeydown(e: KeyboardEvent) {
       <div v-if="modelValue" class="lb-palette-overlay" @mousedown.self="close">
         <div class="lb-palette" role="dialog" aria-label="命令面板" @keydown="onKeydown">
           <div class="lb-palette-input">
-            <Sparkles v-if="mode === 'ai'" class="size-4 lb-palette-lead is-ai" />
-            <TerminalSquare v-else-if="effectiveMode === 'commands'" class="size-4 lb-palette-lead" />
+            <TerminalSquare v-if="effectiveMode === 'commands'" class="size-4 lb-palette-lead" />
             <Search v-else class="size-4 lb-palette-lead" />
             <input
               ref="input"
@@ -205,14 +200,13 @@ function onKeydown(e: KeyboardEvent) {
             >
               <FileText v-if="row.kind === 'file'" class="size-4 lb-row-icon" />
               <FileImage v-else-if="row.kind === 'image'" class="size-4 lb-row-icon" />
-              <Sparkles v-else-if="row.kind === 'ai'" class="size-4 lb-row-icon is-ai" />
               <span v-else class="lb-row-group">{{ row.group }}</span>
               <span class="lb-row-label">{{ row.label }}</span>
               <span v-if="row.hint" class="lb-row-hint">{{ row.hint }}</span>
               <kbd v-if="row.shortcut" class="lb-row-kbd">{{ row.shortcut }}</kbd>
             </div>
             <div v-if="!rows.length" class="lb-palette-empty">
-              {{ mode === 'ai' ? '没有匹配的 AI 命令（部分命令需要先选中文字）' : '没有找到匹配的结果' }}
+              没有找到匹配的结果
             </div>
           </div>
           <div class="lb-palette-foot">
@@ -276,10 +270,6 @@ function onKeydown(e: KeyboardEvent) {
 .lb-palette-lead {
   color: var(--lb-faint);
   flex-shrink: 0;
-}
-
-.is-ai {
-  color: var(--lb-fg-strong) !important;
 }
 
 .lb-palette-list {

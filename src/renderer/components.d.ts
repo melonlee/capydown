@@ -99,6 +99,7 @@ declare module 'vue' {
     Popover: typeof import('./src/components/ui/popover/Popover.vue')['default']
     PopoverContent: typeof import('./src/components/ui/popover/PopoverContent.vue')['default']
     PopoverTrigger: typeof import('./src/components/ui/popover/PopoverTrigger.vue')['default']
+    ProofreadPanel: typeof import('./src/components/workbench/ProofreadPanel.vue')['default']
     PublishDialog: typeof import('./src/components/PublishDialog.vue')['default']
     RightSlider: typeof import('./src/components/CodemirrorEditor/RightSlider.vue')['default']
     RunLoading: typeof import('./src/components/RunLoading.vue')['default']
