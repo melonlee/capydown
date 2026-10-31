@@ -81,6 +81,10 @@ interface LazyBoxAPI {
   } | null>
 
   // ========== AI 文本生成 ==========
+  aiProofread: (text: string) => Promise<import('../shared/ai/proofread').ProofreadResult>
+  aiProofreadCancel: () => Promise<{ success: boolean }>
+  onAIProofreadProgress: (callback: (data: { done: number, total: number }) => void) => () => void
+  aiTitleSummary: (content: string) => Promise<import('../shared/ai/publish-meta').TitleSummaryResult>
   aiGenerateText: (prompt: string, options?: {
     maxTokens?: number
     temperature?: number

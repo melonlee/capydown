@@ -12,6 +12,8 @@ export interface GenerationOptions {
   topP?: number;
   systemPrompt?: string;
   stopSequences?: string[];
+  /** 要求模型只输出 JSON（OpenAI 兼容接口发送 response_format；不支持时自动退回普通模式） */
+  json?: boolean;
 }
 
 // 流式回调

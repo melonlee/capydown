@@ -6,6 +6,14 @@ import { ipcMain, BrowserWindow } from 'electron';
 import { ensureAIService, getAIService, resetAIService, getActiveAIServiceConfig } from './ai';
 import { getAIConfig, setAIConfig, isAIEnabled, getAIServiceConfig } from './config/ai';
 import { buildWritingContext } from './ai/context';
+import { generateTitleSummary, proofreadDocument } from './ai/features';
+import { isExperimentalEnabled } from './config/experimental';
+
+/** 单篇文章的长度上限（字符），防止误把超大文件整个发出去 */
+const MAX_ARTICLE_CHARS = 300_000;
+
+/** 每个窗口当前的校对任务，用于取消 */
+const proofreadJobs = new Map<number, { cancelled: boolean }>();
 
 /**
  * 初始化 AI 相关 IPC 处理器
@@ -54,6 +62,60 @@ export function initAIIpcHandlers(): void {
     }
   });
 
+  // ========== 发布前校对 ==========
+
+  ipcMain.handle('ai:proofread', async (event, payload) => {
+    const text = payload?.text;
+    if (typeof text !== 'string')
+      throw new Error('没有可校对的内容');
+    if (text.length > MAX_ARTICLE_CHARS)
+      throw new Error('文章太长（超过 30 万字），请分篇校对');
+    await ensureAIInitialized();
+    const service = getAIService();
+    const senderId = event.sender.id;
+    const job = { cancelled: false };
+    proofreadJobs.set(senderId, job);
+    try {
+      return await proofreadDocument(service, text, {
+        onProgress: (done, total) => {
+          if (!event.sender.isDestroyed())
+            event.sender.send('ai:proofread-progress', { done, total });
+        },
+        isCancelled: () => job.cancelled || event.sender.isDestroyed(),
+      });
+    }
+    finally {
+      if (proofreadJobs.get(senderId) === job)
+        proofreadJobs.delete(senderId);
+    }
+  });
+
+  ipcMain.handle('ai:proofread-cancel', (event) => {
+    const job = proofreadJobs.get(event.sender.id);
+    if (job)
+      job.cancelled = true;
+    return { success: true };
+  });
+
+  // ========== 标题 + 摘要 ==========
+
+  ipcMain.handle('ai:title-summary', async (_, payload) => {
+    const content = payload?.content;
+    if (typeof content !== 'string' || !content.trim())
+      throw new Error('文章还是空的');
+    await ensureAIInitialized();
+    return await generateTitleSummary(getAIService(), content.slice(0, MAX_ARTICLE_CHARS));
+  });
+
+  // 以下是旧的写作辅助接口（续写、润色、扩写、大纲、分析、生图…）：界面入口已移除，
+  // 源码保留，只在开启「实验功能」后注册
+  if (isExperimentalEnabled())
+    initLegacyWritingHandlers();
+
+  console.log('[AI IPC] AI IPC handlers initialized successfully');
+}
+
+function initLegacyWritingHandlers(): void {
   // 流式生成文本
   ipcMain.handle('ai:stream-text', async (event, { prompt, options }) => {
     try {
@@ -217,8 +279,6 @@ export function initAIIpcHandlers(): void {
       throw error;
     }
   });
-
-  console.log('[AI IPC] AI IPC handlers initialized successfully');
 }
 
 /**
@@ -228,7 +288,7 @@ async function ensureAIInitialized(): Promise<void> {
   // 每次都读取已保存的配置：用户在设置里换了 Key / 模型后无需重启
   const config = getAIServiceConfig();
   if (!config) {
-    throw new Error('AI 服务未配置，请先在设置中填写 API Key 并启用 AI');
+    throw new Error('还没有配置 AI：请在「偏好设置 → AI」里填写 API Key');
   }
   ensureAIService(config);
 }

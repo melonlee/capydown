@@ -79,6 +79,17 @@ const api = {
   aiIsEnabled: () => ipcRenderer.invoke('ai:is-enabled'),
   aiGetServiceConfig: () => ipcRenderer.invoke('ai:get-service-config'),
 
+  // ========== 发布前校对 / 标题 + 摘要 ==========
+  aiProofread: (text: string) => ipcRenderer.invoke('ai:proofread', { text }),
+  aiProofreadCancel: () => ipcRenderer.invoke('ai:proofread-cancel'),
+  /** 订阅校对进度，返回取消订阅函数 */
+  onAIProofreadProgress: (callback: (data: { done: number, total: number }) => void) => {
+    const listener = (_: unknown, data: { done: number, total: number }) => callback(data)
+    ipcRenderer.on('ai:proofread-progress', listener)
+    return () => ipcRenderer.removeListener('ai:proofread-progress', listener)
+  },
+  aiTitleSummary: (content: string) => ipcRenderer.invoke('ai:title-summary', { content }),
+
   // ========== AI 文本生成 ==========
   aiGenerateText: (prompt: string, options?: any) =>
     ipcRenderer.invoke('ai:generate-text', { prompt, options }),

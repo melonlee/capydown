@@ -54,8 +54,8 @@ export function setAIConfig(config: Partial<AIConfig>): void {
  * 检查 AI 是否已启用
  */
 export function isAIEnabled(): boolean {
-  const value = getStore(AI_ENABLED_KEY);
-  return value === true || value === 'true';
+  // AI 只在用户点击「校对」「拟标题」时才调用，没有单独的开关：填了 Key 就算启用
+  return !!getAIConfig().apiKey;
 }
 
 /**
@@ -64,7 +64,7 @@ export function isAIEnabled(): boolean {
 export function getAIServiceConfig(): AIServiceConfig | null {
   const config = getAIConfig();
 
-  if (!config.enabled || !config.apiKey) {
+  if (!config.apiKey) {
     return null;
   }
 

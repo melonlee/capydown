@@ -65,10 +65,18 @@ async function readError(response: Response): Promise<string> {
   }
 }
 
+/** HTTP 400 / 422 且错误信息提到 response_format / json：说明服务端不支持 JSON 模式 */
+export function isJsonModeRejection(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return /^HTTP (400|422)\b/.test(message) && /response_format|json/i.test(message);
+}
+
 export class OpenAICompatibleProvider extends BaseAIProvider {
   private url: string;
   private apiKey: string;
   private model: string;
+  /** 服务端拒绝 response_format 后记住，之后不再发送 */
+  private jsonModeUnsupported = false;
 
   constructor(config: AIServiceConfig) {
     super();
@@ -91,6 +99,7 @@ export class OpenAICompatibleProvider extends BaseAIProvider {
       max_tokens: options?.maxTokens || 4096,
       ...(options?.temperature !== undefined ? { temperature: options.temperature } : {}),
       ...(options?.stopSequences?.length ? { stop: options.stopSequences } : {}),
+      ...(options?.json && !this.jsonModeUnsupported ? { response_format: { type: 'json_object' } } : {}),
       stream,
     };
   }
@@ -112,7 +121,17 @@ export class OpenAICompatibleProvider extends BaseAIProvider {
 
   async generateText(prompt: string, options?: GenerationOptions): Promise<string> {
     try {
-      const response = await this.post(this.buildBody(prompt, options, false));
+      let response: Response;
+      try {
+        response = await this.post(this.buildBody(prompt, options, false));
+      }
+      catch (error) {
+        // 部分兼容服务（或网关）不认识 response_format：去掉后重试一次，提示词本身也要求只输出 JSON
+        if (!options?.json || this.jsonModeUnsupported || !isJsonModeRejection(error))
+          throw error;
+        this.jsonModeUnsupported = true;
+        response = await this.post(this.buildBody(prompt, options, false));
+      }
       const json: any = await response.json();
       return json?.choices?.[0]?.message?.content ?? '';
     }
