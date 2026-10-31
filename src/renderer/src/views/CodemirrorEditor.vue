@@ -344,6 +344,13 @@ async function initEditor() {
       [`${ctrlKey}-K`]: function openAICommand(editor) {
         emitter.emit('ai:command-palette')
       },
+      // ⌘K 留给 AI 命令面板，超链接用 ⌘⌥K
+      [`${ctrlKey}-${altKey}-K`]: function link(editor) {
+        const selected = editor.getSelection()
+        editor.replaceSelection(`[${selected}]()`)
+        const cursor = editor.getCursor()
+        editor.setCursor({ line: cursor.line, ch: cursor.ch - 1 })
+      },
       [`${ctrlKey}-E`]: function code(editor) {
         const selected = editor.getSelection()
         editor.replaceSelection(`\`${selected}\``)

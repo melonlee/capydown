@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Toaster } from '@renderer/components/ui/sonner'
 import {
+  altKey,
   altSign,
   ctrlKey,
   ctrlSign,
@@ -36,8 +37,8 @@ const formatItems = [
   {
     label: `超链接`,
     id: `link`,
-    kbd: [ctrlSign, `K`],
-    emitArgs: [`addFormat`, `${ctrlKey}-K`],
+    kbd: [ctrlSign, altSign, `K`],
+    emitArgs: [`addFormat`, `${ctrlKey}-${altKey}-K`],
   },
   {
     label: `行内代码`,

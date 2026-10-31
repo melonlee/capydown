@@ -179,9 +179,15 @@ const template = [
     role: 'help',
     submenu: [
       {
-        label: 'Learn More',
+        label: '使用指南',
         click: async () => {
-          await shell.openExternal('https://electronjs.org')
+          await shell.openExternal('https://github.com/melonlee/LazyBox/blob/main/docs/usage.md')
+        }
+      },
+      {
+        label: '反馈问题',
+        click: async () => {
+          await shell.openExternal('https://github.com/melonlee/LazyBox/issues')
         }
       }
     ]
