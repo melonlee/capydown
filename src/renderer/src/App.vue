@@ -4,9 +4,20 @@ import CodemirrorEditor from '@renderer/views/CodemirrorEditor.vue'
 import Welcome from '@renderer/views/Welcome.vue'
 import emitter from './utils/event';
 import { useStore, useWorkspaceStore } from '@renderer/stores'
+import { useWorkbenchStore } from '@renderer/stores/workbench'
+import { APP_DISPLAY_NAME } from '../../shared/brand'
 
 const store = useStore()
 const workspaceStore = useWorkspaceStore()
+const wb = useWorkbenchStore()
+
+// 编辑器主题（GitHub / Newsprint / Night，可跟随系统深色模式）作用于整个应用，欢迎页也一样
+watch(() => wb.effectiveTheme, (theme) => {
+  const root = document.documentElement
+  root.dataset.lbTheme = theme
+  root.classList.remove('lb-boot-dark') // 启动画面（index.html）的临时深色底
+  store.isDark = theme === 'night'
+}, { immediate: true })
 
 const {
   exportEditorContent2HTML,
@@ -44,22 +55,12 @@ const handleMessageAction = (action: string, payload: any) => {
 
 // 更新窗口标题（打开工作区后由工作台按当前文档名设置）
 const updateWindowTitle = () => {
-  if (workspaceStore.currentWorkspace)
-    return
-  const workspace = workspaceStore.currentWorkspace
-  if (workspace) {
-    window.$api.setWindowTitle(`${workspace.name} - LazyBox`)
-  } else {
-    window.$api.setWindowTitle('LazyBox')
-  }
+  if (!workspaceStore.currentWorkspace)
+    window.$api.setWindowTitle(APP_DISPLAY_NAME)
 }
 
 // 监听工作空间变化
-watch(() => workspaceStore.currentWorkspaceId, (newId, oldId) => {
-  console.log('[App] Workspace ID changed:', { oldId, newId })
-  console.log('[App] hasOpenWorkspace:', workspaceStore.hasOpenWorkspace)
-  updateWindowTitle()
-})
+watch(() => workspaceStore.currentWorkspaceId, updateWindowTitle)
 
 onMounted(async () => {
   window.$api.onMessage((data) => {

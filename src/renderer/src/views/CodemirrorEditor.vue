@@ -33,6 +33,7 @@ import DOMPurify from 'dompurify'
 import { Marked } from 'marked'
 import mermaid from 'mermaid'
 import * as path from 'path-browserify'
+import { APP_DISPLAY_NAME } from '../../../shared/brand'
 import { APP_COMMANDS, COMMAND_MAP, formatAccelerator, matchShortcut, parseAccelerator } from '../../../shared/commands'
 
 const store = useStore()
@@ -602,15 +603,10 @@ watch(() => wb.sourceMode, on => editor?.setSourceMode(on))
 watch(() => wb.focusMode, on => editor?.setFocusMode(on))
 watch(() => wb.typewriterMode, on => editor?.setTypewriterMode(on))
 
-watch(() => wb.effectiveTheme, (theme) => {
-  document.documentElement.dataset.lbTheme = theme
-  store.isDark = theme === 'night'
-}, { immediate: true })
-
 watch(() => wb.menuState, state => window.$api.updateMenuState?.(JSON.parse(JSON.stringify(state))), { immediate: true, deep: true })
 
 watch(() => [wb.docName, workspace.currentWorkspace?.name] as const, ([name, ws]) => {
-  window.$api.setWindowTitle(name ? `${name}${ws ? ` — ${ws}` : ''}` : (ws ? `${ws} — LazyBox` : 'LazyBox'))
+  window.$api.setWindowTitle(name ? `${name}${ws ? ` — ${ws}` : ''}` : (ws ? `${ws} — ${APP_DISPLAY_NAME}` : APP_DISPLAY_NAME))
 }, { immediate: true })
 
 // 打开公众号预览时立刻同步一次滚动位置

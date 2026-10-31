@@ -1,4 +1,5 @@
 import { app, BrowserWindow, Menu, type MenuItemConstructorOptions, shell } from 'electron'
+import { APP_DISPLAY_NAME } from '../shared/brand'
 import { COMMAND_MAP, type MenuState } from '../shared/commands'
 
 /**
@@ -44,17 +45,17 @@ function template(): MenuItemConstructorOptions[] {
       ? [{
           label: app.name,
           submenu: [
-            { label: '关于 LazyBox', role: 'about' },
+            { label: `关于 ${APP_DISPLAY_NAME}`, role: 'about' },
             sep,
             cmd('app.settings', { label: '偏好设置…' }),
             sep,
             { role: 'services' },
             sep,
-            { role: 'hide', label: '隐藏 LazyBox' },
+            { role: 'hide', label: `隐藏 ${APP_DISPLAY_NAME}` },
             { role: 'hideOthers', label: '隐藏其他' },
             { role: 'unhide', label: '全部显示' },
             sep,
-            { role: 'quit', label: '退出 LazyBox' },
+            { role: 'quit', label: `退出 ${APP_DISPLAY_NAME}` },
           ],
         } as MenuItemConstructorOptions]
       : []),

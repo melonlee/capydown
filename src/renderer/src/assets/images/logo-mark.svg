@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!--
+    LazyBox · 墨排 临时标志（单色）：一个墨色方块，镂空出「标题 + 正文」的排版线条。
+    只用 currentColor：内联时跟随界面文字颜色（夜间主题自动变浅），当作 <img> 使用时为黑色。
+    正式标志由品牌设计任务替换本文件即可。
+  -->
+  <defs>
+    <mask id="lb-mark-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64">
+      <rect width="64" height="64" fill="#fff"/>
+      <rect x="16" y="17" width="19" height="6" rx="1.5" fill="#000"/>
+      <rect x="16" y="29" width="32" height="3.5" rx="1.75" fill="#000"/>
+      <rect x="16" y="37" width="32" height="3.5" rx="1.75" fill="#000"/>
+      <rect x="16" y="45" width="21" height="3.5" rx="1.75" fill="#000"/>
+    </mask>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="13" fill="currentColor" mask="url(#lb-mark-cut)"/>
+</svg>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useWorkspaceStore } from '@renderer/stores'
-import { FolderOpen, MoreVertical, Trash2, Edit2, ExternalLink } from 'lucide-vue-next'
+import BrandMark from '@renderer/components/brand/BrandMark.vue'
+import { Edit2, ExternalLink, FolderOpen, FolderPlus, MoreHorizontal, Trash2 } from 'lucide-vue-next'
 import type { Workspace } from '@renderer/types'
 
 const workspaceStore = useWorkspaceStore()
@@ -20,30 +21,21 @@ const handleCreateWorkspace = async () => {
       toast.error('请输入工作空间名称')
       return
     }
-    
-    console.log('[Welcome] Creating workspace with name:', newWorkspaceName.value)
     const folderPath = await window.$api.selectWorkspaceFolder()
-    console.log('[Welcome] Selected folder path:', folderPath)
     
     if (!folderPath) {
-      console.log('[Welcome] No folder selected for create')
       return
     }
 
     newWorkspacePath.value = folderPath
-    console.log('[Welcome] Calling createWorkspace...')
     const workspace = await workspaceStore.createWorkspace(newWorkspaceName.value, folderPath)
-    console.log('[Welcome] Workspace created:', workspace)
     
     if (workspace) {
       showCreateDialog.value = false
       newWorkspaceName.value = ''
       newWorkspacePath.value = ''
-      
-      console.log('[Welcome] Setting current workspace to:', workspace.id)
       // 自动打开新创建的工作空间
       await workspaceStore.setCurrentWorkspace(workspace.id)
-      console.log('[Welcome] Workspace set as current successfully')
     } else {
       console.error('[Welcome] Workspace creation returned null')
       toast.error('创建工作空间失败')
@@ -58,16 +50,11 @@ const handleCreateWorkspace = async () => {
 const handleOpenExisting = async () => {
   try {
     const folderPath = await window.$api.selectWorkspaceFolder()
-    console.log('Selected folder path:', folderPath)
     
     if (!folderPath) {
-      console.log('No folder selected')
       return
     }
-
-    console.log('Opening workspace:', folderPath)
     const workspace = await workspaceStore.openExistingWorkspace(folderPath)
-    console.log('Workspace opened:', workspace)
     
     if (!workspace) {
       toast.error('打开工作空间失败')
@@ -112,6 +99,13 @@ const handleRemove = (workspaceId: string) => {
   }
 }
 
+// 路径里的用户目录显示成 ~
+function shortPath(p: string) {
+  return p.replace(/^\/Users\/[^/]+/, '~').replace(/^C:\\Users\\[^\\]+/i, '~')
+}
+
+const isMac = /Mac/i.test(navigator.userAgent)
+
 // 在文件管理器中打开
 const openInFinder = async (workspace: Workspace) => {
   await window.$api.openWorkspaceFolder(workspace.path)
@@ -119,113 +113,88 @@ const openInFinder = async (workspace: Workspace) => {
 </script>
 
 <template>
-  <div class="welcome-container">
-    <!-- 左侧：最近打开 -->
-    <div v-if="workspaceStore.recentWorkspaces.length > 0" class="left-section">
-      <div class="recent-section">
-        <h2 class="section-title">最近打开</h2>
-        
-        <div class="recent-list">
-          <div
+  <div class="lb-welcome">
+    <div class="lb-welcome-drag draggable-area" />
+
+    <main class="lb-welcome-main">
+      <header class="lb-welcome-brand">
+        <BrandMark class="lb-welcome-logo" />
+        <h1>LazyBox <span class="lb-welcome-dot">·</span> 墨排</h1>
+        <p>Typora 式公众号编辑器</p>
+      </header>
+
+      <section class="lb-welcome-actions">
+        <button class="lb-welcome-action" @click="handleOpenExisting">
+          <FolderOpen class="size-[18px]" />
+          <span class="lb-welcome-action-text">
+            <strong>打开文件夹…</strong>
+            <small>选择一个装着 Markdown 文章的文件夹</small>
+          </span>
+        </button>
+        <button class="lb-welcome-action" @click="showCreateDialog = true">
+          <FolderPlus class="size-[18px]" />
+          <span class="lb-welcome-action-text">
+            <strong>新建工作空间…</strong>
+            <small>起个名字，再选一个空文件夹存放文章和素材</small>
+          </span>
+        </button>
+      </section>
+
+      <section v-if="workspaceStore.recentWorkspaces.length > 0" class="lb-welcome-recent">
+        <h2>最近打开</h2>
+        <ul>
+          <li
             v-for="workspace in workspaceStore.recentWorkspaces"
             :key="workspace.id"
-            class="recent-item"
+            class="lb-welcome-recent-item"
             @click="openWorkspace(workspace.id)"
           >
-            <div class="recent-item-content">
-              <div class="folder-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M3 7V17C3 18.1046 3.89543 19 5 19H19C20.1046 19 21 18.1046 21 17V9C21 7.89543 20.1046 7 19 7H11L9 5H5C3.89543 5 3 5.89543 3 7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-              
-              <div class="recent-info">
-                <h3 class="recent-name">{{ workspace.name }}</h3>
-                <p class="recent-path">{{ workspace.path }}</p>
-              </div>
+            <span class="lb-welcome-recent-name">{{ workspace.name }}</span>
+            <span class="lb-welcome-recent-path" :title="workspace.path">{{ shortPath(workspace.path) }}</span>
+            <DropdownMenu>
+              <!-- 不用 as-child：v-for 里 as-child 会丢掉子元素的 class -->
+              <DropdownMenuTrigger class="lb-welcome-more" title="更多" @click.stop>
+                <MoreHorizontal class="size-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem @click.stop="openWorkspace(workspace.id)">
+                  <FolderOpen class="mr-2 size-4" />
+                  打开
+                </DropdownMenuItem>
+                <DropdownMenuItem @click.stop="handleRename(workspace)">
+                  <Edit2 class="mr-2 size-4" />
+                  重命名
+                </DropdownMenuItem>
+                <DropdownMenuItem @click.stop="openInFinder(workspace)">
+                  <ExternalLink class="mr-2 size-4" />
+                  {{ isMac ? '在访达中显示' : '在文件管理器中打开' }}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem @click.stop="handleRemove(workspace.id)">
+                  <Trash2 class="mr-2 size-4" />
+                  从列表中移除
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </li>
+        </ul>
+      </section>
+    </main>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger as-child @click.stop>
-                  <button class="more-btn">
-                    <MoreVertical class="w-4 h-4" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem @click.stop="openWorkspace(workspace.id)">
-                    <FolderOpen class="w-4 h-4 mr-2" />
-                    打开工作空间
-                  </DropdownMenuItem>
-                  <DropdownMenuItem @click.stop="handleRename(workspace)">
-                    <Edit2 class="w-4 h-4 mr-2" />
-                    重命名
-                  </DropdownMenuItem>
-                  <DropdownMenuItem @click.stop="openInFinder(workspace)">
-                    <ExternalLink class="w-4 h-4 mr-2" />
-                    在文件管理器中打开
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem 
-                    class="text-red-600"
-                    @click.stop="handleRemove(workspace.id)"
-                  >
-                    <Trash2 class="w-4 h-4 mr-2" />
-                    移除
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 右侧：Logo 和操作 -->
-    <div class="right-section">
-      <div class="brand-section">
-        <h1 class="app-title">
-          <span class="first-letter">L</span><span class="rest-letters">azyBox</span>
-        </h1>
-        <p class="app-subtitle">格式，本该如此简单。<br>公众号文章的写作、排版、发布，一个应用搞定。</p>
-      </div>
-
-      <div class="action-cards">
-        <div class="action-card" @click="showCreateDialog = true">
-          <div class="action-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M3 7V17C3 18.1046 3.89543 19 5 19H19C20.1046 19 21 18.1046 21 17V9C21 7.89543 20.1046 7 19 7H11L9 5H5C3.89543 5 3 5.89543 3 7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <div class="action-text">
-            <h3 class="action-title">新建工作空间</h3>
-            <p class="action-desc">选一个文件夹，开始存放你的文章和素材</p>
-          </div>
-        </div>
-
-        <div class="action-card" @click="handleOpenExisting">
-          <div class="action-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 7V17C3 18.1046 3.89543 19 5 19H19C20.1046 19 21 18.1046 21 17V9C21 7.89543 20.1046 7 19 7H11L9 5H5C3.89543 5 3 5.89543 3 7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <div class="action-text">
-            <h3 class="action-title">打开已有文件夹</h3>
-            <p class="action-desc">直接打开一个装着 Markdown 文章的文件夹</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <footer class="lb-welcome-foot">
+      文章就是你硬盘里的 .md 文件 · 打开不会改动文件，编辑后自动保存
+    </footer>
 
     <!-- 创建工作空间对话框 -->
     <Dialog v-model:open="showCreateDialog">
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>创建新工作空间</DialogTitle>
+          <DialogTitle>新建工作空间</DialogTitle>
           <DialogDescription>
             输入名称后选择一个文件夹，文章会以 .md 文件保存在里面
           </DialogDescription>
         </DialogHeader>
-        
+
         <div class="dialog-form">
           <div class="form-field">
             <Label for="workspace-name">工作空间名称</Label>
@@ -243,7 +212,7 @@ const openInFinder = async (workspace: Workspace) => {
             取消
           </Button>
           <Button @click="handleCreateWorkspace">
-            创建并打开
+            选择文件夹并创建
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -255,7 +224,7 @@ const openInFinder = async (workspace: Workspace) => {
         <DialogHeader>
           <DialogTitle>重命名工作空间</DialogTitle>
         </DialogHeader>
-        
+
         <div class="dialog-form">
           <div class="form-field">
             <Label for="rename-workspace">新名称</Label>
@@ -280,322 +249,203 @@ const openInFinder = async (workspace: Workspace) => {
   </div>
 </template>
 
-<style lang="less" scoped>
-.welcome-container {
+<style scoped>
+/* 与工作台同一套主题变量（workbench.css），跟随 GitHub / Newsprint / Night 主题 */
+.lb-welcome {
+  position: relative;
   width: 100vw;
   height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  background: #1a2332;
-  overflow: hidden;
-  padding: 2rem;
+  overflow-y: auto;
+  background: var(--lb-bg);
+  color: var(--lb-fg);
+  font-family: var(--lb-font);
+  -webkit-font-smoothing: antialiased;
 }
 
-.welcome-container::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  display: flex;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.welcome-container > * {
-  position: relative;
+.lb-welcome-drag {
+  position: fixed;
+  inset: 0 0 auto;
+  height: 38px;
   z-index: 1;
 }
 
-// 左侧区域
-.left-section {
-  flex: 1;
-  max-width: 500px;
-  padding: 2rem;
+.lb-welcome-main {
+  width: 100%;
+  max-width: 460px;
+  margin: auto 0;
+  padding: 64px 24px 24px;
+}
+
+.lb-welcome-brand {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.lb-welcome-logo {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 18px;
+  color: var(--lb-fg-strong);
+  user-select: none;
+}
+
+.lb-welcome-brand h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--lb-fg-strong);
+}
+
+.lb-welcome-dot {
+  color: var(--lb-faint);
+  font-weight: 400;
+}
+
+.lb-welcome-brand p {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--lb-muted);
+}
+
+.lb-welcome-actions {
   display: flex;
   flex-direction: column;
-  min-height: 0; // 关键：允许 flex 子元素收缩
-  max-height: 80vh;
+  gap: 8px;
 }
 
-.recent-section {
-  flex: 1;
+.lb-welcome-action {
   display: flex;
-  flex-direction: column;
-  min-height: 0; // 关键：允许 flex 子元素收缩
-  overflow: hidden; // 防止内容溢出
-}
-
-.section-title {
-  font-size: 1.125rem;
-  font-weight: 500;
-  color: #e2e8f0;
-  margin: 0 0 1rem 0;
-  letter-spacing: -0.01em;
-}
-
-.recent-list {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.625rem;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-right: 0.5rem;
-  min-height: 0; // 关键：允许滚动
-  
-  // 美化滚动条
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: rgba(26, 35, 50, 0.3);
-    border-radius: 3px;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: rgba(139, 92, 246, 0.2);
-    border-radius: 3px;
-    transition: all 0.3s ease;
-  }
-  
-  &::-webkit-scrollbar-thumb:hover {
-    background: rgba(139, 92, 246, 0.4);
-  }
-}
-
-.recent-item {
-  flex-shrink: 0; // 防止卡片被压缩
-  background: rgba(51, 65, 85, 0.4);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(148, 163, 184, 0.1);
-  border-radius: 12px;
-  padding: 1.25rem;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 13px 16px;
+  text-align: left;
+  color: var(--lb-fg-strong);
+  background: var(--lb-bg);
+  border: 1px solid var(--lb-border-strong);
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: rgba(51, 65, 85, 0.6);
-    border-color: rgba(148, 163, 184, 0.2);
-    transform: translateY(-2px);
-  }
+  transition: border-color 0.15s, background 0.15s;
 }
 
-.recent-item-content {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+.lb-welcome-action:hover {
+  background: var(--lb-hover);
 }
 
-.folder-icon {
+.lb-welcome-action:first-child svg {
+  color: var(--lb-fg-strong);
+}
+
+.lb-welcome-action svg {
   flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(139, 92, 246, 0.15);
-  border-radius: 8px;
-  color: #a78bfa;
+  color: var(--lb-muted);
 }
 
-.recent-info {
-  flex: 1;
+.lb-welcome-action-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   min-width: 0;
 }
 
-.recent-name {
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: #f1f5f9;
-  margin: 0 0 0.25rem;
-  letter-spacing: -0.01em;
+.lb-welcome-action strong {
+  font-size: 14px;
+  font-weight: 550;
 }
 
-.recent-path {
-  font-size: 0.8125rem;
-  color: #94a3b8;
+.lb-welcome-action small {
+  font-size: 12px;
+  color: var(--lb-muted);
+}
+
+.lb-welcome-recent {
+  margin-top: 32px;
+}
+
+.lb-welcome-recent h2 {
+  margin: 0 0 6px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--lb-faint);
+}
+
+.lb-welcome-recent ul {
   margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lb-welcome-recent-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  height: 34px;
+  padding: 0 4px 0 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  line-height: 34px;
+}
+
+.lb-welcome-recent-item:hover {
+  background: var(--lb-hover);
+}
+
+.lb-welcome-recent-name {
+  flex-shrink: 0;
+  max-width: 45%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 13.5px;
+  color: var(--lb-fg-strong);
 }
 
-.more-btn {
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
+.lb-welcome-recent-path {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  color: var(--lb-faint);
+}
+
+.lb-welcome-more {
+  align-self: center;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
+  width: 26px;
+  height: 26px;
   border: none;
   border-radius: 6px;
-  color: #94a3b8;
+  background: transparent;
+  color: var(--lb-muted);
   cursor: pointer;
-  transition: all 0.2s;
   opacity: 0;
-
-  &:hover {
-    background: rgba(148, 163, 184, 0.1);
-    color: #e2e8f0;
-  }
 }
 
-.recent-item:hover .more-btn {
+.lb-welcome-recent-item:hover .lb-welcome-more,
+.lb-welcome-more[data-state='open'] {
   opacity: 1;
 }
 
-// 右侧区域
-.right-section {
-  flex: 1;
-  max-width: 500px;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+.lb-welcome-more:hover {
+  background: var(--lb-active);
 }
 
-.brand-section {
+.lb-welcome-foot {
+  padding: 16px 24px 22px;
+  font-size: 12px;
+  color: var(--lb-faint);
   text-align: center;
-  margin-bottom: 2rem;
 }
 
-.app-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin: 0 0 0.5rem;
-  letter-spacing: -0.02em;
-  display: inline-block;
-  position: relative;
-  
-  // 整體發光效果
-  filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.3));
-  animation: breathe 3s ease-in-out infinite;
-}
-
-// 首字母特殊樣式
-.first-letter {
-  font-size: 1.2em;
-  background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 50%, #7c3aed 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: 
-    0 0 30px rgba(139, 92, 246, 0.6),
-    0 0 60px rgba(139, 92, 246, 0.4);
-  -webkit-text-stroke: 1px rgba(167, 139, 250, 0.3);
-  animation: glow-pulse 2s ease-in-out infinite alternate;
-}
-
-// 其餘字母樣式
-.rest-letters {
-  background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 50%, #c7d2fe 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: 
-    0 2px 10px rgba(248, 250, 252, 0.3),
-    0 4px 20px rgba(167, 139, 250, 0.2);
-  -webkit-text-stroke: 0.5px rgba(248, 250, 252, 0.1);
-}
-
-// 發光脈衝動畫
-@keyframes glow-pulse {
-  0% {
-    text-shadow: 
-      0 0 20px rgba(139, 92, 246, 0.6),
-      0 0 40px rgba(139, 92, 246, 0.4),
-      0 0 60px rgba(139, 92, 246, 0.2);
-  }
-  100% {
-    text-shadow: 
-      0 0 30px rgba(139, 92, 246, 0.8),
-      0 0 60px rgba(139, 92, 246, 0.6),
-      0 0 90px rgba(139, 92, 246, 0.4);
-  }
-}
-
-// 呼吸動畫
-@keyframes breathe {
-  0%, 100% {
-    filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.3));
-  }
-  50% {
-    filter: drop-shadow(0 0 30px rgba(139, 92, 246, 0.5));
-  }
-}
-
-.app-subtitle {
-  font-size: 1rem;
-  line-height: 1.7;
-  text-align: center;
-  color: #94a3b8;
-  margin: 0;
-  letter-spacing: -0.01em;
-}
-
-.action-cards {
-  width: 100%;
-  max-width: 450px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.875rem;
-}
-
-.action-card {
-  background: rgba(51, 65, 85, 0.4);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(148, 163, 184, 0.1);
-  border-radius: 12px;
-  padding: 1.25rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-
-  &:hover {
-    background: rgba(51, 65, 85, 0.6);
-    border-color: rgba(148, 163, 184, 0.2);
-    transform: translateY(-2px);
-  }
-}
-
-.action-icon {
-  flex-shrink: 0;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(139, 92, 246, 0.15);
-  border-radius: 10px;
-  color: #a78bfa;
-}
-
-.action-text {
-  flex: 1;
-  padding-top: 0.25rem;
-}
-
-.action-title {
-  font-size: 1.0625rem;
-  font-weight: 600;
-  color: #f1f5f9;
-  margin: 0 0 0.375rem;
-  letter-spacing: -0.01em;
-}
-
-.action-desc {
-  font-size: 0.875rem;
-  color: #94a3b8;
-  margin: 0;
-  line-height: 1.5;
-}
-
-// 对话框
 .dialog-form {
   padding: 1rem 0;
 }
@@ -605,22 +455,4 @@ const openInFinder = async (workspace: Workspace) => {
   flex-direction: column;
   gap: 0.5rem;
 }
-
-// 响应式
-@media (max-width: 1024px) {
-  .welcome-container {
-    flex-direction: column;
-  }
-
-  .left-section,
-  .right-section {
-    flex: none;
-    padding: 2rem;
-  }
-
-  .left-section {
-    max-height: 40vh;
-  }
-}
 </style>
-

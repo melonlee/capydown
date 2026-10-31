@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, Menu, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, Menu, ipcMain, nativeTheme } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -13,6 +13,7 @@ import { initVectorIPCHandlers } from './ipc-vector'
 import { initMCPSkillIPCHandlers } from './ipc-mcp-skill'
 import { isExperimentalEnabled, setExperimentalEnabled } from './config/experimental'
 import { isSafeExternalUrl } from './security'
+import { APP_DISPLAY_NAME, APP_TAGLINE } from '../shared/brand'
 
 function createWindow(): void {
   // Create the browser window.
@@ -24,7 +25,10 @@ function createWindow(): void {
     show: false,
     autoHideMenuBar: true,
     center: true,
+    title: APP_DISPLAY_NAME,
     titleBarStyle: 'hiddenInset',
+    // 与渲染进程的 GitHub / Night 主题底色一致，避免启动时闪白
+    backgroundColor: nativeTheme.shouldUseDarkColors ? '#1e1e1e' : '#ffffff',
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.cjs'),
@@ -75,6 +79,14 @@ function createWindow(): void {
 app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.lazybox')
+
+  // 「关于」面板显示中文产品名（安装包名仍为 LazyBox）
+  app.setAboutPanelOptions({
+    applicationName: APP_DISPLAY_NAME,
+    applicationVersion: app.getVersion(),
+    credits: APP_TAGLINE,
+    copyright: '基于 doocs/md · MIT License',
+  })
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.

@@ -9,64 +9,36 @@
       name="viewport"
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
-    <title>LazyBox | Markdown 编辑器</title>
-    <link rel="shortcut icon" href="https://cloud-minapp-47803.cloud.ifanrusercontent.com/1tvAtSxuQu3J96d2.png" />
-    <link
-      rel="apple-touch-icon-precomposed"
-      href="https://cloud-minapp-47803.cloud.ifanrusercontent.com/1tvAM68Cvrx3bfLR.jpg"
-    />
+    <title>LazyBox · 墨排</title>
     <style>
+      html, body { margin: 0; background: #ffffff; }
       .loading {
         position: fixed;
-        top: 0;
-        left: 0;
+        inset: 0;
         z-index: 99999;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
         align-items: center;
-        width: 100vw;
-        height: 100vh;
-        font-size: 18px;
+        justify-content: center;
+        background: #ffffff;
       }
-
       .loading::before {
-        content: url('/src/assets/images/favicon.png');
-        width: 100px;
-        height: 100px;
-        margin-bottom: 26px;
+        content: url('/src/assets/images/logo-mark.svg');
+        width: 64px;
+        height: 64px;
+        opacity: 0.14;
       }
-
-      .loading.dark {
-        color: #ffffff;
-        background-color: #141414;
-      }
-
-      .loading .txt {
-        position: absolute;
-        bottom: 10%;
-      }
-
-      .loading .txt::after {
-        content: '...';
-        animation: dots 1.5s steps(4, end) infinite;
-      }
-
-      @keyframes dots {
-        0% {
-          content: ' ';
-        }
-        25% {
-          content: '.';
-        }
-        50% {
-          content: '..';
-        }
-        75% {
-          content: '...';
-        }
-      }
+      html.lb-boot-dark, html.lb-boot-dark body, html.lb-boot-dark .loading { background: #1e1e1e; }
+      html.lb-boot-dark .loading::before { filter: invert(1); }
     </style>
+    <script>
+      // 启动画面与即将应用的编辑器主题一致（Night 或跟随系统的深色）
+      try {
+        const theme = (localStorage.getItem('lb-editor-theme') || '"github"').replace(/"/g, '')
+        const follow = localStorage.getItem('lb-follow-system') !== 'false'
+        const dark = theme === 'night' || (follow && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        if (dark) document.documentElement.classList.add('lb-boot-dark')
+      } catch {}
+    </script>
   </head>
 
   <body>
@@ -74,17 +46,8 @@
       <strong>Please enable JavaScript to continue.</strong>
     </noscript>
     <div id="app">
-      <div class="loading">
-        <strong>+ Write → Commit → Think.</strong>
-        <p class="txt">Loading LazyBox...</p>
-      </div>
+      <div class="loading"></div>
     </div>
-    <script>
-      const theme = localStorage.getItem('vueuse-color-scheme')
-      if (theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.querySelector('.loading').classList.add('dark')
-      }
-    </script>
     <script>
       window.MathJax = {
         loader: { load: ['[tex]/ams'] },
