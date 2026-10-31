@@ -238,10 +238,10 @@ export const initIpcMain = () => {
   })
 
   // 更新窗口标题
-  ipcMain.handle('set-window-title', async (_, { title }) => {
-    const focusedWindow = BrowserWindow.getFocusedWindow();
-    if (focusedWindow) {
-      focusedWindow.setTitle(title);
+  ipcMain.handle('set-window-title', async (event, { title }) => {
+    const win = BrowserWindow.fromWebContents(event.sender) ?? BrowserWindow.getFocusedWindow();
+    if (win && typeof title === 'string') {
+      win.setTitle(title);
     }
   })
 }

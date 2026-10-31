@@ -63,6 +63,8 @@ const api = {
   // 窗口管理 API
   setWindowTitle: (title: string) =>
     ipcRenderer.invoke('set-window-title', { title }),
+  updateMenuState: (state: Record<string, unknown>) =>
+    ipcRenderer.send('menu:update-state', state),
 
   // ========== AI 配置管理 ==========
   aiGetConfig: () => ipcRenderer.invoke('ai:get-config'),

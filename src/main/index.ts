@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow, Menu, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { menu } from './menu'
+import { buildMenu, updateMenuState } from './menu'
 import { initDocumentDir, defaultDocumentPath, defaultDocumentName } from './local'
 import { initIpcMain } from './ipc'
 import { initAIIpcHandlers } from './ipc-ai'
@@ -17,8 +17,10 @@ import { isSafeExternalUrl } from './security'
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 760,
+    width: 1280,
+    height: 820,
+    minWidth: 720,
+    minHeight: 480,
     show: false,
     autoHideMenuBar: true,
     center: true,
@@ -35,7 +37,7 @@ function createWindow(): void {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
-    Menu.setApplicationMenu(menu)
+    Menu.setApplicationMenu(buildMenu())
   })
 
   // 只允许用系统浏览器打开 http(s)/mailto 链接，其余协议（file:、smb:、自定义 scheme 等）一律拒绝
@@ -86,6 +88,12 @@ app.whenReady().then(() => {
     name: defaultDocumentName,
     path: defaultDocumentPath,
   }))
+
+  // 菜单勾选状态（源代码模式、专注模式、主题…）由渲染进程推送
+  ipcMain.on('menu:update-state', (_, state) => {
+    if (state && typeof state === 'object')
+      updateMenuState(state)
+  })
 
   // 实验功能开关（MCP / Skill / 知识库 / 模板 / AI 生图等未完成模块）
   ipcMain.handle('app:get-experimental', () => isExperimentalEnabled())
