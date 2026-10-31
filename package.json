@@ -1,10 +1,10 @@
 {
   "type": "module",
   "name": "lazybox",
-  "version": "0.1.0",
-  "description": "基于 doocs/md 开发的微信 Markdown 编辑器桌面应用",
+  "version": "0.2.0",
+  "description": "给公众号作者的 Markdown 桌面编辑器：本地写作、主题排版、图床上传、一键复制到公众号",
   "main": "./out/main/index.cjs",
-  "author": "sleepy-zone",
+  "author": "melonlee",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",
@@ -107,5 +107,11 @@
     "vue-tsc": "^2.2.2",
     "wxt": "^0.19.25",
     "yup": "^1.6.1"
-  }
+  },
+  "homepage": "https://github.com/melonlee/LazyBox",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/melonlee/LazyBox.git"
+  },
+  "license": "MIT"
 }

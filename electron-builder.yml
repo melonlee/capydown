@@ -1,45 +1,68 @@
 appId: com.lazybox.app
 productName: LazyBox
+copyright: Copyright © 2025-2026 melonlee
 directories:
   buildResources: build
+  output: dist
 files:
   - '!**/.vscode/*'
   - '!src/*'
+  - '!docs/*'
+  - '!tests/*'
   - '!electron.vite.config.{js,ts,mjs,cjs}'
-  - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
-  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
+  - '!{vitest.config.ts,doocs.vite.config.ts,eslint.config.mjs,components.json,uno.config.ts,tailwind.config.cjs,postcss.config.mjs}'
+  - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md,README.en.md,CLAUDE.md}'
+  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml,pnpm-workspace.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 asarUnpack:
   - resources/**
 win:
   executableName: LazyBox
+  target:
+    - target: nsis
+      arch: [x64]
 nsis:
-  artifactName: ${name}-${version}-setup.${ext}
+  artifactName: ${productName}-${version}-win-${arch}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
+  oneClick: false
+  allowToChangeInstallationDirectory: true
 mac:
+  category: public.app-category.productivity
   entitlementsInherit: build/entitlements.mac.plist
+  target:
+    - target: dmg
+      arch: [arm64, x64]
+    - target: zip
+      arch: [arm64, x64]
   extendInfo:
-    - NSCameraUsageDescription: Application requests access to the device's camera.
-    - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
-    - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
-    - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
+    - NSDocumentsFolderUsageDescription: LazyBox 需要访问“文稿”文件夹来读写你的文章。
+    - NSDownloadsFolderUsageDescription: LazyBox 需要访问“下载”文件夹来打开或导出文件。
+  # 目前没有 Apple Developer 证书：不签名、不公证
+  identity: null
   notarize: false
 dmg:
-  artifactName: ${name}-${version}.${ext}
+  artifactName: ${productName}-${version}-mac-${arch}.${ext}
 linux:
   target:
     - AppImage
-    - snap
     - deb
-  maintainer: electronjs.org
-  category: Utility
+  maintainer: melonlee <https://github.com/melonlee>
+  category: Office
+  synopsis: Markdown 写作与公众号排版
 appImage:
-  artifactName: ${name}-${version}.${ext}
+  artifactName: ${productName}-${version}-linux-${arch}.${ext}
+deb:
+  artifactName: ${productName}-${version}-linux-${arch}.${ext}
+zip:
+  artifactName: ${productName}-${version}-mac-${arch}.${ext}
 npmRebuild: false
+# electron-updater 读取的发布源（应用内目前尚未启用自动更新）
 publish:
-  provider: generic
-  url: https://example.com/auto-updates
+  provider: github
+  owner: melonlee
+  repo: LazyBox
+  releaseType: draft
 electronDownload:
   mirror: https://github.com/electron/electron/releases/download/
