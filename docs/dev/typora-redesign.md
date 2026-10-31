@@ -48,3 +48,6 @@
 - 临时标志：`src/renderer/src/assets/images/logo-mark.svg`（只用 `currentColor`，由 `components/brand/BrandMark.vue` 内联），品牌任务替换这一个文件即可。
 - 粘贴 / 拖入图片默认保存到「文档目录/assets/」并写相对路径（Typora 做法）；配置了图床时仍上传。
 - 端到端测试：以 `LAZYBOX_E2E=1` 启动时暴露 `window.__lbEditor`（开发模式也有）。
+- 启动画面在 `src/renderer/index.html`（纯 CSS + 少量内联脚本，Vue 包加载前就能显示）：`# 懒排` 源码 → 宋体标题 → 细线与一句话介绍，时间轴约 0.95 s。窗口可见后才开始播放；渲染进程在欢迎页挂载、或工作台打开第一篇文档后调用 `markAppReady()`（`utils/boot.ts`）→ `window.__lbSplash.ready()`，剩余动画最多加速到 0.25 s 内播完再退场（0.28 s），就绪得晚则停在最后一帧；App.vue 另有 1.5 s 兜底，内联脚本有 10 s 兜底。`prefers-reduced-motion` 时只淡入淡出。`window.__lbSplash.marks` 记录 start / ready / leave 时间点，`<html>` 上的 `lb-app-ready` 类可供端到端测试等待。
+- 窗口底色：渲染进程应用主题后通过 `app:set-boot-theme` 把 light / paper / dark 存进 electron-store（`ui.bootTheme`），主进程下次启动用它做 `BrowserWindow.backgroundColor`（首启按系统深浅色），配合 `show: false` + `ready-to-show` 不闪白。
+- MathJax 改为 `async` 加载（CDN 不可达时不再阻塞启动；未加载完成时公式按源码显示）。

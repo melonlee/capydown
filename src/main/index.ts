@@ -14,6 +14,23 @@ import { initMCPSkillIPCHandlers } from './ipc-mcp-skill'
 import { isExperimentalEnabled, setExperimentalEnabled } from './config/experimental'
 import { isSafeExternalUrl } from './security'
 import { APP_DISPLAY_NAME, APP_TAGLINE } from '../shared/brand'
+import { getStore, setStore } from './store'
+
+/**
+ * 窗口底色与渲染进程的编辑器主题一致（GitHub 白 / Newsprint 米色 / Night 深灰），避免启动闪白。
+ * 主题保存在渲染进程的 localStorage 里，主进程读不到，所以由渲染进程每次应用主题时推送一份（ui.bootTheme）；
+ * 第一次启动还没有记录时按系统深浅色。
+ */
+const BOOT_BACKGROUNDS = { light: '#ffffff', paper: '#f6f6f3', dark: '#1e1e1e' } as const
+type BootTheme = keyof typeof BOOT_BACKGROUNDS
+const BOOT_THEME_KEY = 'ui.bootTheme'
+
+function bootBackground(): string {
+  const saved = getStore(BOOT_THEME_KEY) as BootTheme | undefined
+  if (saved && saved in BOOT_BACKGROUNDS)
+    return BOOT_BACKGROUNDS[saved]
+  return nativeTheme.shouldUseDarkColors ? BOOT_BACKGROUNDS.dark : BOOT_BACKGROUNDS.light
+}
 
 function createWindow(): void {
   // Create the browser window.
@@ -27,8 +44,8 @@ function createWindow(): void {
     center: true,
     title: APP_DISPLAY_NAME,
     titleBarStyle: 'hiddenInset',
-    // 与渲染进程的 GitHub / Night 主题底色一致，避免启动时闪白
-    backgroundColor: nativeTheme.shouldUseDarkColors ? '#1e1e1e' : '#ffffff',
+    // 与渲染进程的主题底色一致，避免启动时闪白（show: false + ready-to-show 保证首帧画好后才显示）
+    backgroundColor: bootBackground(),
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.cjs'),
@@ -105,6 +122,15 @@ app.whenReady().then(() => {
   ipcMain.on('menu:update-state', (_, state) => {
     if (state && typeof state === 'object')
       updateMenuState(state)
+  })
+
+  // 渲染进程应用编辑器主题后推送，用作下次启动的窗口底色；同时更新当前窗口（缩放 / 新建窗口时的底色）
+  ipcMain.on('app:set-boot-theme', (event, theme: unknown) => {
+    if (typeof theme !== 'string' || !(theme in BOOT_BACKGROUNDS))
+      return
+    if (getStore(BOOT_THEME_KEY) !== theme)
+      setStore(BOOT_THEME_KEY, theme)
+    BrowserWindow.fromWebContents(event.sender)?.setBackgroundColor(BOOT_BACKGROUNDS[theme as BootTheme])
   })
 
   // 实验功能开关（MCP / Skill / 知识库 / 模板 / AI 生图等未完成模块）

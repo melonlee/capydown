@@ -4,8 +4,11 @@ import BrandMark from '@renderer/components/brand/BrandMark.vue'
 import { Edit2, ExternalLink, FolderOpen, FolderPlus, MoreHorizontal, Trash2 } from 'lucide-vue-next'
 import type { Workspace } from '@renderer/types'
 import { APP_NAME, APP_NAME_ZH, APP_TAGLINE } from '../../../shared/brand'
+import { markAppReady } from '@renderer/utils/boot'
 
 const workspaceStore = useWorkspaceStore()
+
+onMounted(markAppReady)
 
 const showCreateDialog = ref(false)
 const newWorkspaceName = ref('')

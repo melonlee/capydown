@@ -10,44 +10,287 @@
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
     <title>LazyBox · 懒排</title>
-    <style>
-      html, body { margin: 0; background: #ffffff; }
-      .loading {
-        position: fixed;
-        inset: 0;
-        z-index: 99999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #ffffff;
-      }
-      .loading::before {
-        content: url('/src/assets/images/logo-mark.svg');
-        width: 64px;
-        height: 64px;
-        opacity: 0.14;
-      }
-      html.lb-boot-dark, html.lb-boot-dark body, html.lb-boot-dark .loading { background: #1e1e1e; }
-      html.lb-boot-dark .loading::before { filter: invert(1); }
-    </style>
     <script>
-      // 启动画面与即将应用的编辑器主题一致（Night 或跟随系统的深色）
+      // 启动画面与即将应用的编辑器主题一致（Night 或跟随系统的深色 → 灰阶反相；Newsprint → 米色纸）
       try {
         const theme = (localStorage.getItem('lb-editor-theme') || '"github"').replace(/"/g, '')
         const follow = localStorage.getItem('lb-follow-system') !== 'false'
         const dark = theme === 'night' || (follow && window.matchMedia('(prefers-color-scheme: dark)').matches)
         if (dark) document.documentElement.classList.add('lb-boot-dark')
+        else if (theme === 'newsprint') document.documentElement.classList.add('lb-boot-paper')
       } catch {}
     </script>
+    <style>
+      /*
+       * 启动画面：Markdown 源码「# 懒排」→ 排好版的标题（实时预览的样子）→ 一句话介绍 → 淡出到应用。
+       * 纯 CSS 动画，时间轴 ≈ 0.95 s，退场 0.28 s；应用就绪得早就加速播完，就绪得晚就停在最后一帧。
+       * 控制逻辑见本文件底部的脚本；渲染进程挂载完成后调用 window.__lbSplash.ready()（utils/boot.ts）。
+       */
+      /* 启动期间的窗口底色；App.vue 应用主题后会去掉 lb-boot-* 类 */
+      html, body { margin: 0; background: #ffffff; }
+      html.lb-boot-paper, html.lb-boot-paper body { background: #f6f6f3; }
+      html.lb-boot-dark, html.lb-boot-dark body { background: #1e1e1e; }
+
+      /* 配色固定在启动画面元素上（启动脚本复制 lb-boot-* 到 is-*），主题提前应用也不会中途变色 */
+      .lb-splash {
+        --sp-bg: #ffffff;
+        --sp-fg: #111111;
+        --sp-src: #333333;
+        --sp-mark: #a8a8a8;
+        --sp-muted: #8a8a8a;
+        --sp-faint: #b8b8b8;
+      }
+      .lb-splash.is-paper { --sp-bg: #f6f6f3; --sp-mark: #a5a5a1; --sp-muted: #84847f; --sp-faint: #b5b5b0; }
+      .lb-splash.is-dark {
+        --sp-bg: #1e1e1e;
+        --sp-fg: #ededed;
+        --sp-src: #cfcfcf;
+        --sp-mark: #5e5e5e;
+        --sp-muted: #8c8c8c;
+        --sp-faint: #5a5a5a;
+      }
+
+      .lb-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--sp-bg);
+        color: var(--sp-fg);
+        cursor: default;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-app-region: drag; /* 无边框标题栏：启动期间也能拖动窗口 */
+        -webkit-font-smoothing: antialiased;
+      }
+      .lb-splash-stage {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transform: translateY(-3vh); /* 视觉中心略高于几何中心 */
+      }
+      /* 源码行与标题叠放在同一位置，中心对齐到「懒排」两个字 */
+      .lb-splash-line {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 72px;
+      }
+      .lb-splash-src,
+      .lb-splash-h {
+        white-space: nowrap;
+        will-change: transform, opacity, filter;
+      }
+      .lb-splash-src {
+        position: absolute;
+        font: 400 22px/1 'SF Mono', ui-monospace, Menlo, Monaco, 'Cascadia Mono', Consolas, 'PingFang SC', monospace;
+        color: var(--sp-src);
+        letter-spacing: 0.02em;
+      }
+      /* 「# 」挂在文字左侧（Typora 标题标记的位置），不参与居中 */
+      .lb-splash-mk {
+        position: absolute;
+        right: 100%;
+        padding-right: 0.6em; /* 「# 」后的空格 */
+        color: var(--sp-mark);
+      }
+      .lb-splash-txt { display: inline-block; will-change: transform, opacity, filter; }
+      .lb-splash-caret {
+        position: absolute;
+        left: 100%;
+        top: -0.12em;
+        bottom: -0.12em;
+        width: 1.5px;
+        margin-left: 2px;
+        background: var(--sp-fg);
+      }
+      .lb-splash-h {
+        margin: 0;
+        font: 700 54px/1 'Songti SC', 'STSong', 'Source Han Serif SC', 'Noto Serif CJK SC', 'Noto Serif SC', 'SimSun', serif;
+        letter-spacing: 0.06em;
+        text-indent: 0.06em; /* 抵消末字后的字距，保持视觉居中 */
+        color: var(--sp-fg);
+      }
+      /* 标题下的细线：排版完成的标志 */
+      .lb-splash-rule {
+        width: 36px;
+        height: 1px;
+        margin-top: 20px;
+        background: var(--sp-mark);
+        opacity: 0;
+      }
+      .lb-splash-tag {
+        margin: 16px 0 0;
+        font: 400 13.5px/1.5 -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif;
+        letter-spacing: 0.04em;
+        color: var(--sp-muted);
+      }
+      .lb-splash-word {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 34px;
+        margin: 0;
+        text-align: center;
+        font: 500 10.5px/1 -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+        letter-spacing: 0.32em;
+        text-indent: 0.32em;
+        text-transform: uppercase;
+        color: var(--sp-faint);
+      }
+
+      /* 初始状态：脚本加上 .is-playing 之前什么都不显示（窗口可见后才开始播放） */
+      .lb-splash-src, .lb-splash-h, .lb-splash-tag, .lb-splash-word { opacity: 0; }
+
+      /* ---------------------------------------------------------------- 时间轴（ms）
+       *    0–120  源码行淡入，光标闪一下（0–360）
+       *  280–480  「# 」向左滑出
+       *  340–600  源码放大淡出  ·  360–780 标题由小到大、去模糊成形（两者交叉 = 实时预览）
+       *  560–840  标题下细线展开  ·  620–880 一句话介绍上浮淡入  ·  700–950 LazyBox 字标淡入
+       */
+      .is-playing .lb-splash-src { animation: lb-sp-in 120ms ease-out both; }
+      .is-playing .lb-splash-caret { animation: lb-sp-blink 360ms steps(1, end) both; }
+      .is-playing .lb-splash-mk { animation: lb-sp-mk-out 200ms cubic-bezier(0.4, 0, 1, 1) 280ms both; }
+      .is-playing .lb-splash-txt { animation: lb-sp-src-out 260ms cubic-bezier(0.4, 0, 0.7, 1) 340ms both; }
+      .is-playing .lb-splash-h { animation: lb-sp-h-in 420ms cubic-bezier(0.22, 1, 0.36, 1) 360ms both; }
+      .is-playing .lb-splash-rule { animation: lb-sp-rule 280ms cubic-bezier(0.22, 1, 0.36, 1) 560ms both; }
+      .is-playing .lb-splash-tag { animation: lb-sp-rise 260ms cubic-bezier(0.22, 1, 0.36, 1) 620ms both; }
+      .is-playing .lb-splash-word { animation: lb-sp-fade 250ms ease-out 700ms both; }
+
+      @keyframes lb-sp-in { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes lb-sp-fade { from { opacity: 0; } to { opacity: 1; } }
+      /* 光标：亮 → 灭 → 亮，开始「排版」时消失 */
+      @keyframes lb-sp-blink { 0% { opacity: 1; } 48% { opacity: 0; } 82% { opacity: 1; } 100% { opacity: 0; } }
+      @keyframes lb-sp-mk-out {
+        from { opacity: 1; transform: none; }
+        to { opacity: 0; transform: translateX(-12px); }
+      }
+      /* 源码文字放大淡出，标题从源码大小长到最终字号：两者交叉，看起来像同一行字被「排」成了标题 */
+      @keyframes lb-sp-src-out {
+        from { opacity: 1; transform: scale(1); filter: blur(0); }
+        60% { opacity: 0.12; }
+        to { opacity: 0; transform: scale(1.9); filter: blur(2px); }
+      }
+      @keyframes lb-sp-h-in {
+        from { opacity: 0; transform: scale(0.44); filter: blur(3px); }
+        45% { opacity: 1; }
+        to { opacity: 1; transform: scale(1); filter: blur(0); }
+      }
+      @keyframes lb-sp-rule {
+        from { opacity: 0; transform: scaleX(0); }
+        to { opacity: 1; transform: scaleX(1); }
+      }
+      @keyframes lb-sp-rise {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: none; }
+      }
+
+      /* 退场：先收起文字（避免与下面的界面文字重影），再淡出底色 */
+      .lb-splash.is-leaving { pointer-events: none; transition: opacity 190ms ease-out 90ms; opacity: 0; }
+      .lb-splash.is-leaving .lb-splash-stage,
+      .lb-splash.is-leaving .lb-splash-word { transition: opacity 120ms ease-in, transform 160ms ease-in; opacity: 0; }
+      .lb-splash.is-leaving .lb-splash-stage { transform: translateY(calc(-3vh - 6px)); }
+
+      /* 减少动态效果：直接显示最终画面，只做淡入淡出 */
+      @media (prefers-reduced-motion: reduce) {
+        .lb-splash-src { display: none; }
+        .is-playing .lb-splash-h,
+        .is-playing .lb-splash-rule,
+        .is-playing .lb-splash-tag,
+        .is-playing .lb-splash-word { animation: lb-sp-fade 160ms ease-out both; }
+        .lb-splash.is-leaving { transition: opacity 200ms ease; }
+        .lb-splash.is-leaving .lb-splash-stage { transition: none; opacity: 1; transform: translateY(-3vh); }
+        .lb-splash.is-leaving .lb-splash-word { transition: none; opacity: 1; }
+      }
+    </style>
   </head>
 
   <body>
     <noscript>
       <strong>Please enable JavaScript to continue.</strong>
     </noscript>
-    <div id="app">
-      <div class="loading"></div>
+    <div id="lb-splash" class="lb-splash" aria-hidden="true">
+      <div class="lb-splash-stage">
+        <div class="lb-splash-line">
+          <span class="lb-splash-src"><span class="lb-splash-mk">#</span><span class="lb-splash-txt">懒排</span><span class="lb-splash-caret"></span></span>
+          <h1 class="lb-splash-h">懒排</h1>
+        </div>
+        <div class="lb-splash-rule"></div>
+        <p class="lb-splash-tag">像 Typora 一样专心写，一键排成公众号</p>
+      </div>
+      <p class="lb-splash-word">LazyBox</p>
     </div>
+    <script>
+      // 启动画面控制：窗口可见后开始播放；应用就绪（ready）后播完并淡出。
+      ;(function () {
+        const el = document.getElementById('lb-splash')
+        const root = document.documentElement
+        if (root.classList.contains('lb-boot-dark')) el.classList.add('is-dark')
+        else if (root.classList.contains('lb-boot-paper')) el.classList.add('is-paper')
+        const SEQUENCE_MS = 950 // 时间轴总长（与上面 CSS 的最后一个动画结束时间一致）
+        const LEAVE_MS = 280 // 文字 120 ms + 底色 90 ms 延迟后 190 ms
+        const MAX_CATCHUP_MS = 250 // 就绪时剩余的动画最多再播这么久（必要时加速）
+        const SAFETY_MS = 10000 // 应用始终没有就绪（例如脚本出错）时也撤掉遮罩，别挡住界面
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        let startedAt = 0
+        let readyCalled = false
+        let leaving = false
+        const marks = {} // 各阶段时间点（performance.now()），供端到端测试检查
+
+        function play() {
+          if (startedAt) return
+          startedAt = marks.start = performance.now()
+          el.classList.add('is-playing')
+          if (readyCalled) finish()
+        }
+
+        function leave() {
+          if (leaving) return
+          leaving = true
+          marks.leave = performance.now()
+          el.classList.add('is-leaving')
+          setTimeout(() => el.remove(), (reduced ? 200 : LEAVE_MS) + 40)
+        }
+
+        function finish() {
+          if (reduced) return leave()
+          const remaining = SEQUENCE_MS - (performance.now() - startedAt)
+          if (remaining <= 0) return leave()
+          // 剩余部分加速播完，但不超过 3 倍速，避免看起来像跳帧
+          const rate = Math.min(3, Math.max(1, remaining / MAX_CATCHUP_MS))
+          if (rate > 1 && el.getAnimations) {
+            for (const a of el.getAnimations({ subtree: true })) a.playbackRate = rate
+          }
+          setTimeout(leave, remaining / rate)
+        }
+
+        window.__lbSplash = {
+          marks,
+          /** 应用已挂载并完成首次渲染 */
+          ready() {
+            if (readyCalled) return
+            readyCalled = true
+            marks.ready = performance.now()
+            if (startedAt) finish()
+          },
+        }
+
+        // show: false 的窗口在 ready-to-show 之前处于 hidden 状态；可见后再开始，避免用户错过开头
+        if (document.visibilityState === 'visible') requestAnimationFrame(play)
+        else document.addEventListener('visibilitychange', function onVis() {
+          if (document.visibilityState !== 'visible') return
+          document.removeEventListener('visibilitychange', onVis)
+          requestAnimationFrame(play)
+        })
+        // 兜底：可见性事件没来（个别平台）也要开始播放
+        setTimeout(play, 1500)
+        setTimeout(leave, SAFETY_MS)
+      })()
+    </script>
+    <div id="app"></div>
     <script>
       window.MathJax = {
         loader: { load: ['[tex]/ams'] },
@@ -55,7 +298,8 @@
         svg: { fontCache: 'none' },
       }
     </script>
-    <script id="MathJax-script" src="https://cdn-doocs.oss-cn-shenzhen.aliyuncs.com/npm/mathjax@3/es5/tex-svg.js"></script>
+    <!-- async：公式渲染库来自 CDN，不能阻塞启动（未加载完成时公式按源码显示，见 utils/MDKatex.js） -->
+    <script id="MathJax-script" async src="https://cdn-doocs.oss-cn-shenzhen.aliyuncs.com/npm/mathjax@3/es5/tex-svg.js"></script>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

@@ -6,6 +6,7 @@ import emitter from './utils/event';
 import { useStore, useWorkspaceStore } from '@renderer/stores'
 import { useWorkbenchStore } from '@renderer/stores/workbench'
 import { APP_DISPLAY_NAME } from '../../shared/brand'
+import { markAppReady } from './utils/boot'
 
 const store = useStore()
 const workspaceStore = useWorkspaceStore()
@@ -15,7 +16,9 @@ const wb = useWorkbenchStore()
 watch(() => wb.effectiveTheme, (theme) => {
   const root = document.documentElement
   root.dataset.lbTheme = theme
-  root.classList.remove('lb-boot-dark') // 启动画面（index.html）的临时深色底
+  root.classList.remove('lb-boot-dark', 'lb-boot-paper') // index.html 启动期间的临时底色
+  // 下次启动时窗口底色与主题一致（主进程 BrowserWindow.backgroundColor），避免闪白
+  window.$api.setBootTheme?.(theme === 'night' ? 'dark' : theme === 'newsprint' ? 'paper' : 'light')
   store.isDark = theme === 'night'
 }, { immediate: true })
 
@@ -63,6 +66,10 @@ const updateWindowTitle = () => {
 watch(() => workspaceStore.currentWorkspaceId, updateWindowTitle)
 
 onMounted(async () => {
+  // 欢迎页在自己的 onMounted 里通知启动画面，工作台在打开第一篇文档后通知；这里兜底，
+  // 无论哪条路径出问题，启动画面最多再停留 1.5 秒
+  setTimeout(markAppReady, 1500)
+
   window.$api.onMessage((data) => {
     handleMessageAction(data.action, data.payload);
   });

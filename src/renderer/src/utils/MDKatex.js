@@ -5,6 +5,10 @@ const blockRule = /^(\${1,2})\n((?:\\[\s\S]|[^\\])+?)\n\1(?:\n|$)/
 
 function createRenderer(display) {
   return (token) => {
+    // MathJax 从 CDN 异步加载（见 index.html），还没加载好或离线时按源码显示
+    if (!window.MathJax?.tex2svg) {
+      return `<code>${String(token.raw).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c])}</code>`
+    }
     window.MathJax.texReset()
     const mjxContainer = window.MathJax.tex2svg(token.text, { display })
     const svg = mjxContainer.firstChild

@@ -15,6 +15,7 @@
 - **OpenAI 兼容接口**：除 Claude 外，支持 DeepSeek、Kimi、通义千问、OpenAI 等任何 `chat/completions` 兼容服务，设置里提供一键预填
 - Claude 模型更新为 Claude Opus 4.7 / Sonnet 4.6 / Haiku 4.5（旧的 Claude 3.x 已下线，已保存的旧配置会自动迁移）
 - 全新的 Logo 与应用图标；欢迎页中文化
+- 中文名「懒排」（LazyBox · 懒排）；启动动画：Markdown 源码「# 懒排」排成标题后淡入应用，窗口底色跟随主题，不再闪白
 - 单元测试（Vitest）、GitHub Actions CI，以及打 tag 自动构建 macOS / Windows / Linux 安装包的 Release 工作流
 
 ### 修复

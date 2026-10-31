@@ -35,6 +35,7 @@ import { Marked } from 'marked'
 import mermaid from 'mermaid'
 import * as path from 'path-browserify'
 import { APP_DISPLAY_NAME } from '../../../shared/brand'
+import { markAppReady } from '@renderer/utils/boot'
 import { APP_COMMANDS, COMMAND_MAP, formatAccelerator, matchShortcut, parseAccelerator } from '../../../shared/commands'
 
 const store = useStore()
@@ -660,7 +661,8 @@ watch(() => fileTree.fileTree, async (tree) => {
   if (!initialOpened && tree.length && editor) {
     initialOpened = true
     if (!wb.docPath)
-      await doc.openInitial()
+      await doc.openInitial().catch(() => {})
+    markAppReady()
   }
 }, { immediate: true })
 
@@ -740,7 +742,7 @@ onMounted(() => {
 
   if (fileTree.fileTree.length && !initialOpened) {
     initialOpened = true
-    doc.openInitial()
+    doc.openInitial().catch(() => {}).finally(markAppReady)
   }
 })
 

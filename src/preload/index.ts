@@ -69,6 +69,9 @@ const api = {
     ipcRenderer.invoke('set-window-title', { title }),
   updateMenuState: (state: Record<string, unknown>) =>
     ipcRenderer.send('menu:update-state', state),
+  /** 记录当前主题的窗口底色（下次启动的 BrowserWindow.backgroundColor） */
+  setBootTheme: (theme: 'light' | 'paper' | 'dark') =>
+    ipcRenderer.send('app:set-boot-theme', theme),
 
   // ========== AI 配置管理 ==========
   aiGetConfig: () => ipcRenderer.invoke('ai:get-config'),

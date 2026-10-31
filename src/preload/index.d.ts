@@ -58,6 +58,7 @@ interface LazyBoxAPI {
   // 窗口管理 API
   setWindowTitle: (title: string) => Promise<void>
   updateMenuState: (state: Record<string, unknown>) => void
+  setBootTheme?: (theme: 'light' | 'paper' | 'dark') => void
 
   // ========== AI 配置管理 ==========
   aiGetConfig: () => Promise<{
