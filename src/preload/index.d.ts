@@ -271,55 +271,31 @@ interface LazyBoxAPI {
     error?: string
   }>
 
-  // ========== 多平台发布 ==========
-  publishGetPlatforms: () => Promise<{
+  // ========== 发布（公众号复制 / Markdown 导出） ==========
+  publishGetPlatforms: () => Promise<Array<{
+    name: string
+    displayName: string
+    mode: 'clipboard' | 'file' | 'unsupported'
+    supported: boolean
+    description: string
+  }>>
+
+  publish: (
+    platform: string,
+    content: string,
+    metadata: { title: string; author?: string; tags?: string[]; summary?: string; category?: string; coverImage?: string; date?: string },
+    context?: { html?: string; filePath?: string },
+  ) => Promise<{
     success: boolean
-    platforms?: Array<{
-      id: string
-      name: string
-      icon: string
-      requiresAccount: boolean
-    }>
+    platform: string
+    mode: 'clipboard' | 'file' | 'unsupported'
+    message?: string
+    filePath?: string
+    warnings?: string[]
     error?: string
   }>
 
-  publishToPlatforms: (content: string, metadata: any, platforms: string[]) => Promise<{
-    success: boolean
-    results?: Array<{
-      platform: string
-      success: boolean
-      url?: string
-      error?: string
-    }>
-    error?: string
-  }>
-
-  publishPreviewPlatform: (content: string, metadata: any, platform: string) => Promise<{
-    success: boolean
-    preview?: {
-      content: string
-      metadata: any
-    }
-    error?: string
-  }>
-
-  publishSaveCredentials: (platform: string, credentials: any) => Promise<{
-    success: boolean
-    error?: string
-  }>
-
-  publishValidateCredentials: (platform: string, credentials: any) => Promise<{
-    success: boolean
-    valid: boolean
-    error?: string
-  }>
-
-  publishExportFile: (content: string, metadata: any, format: string, filePath: string) => Promise<{
-    success: boolean
-    error?: string
-  }>
-
-  publishSelectSavePath: () => Promise<{
+  publishSelectSavePath: (defaultName?: string) => Promise<{
     canceled: boolean
     filePath?: string
   }>

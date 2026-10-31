@@ -143,21 +143,13 @@ const api = {
   templateRemove: (templateId: string) =>
     ipcRenderer.invoke('template:remove', { templateId }),
 
-  // ========== 多平台发布 ==========
+  // ========== 发布（公众号复制 / Markdown 导出） ==========
   publishGetPlatforms: () =>
     ipcRenderer.invoke('publish:get-platforms'),
-  publishToPlatforms: (content: string, metadata: any, platforms: string[]) =>
-    ipcRenderer.invoke('publish:to-platforms', { content, metadata, platforms }),
-  publishPreviewPlatform: (content: string, metadata: any, platform: string) =>
-    ipcRenderer.invoke('publish:preview-platform', { content, metadata, platform }),
-  publishSaveCredentials: (platform: string, credentials: any) =>
-    ipcRenderer.invoke('publish:save-credentials', { platform, credentials }),
-  publishValidateCredentials: (platform: string, credentials: any) =>
-    ipcRenderer.invoke('publish:validate-credentials', { platform, credentials }),
-  publishExportFile: (content: string, metadata: any, format: string, filePath: string) =>
-    ipcRenderer.invoke('publish:export-file', { content, metadata, format, filePath }),
-  publishSelectSavePath: () =>
-    ipcRenderer.invoke('publish:select-save-path'),
+  publish: (platform: string, content: string, metadata: any, context?: { html?: string; filePath?: string }) =>
+    ipcRenderer.invoke('publish:publish', { platform, content, metadata, context }),
+  publishSelectSavePath: (defaultName?: string) =>
+    ipcRenderer.invoke('publish:select-save-path', { defaultName }),
 
   // ========== 向量存储与语义搜索 ==========
   vectorSemanticSearch: (query: string, options?: any) =>

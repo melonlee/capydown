@@ -1,407 +1,221 @@
 /**
- * 多平台发布适配器
- * 支持 Markdown 内容一键发布到多个平台
+ * 发布适配器
+ *
+ * 目前真正可用的只有两种方式：
+ *  - 微信公众号：把渲染好的 HTML 写入剪贴板，由用户到公众号后台粘贴（不会自动发文）
+ *  - Markdown 文件：带 Front Matter 导出到本地，方便发到博客 / 静态站点
+ *
+ * 知乎、掘金、语雀、飞书、Notion 等平台尚未实现，只作为「暂不支持」列出，
+ * 调用 publish 会如实返回失败。
  */
 
-import * as fs from 'fs/promises';
+import * as fs from 'fs/promises'
+import { prepareWeChatContent, WECHAT_COPIED_MESSAGE } from './wechat'
 
-// 平台配置
-export interface PublishConfig {
-  name: string;
-  displayName: string;
-  icon: string;
-  enabled: boolean;
-}
+/** 发布方式 */
+export type PublishMode = 'clipboard' | 'file' | 'unsupported'
 
-// 发布元数据
 export interface PublishMetadata {
-  title: string;
-  author?: string;
-  tags: string[];
-  category?: string;
-  summary?: string;
-  coverImage?: string;
-  publishTime?: Date;
+  title: string
+  author?: string
+  tags?: string[]
+  category?: string
+  summary?: string
+  coverImage?: string
+  date?: string
 }
 
-// 转换后的内容
-export interface TransformedContent {
-  title: string;
-  content: string;
-  html?: string;
-  metadata: Record<string, any>;
-  assets?: PublishAsset[];
+/** 每次发布时由调用方提供的上下文 */
+export interface PublishContext {
+  /** 渲染进程生成的公众号 HTML（样式已内联） */
+  html?: string
+  /** 导出文件的目标路径 */
+  filePath?: string
 }
 
-// 资源文件
-export interface PublishAsset {
-  type: 'image' | 'file';
-  originalPath: string;
-  processedPath?: string;
-  url?: string;
-}
-
-// 发布结果
 export interface PublishResult {
-  success: boolean;
-  platform: string;
-  postId?: string;
-  postUrl?: string;
-  error?: string;
-  publishedAt?: Date;
+  success: boolean
+  platform: string
+  mode: PublishMode
+  /** 给用户看的结果说明 */
+  message?: string
+  /** 导出文件时的文件路径 */
+  filePath?: string
+  warnings?: string[]
+  error?: string
 }
 
-// 适配器接口
+export interface PlatformInfo {
+  name: string
+  displayName: string
+  mode: PublishMode
+  supported: boolean
+  description: string
+}
+
 export interface PublishAdapter {
-  name: string;
-  displayName: string;
-  icon: string;
-
-  // 转换内容到平台格式
-  transform(content: string, metadata: PublishMetadata): Promise<TransformedContent>;
-
-  // 发布到平台
-  publish(content: TransformedContent, credentials: any): Promise<PublishResult>;
-
-  // 验证凭证
-  validateCredentials?(credentials: any): Promise<boolean>;
-
-  // 获取发布历史
-  getPublishHistory?(credentials: any): Promise<PublishResult[]>;
+  name: string
+  displayName: string
+  mode: PublishMode
+  description: string
+  publish: (markdown: string, metadata: PublishMetadata, ctx: PublishContext) => Promise<PublishResult>
 }
 
-// 微信公众号适配器
+export type ClipboardWriter = (data: { html: string, text: string }) => void
+
+// ---------------------------------------------------------------------------
+// 微信公众号：复制到剪贴板
+// ---------------------------------------------------------------------------
 export class WeChatAdapter implements PublishAdapter {
-  name = 'wechat';
-  displayName = '微信公众号';
-  icon = '💬';
+  name = 'wechat'
+  displayName = '微信公众号'
+  mode: PublishMode = 'clipboard'
+  description = '复制排版好的内容，到公众号后台粘贴'
 
-  async transform(content: string, metadata: PublishMetadata): Promise<TransformedContent> {
-    // 使用现有的微信渲染逻辑
-    // 这里需要调用渲染器来生成HTML
-    const html = await this.renderToWeChatHTML(content);
+  constructor(private writeClipboard: ClipboardWriter) {}
 
-    return {
-      title: metadata.title,
-      content,
-      html,
-      metadata: {
-        digest: metadata.summary,
-        author: metadata.author,
-      },
-    };
-  }
-
-  async publish(content: TransformedContent, credentials: any): Promise<PublishResult> {
-    // 微信公众号需要通过后台API或手动发布
-    // 这里返回一个"需要手动复制"的结果
-    return {
-      success: true,
-      platform: this.name,
-      postId: 'manual',
-      postUrl: '',
-      publishedAt: new Date(),
-    };
-  }
-
-  async validateCredentials(credentials: any): Promise<boolean> {
-    // 微信验证逻辑
-    return true;
-  }
-
-  private async renderToWeChatHTML(markdown: string): Promise<string> {
-    // 调用现有的渲染器
-    // 这里需要访问renderer的渲染功能
-    return markdown; // 暂时返回原始markdown
-  }
-}
-
-// 知乎适配器
-export class ZhihuAdapter implements PublishAdapter {
-  name = 'zhihu';
-  displayName = '知乎';
-  icon = '🧠';
-
-  async transform(content: string, metadata: PublishMetadata): Promise<TransformedContent> {
-    // 知乎支持的Markdown格式
-    const processedContent = this.processForZhihu(content);
-
-    return {
-      title: metadata.title,
-      content: processedContent,
-      html: '',
-      metadata: {
-        excerpt: metadata.summary,
-      },
-    };
-  }
-
-  async publish(content: TransformedContent, credentials: any): Promise<PublishResult> {
-    // 知乎需要通过API或手动发布
-    return {
-      success: true,
-      platform: this.name,
-      postId: 'manual',
-    };
-  }
-
-  async validateCredentials(credentials: any): Promise<boolean> {
-    return true;
-  }
-
-  private processForZhihu(markdown: string): string {
-    // 知乎特定的格式转换
-    return markdown
-      // 知乎不支持代码块语言标识后的参数
-      .replace(/```(\w+)?[:#][\s\S]*?```/g, (match) => {
-        const codeContent = match.replace(/```[\w:#]*\n?/g, '').replace(/```$/g, '');
-        return `\`\`\`\n${codeContent}\n\`\`\``;
-      })
-      // 知乎的表格语法
-      .replace(/\|:-+\|/g, '|---|');
-  }
-}
-
-// 掘金适配器
-export class JuejinAdapter implements PublishAdapter {
-  name = 'juejin';
-  displayName = '掘金';
-  icon = '💎';
-
-  async transform(content: string, metadata: PublishMetadata): Promise<TransformedContent> {
-    // 掘金支持的Markdown格式
-    return {
-      title: metadata.title,
-      content: this.processForJuejin(content),
-      metadata: {
-        category: metadata.category || '前端',
-        tags: metadata.tags,
-      },
-    };
-  }
-
-  async publish(content: TransformedContent, credentials: any): Promise<PublishResult> {
-    return {
-      success: true,
-      platform: this.name,
-    };
-  }
-
-  async validateCredentials(credentials: any): Promise<boolean> {
-    return true;
-  }
-
-  private processForJuejin(markdown: string): string {
-    return markdown;
-  }
-}
-
-// 语雀适配器
-export class YuqueAdapter implements PublishAdapter {
-  name = 'yuque';
-  displayName = '语雀';
-  icon = '📖';
-
-  async transform(content: string, metadata: PublishMetadata): Promise<TransformedContent> {
-    return {
-      title: metadata.title,
-      content,
-      metadata: {
-        type: 'doc',
-        format: 'markdown',
-      },
-    };
-  }
-
-  async publish(content: TransformedContent, credentials: any): Promise<PublishResult> {
-    return {
-      success: true,
-      platform: this.name,
-    };
-  }
-}
-
-// 飞书文档适配器
-export class FeishuAdapter implements PublishAdapter {
-  name = 'feishu';
-  displayName = '飞书文档';
-  icon = '🚀';
-
-  async transform(content: string, metadata: PublishMetadata): Promise<TransformedContent> {
-    return {
-      title: metadata.title,
-      content,
-      metadata: {},
-    };
-  }
-
-  async publish(content: TransformedContent, credentials: any): Promise<PublishResult> {
-    return {
-      success: true,
-      platform: this.name,
-    };
-  }
-}
-
-// Notion 适配器
-export class NotionAdapter implements PublishAdapter {
-  name = 'notion';
-  displayName = 'Notion';
-  icon = '📝';
-
-  async transform(content: string, metadata: PublishMetadata): Promise<TransformedContent> {
-    return {
-      title: metadata.title,
-      content,
-      metadata: {},
-    };
-  }
-
-  async publish(content: TransformedContent, credentials: any): Promise<PublishResult> {
-    return {
-      success: true,
-      platform: this.name,
-    };
-  }
-}
-
-// 导出自定义Markdown (用于博客等)
-export class MarkdownAdapter implements PublishAdapter {
-  name = 'markdown';
-  displayName = 'Markdown文件';
-  icon = '📄';
-
-  async transform(content: string, metadata: PublishMetadata): Promise<TransformedContent> {
-    // 添加 frontmatter
-    const frontmatter = this.generateFrontmatter(metadata);
-    return {
-      title: metadata.title,
-      content: `${frontmatter}\n\n${content}`,
-    };
-  }
-
-  async publish(content: TransformedContent, credentials: { filePath: string }): Promise<PublishResult> {
+  async publish(_markdown: string, _metadata: PublishMetadata, ctx: PublishContext): Promise<PublishResult> {
     try {
-      await fs.writeFile(credentials.filePath, content.content, 'utf-8');
+      const prepared = prepareWeChatContent(ctx.html ?? '')
+      this.writeClipboard({ html: prepared.html, text: prepared.text })
       return {
         success: true,
         platform: this.name,
-        postUrl: credentials.filePath,
-      };
-    } catch (error) {
+        mode: this.mode,
+        message: WECHAT_COPIED_MESSAGE,
+        warnings: prepared.warnings,
+      }
+    }
+    catch (error) {
       return {
         success: false,
         platform: this.name,
+        mode: this.mode,
         error: error instanceof Error ? error.message : String(error),
-      };
+      }
     }
-  }
-
-  private generateFrontmatter(metadata: PublishMetadata): string {
-    const parts: string[] = ['---'];
-    parts.push(`title: "${metadata.title}"`);
-    if (metadata.author) parts.push(`author: "${metadata.author}"`);
-    if (metadata.date) parts.push(`date: "${metadata.date}"`);
-    if (metadata.tags?.length) parts.push(`tags: [${metadata.tags.map(t => `"${t}"`).join(', ')}]`);
-    if (metadata.category) parts.push(`category: "${metadata.category}"`);
-    parts.push('---');
-    return parts.join('\n');
   }
 }
 
-// 发布管理器
+// ---------------------------------------------------------------------------
+// Markdown 文件导出（带 Front Matter）
+// ---------------------------------------------------------------------------
+export function generateFrontMatter(metadata: PublishMetadata): string {
+  // JSON 字符串同时是合法的 YAML 双引号字符串，能正确转义引号和换行
+  const q = (v: string) => JSON.stringify(v)
+  const parts: string[] = ['---']
+  parts.push(`title: ${q(metadata.title ?? '')}`)
+  if (metadata.author)
+    parts.push(`author: ${q(metadata.author)}`)
+  if (metadata.date)
+    parts.push(`date: ${q(metadata.date)}`)
+  if (metadata.summary)
+    parts.push(`description: ${q(metadata.summary)}`)
+  if (metadata.tags?.length)
+    parts.push(`tags: [${metadata.tags.map(q).join(', ')}]`)
+  if (metadata.category)
+    parts.push(`category: ${q(metadata.category)}`)
+  if (metadata.coverImage)
+    parts.push(`cover: ${q(metadata.coverImage)}`)
+  parts.push('---')
+  return parts.join('\n')
+}
+
+/** 去掉原文已有的 Front Matter，避免导出后出现两段 */
+export function stripFrontMatter(markdown: string): string {
+  return markdown.replace(/^﻿?---\r?\n[\s\S]*?\r?\n---\r?\n?/, '')
+}
+
+export class MarkdownFileAdapter implements PublishAdapter {
+  name = 'markdown'
+  displayName = 'Markdown 文件'
+  mode: PublishMode = 'file'
+  description = '导出带 Front Matter 的 .md，适合 Hexo / Hugo / VitePress 等博客'
+
+  async publish(markdown: string, metadata: PublishMetadata, ctx: PublishContext): Promise<PublishResult> {
+    if (!ctx.filePath) {
+      return { success: false, platform: this.name, mode: this.mode, error: '没有选择保存位置' }
+    }
+    try {
+      const body = stripFrontMatter(markdown).replace(/^\s+/, '')
+      await fs.writeFile(ctx.filePath, `${generateFrontMatter(metadata)}\n\n${body}`, 'utf-8')
+      return {
+        success: true,
+        platform: this.name,
+        mode: this.mode,
+        filePath: ctx.filePath,
+        message: `已导出到 ${ctx.filePath}`,
+      }
+    }
+    catch (error) {
+      return {
+        success: false,
+        platform: this.name,
+        mode: this.mode,
+        error: error instanceof Error ? error.message : String(error),
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 尚未实现的平台
+// ---------------------------------------------------------------------------
+export class UnsupportedAdapter implements PublishAdapter {
+  mode: PublishMode = 'unsupported'
+  description = '暂不支持'
+
+  constructor(public name: string, public displayName: string) {}
+
+  async publish(): Promise<PublishResult> {
+    return {
+      success: false,
+      platform: this.name,
+      mode: this.mode,
+      error: `暂不支持发布到${this.displayName}`,
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 管理器
+// ---------------------------------------------------------------------------
 export class PublishManager {
-  private adapters: Map<string, PublishAdapter> = new Map();
+  private adapters = new Map<string, PublishAdapter>()
 
-  constructor() {
-    this.registerAdapters();
+  constructor(writeClipboard: ClipboardWriter) {
+    this.register(new WeChatAdapter(writeClipboard))
+    this.register(new MarkdownFileAdapter())
+    this.register(new UnsupportedAdapter('zhihu', '知乎'))
+    this.register(new UnsupportedAdapter('juejin', '掘金'))
+    this.register(new UnsupportedAdapter('yuque', '语雀'))
+    this.register(new UnsupportedAdapter('feishu', '飞书文档'))
+    this.register(new UnsupportedAdapter('notion', 'Notion'))
   }
 
-  private registerAdapters() {
-    this.registerAdapter(new WeChatAdapter());
-    this.registerAdapter(new ZhihuAdapter());
-    this.registerAdapter(new JuejinAdapter());
-    this.registerAdapter(new YuqueAdapter());
-    this.registerAdapter(new FeishuAdapter());
-    this.registerAdapter(new NotionAdapter());
-    this.registerAdapter(new MarkdownAdapter());
-  }
-
-  registerAdapter(adapter: PublishAdapter) {
-    this.adapters.set(adapter.name, adapter);
+  register(adapter: PublishAdapter) {
+    this.adapters.set(adapter.name, adapter)
   }
 
   getAdapter(name: string): PublishAdapter | undefined {
-    return this.adapters.get(name);
+    return this.adapters.get(name)
   }
 
-  getAllAdapters(): PublishAdapter[] {
-    return Array.from(this.adapters.values());
+  getPlatforms(): PlatformInfo[] {
+    return Array.from(this.adapters.values()).map(a => ({
+      name: a.name,
+      displayName: a.displayName,
+      mode: a.mode,
+      supported: a.mode !== 'unsupported',
+      description: a.description,
+    }))
   }
 
-  async publishToPlatforms(
-    content: string,
-    metadata: PublishMetadata,
-    platforms: string[]
-  ): Promise<Map<string, PublishResult>> {
-    const results = new Map<string, PublishResult>();
-
-    for (const platformName of platforms) {
-      const adapter = this.getAdapter(platformName);
-      if (!adapter) {
-        results.set(platformName, {
-          success: false,
-          platform: platformName,
-          error: `平台 ${platformName} 不支持`,
-        });
-        continue;
-      }
-
-      try {
-        const transformed = await adapter.transform(content, metadata);
-        const credentials = await this.getCredentials(platformName);
-        const result = await adapter.publish(transformed, credentials);
-        results.set(platformName, result);
-      } catch (error) {
-        results.set(platformName, {
-          success: false,
-          platform: platformName,
-          error: error instanceof Error ? error.message : String(error),
-        });
-      }
+  async publish(platform: string, markdown: string, metadata: PublishMetadata, ctx: PublishContext = {}): Promise<PublishResult> {
+    const adapter = this.getAdapter(platform)
+    if (!adapter) {
+      return { success: false, platform, mode: 'unsupported', error: `未知平台：${platform}` }
     }
-
-    return results;
+    return adapter.publish(markdown, metadata, ctx)
   }
-
-  private async getCredentials(platform: string): Promise<any> {
-    // 从存储中获取平台凭证
-    const stored = localStorage.getItem(`publish_credentials_${platform}`);
-    if (stored) {
-      return JSON.parse(stored);
-    }
-    return {};
-  }
-
-  async saveCredentials(platform: string, credentials: any): Promise<void> {
-    localStorage.setItem(`publish_credentials_${platform}`, JSON.stringify(credentials));
-  }
-
-  async validateCredentials(platform: string, credentials: any): Promise<boolean> {
-    const adapter = this.getAdapter(platform);
-    if (!adapter || !adapter.validateCredentials) {
-      return true;
-    }
-    return await adapter.validateCredentials(credentials);
-  }
-}
-
-// 全局发布管理器
-let globalPublishManager: PublishManager | null = null;
-
-export function getPublishManager(): PublishManager {
-  if (!globalPublishManager) {
-    globalPublishManager = new PublishManager();
-  }
-  return globalPublishManager;
 }

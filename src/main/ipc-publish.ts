@@ -2,148 +2,68 @@
  * 发布相关 IPC 处理器
  */
 
-import { ipcMain, dialog, BrowserWindow } from 'electron';
-import { getPublishManager } from './publish/adapters';
-import type { PublishAdapter, PublishMetadata } from './publish/adapters';
+import { BrowserWindow, clipboard, dialog, ipcMain } from 'electron'
+import { PublishManager } from './publish/adapters'
+import type { PublishContext, PublishMetadata } from './publish/adapters'
+
+let manager: PublishManager | null = null
+
+// 只允许写入用户刚在保存对话框里选定的路径，避免渲染进程借导出接口写任意文件
+const approvedExportPaths = new Set<string>()
+
+function getManager(): PublishManager {
+  if (!manager) {
+    manager = new PublishManager(({ html, text }) => clipboard.write({ html, text }))
+  }
+  return manager
+}
+
+function sanitizeFileName(name: string): string {
+  const cleaned = (name || '').replace(/[\\/:*?"<>|\r\n]+/g, ' ').trim().slice(0, 80)
+  return cleaned || 'article'
+}
 
 export function initPublishIPCHandlers(): void {
-  console.log('[Publish IPC] Initializing publish IPC handlers...');
+  // 平台列表（含是否支持）
+  ipcMain.handle('publish:get-platforms', async () => getManager().getPlatforms())
 
-  // 获取所有支持的平台
-  ipcMain.handle('publish:get-platforms', async () => {
-    const manager = getPublishManager();
-    const adapters = manager.getAllAdapters();
-
-    return adapters.map(adapter => ({
-      name: adapter.name,
-      displayName: adapter.displayName,
-      icon: adapter.icon,
-      enabled: true,
-    }));
-  });
-
-  // 发布到多个平台
-  ipcMain.handle('publish:to-platforms', async (_, { content, metadata, platforms }) => {
-    try {
-      const manager = getPublishManager();
-      const results = await manager.publishToPlatforms(content, metadata, platforms);
-
-      // 转换 Map 为普通对象
-      const resultsObj: Record<string, any> = {};
-      for (const [platform, result] of results.entries()) {
-        resultsObj[platform] = result;
+  // 发布到单个平台：公众号 = 写入剪贴板；markdown = 导出文件；其它平台如实返回「暂不支持」
+  ipcMain.handle(
+    'publish:publish',
+    async (_, { platform, content, metadata, context }: {
+      platform: string
+      content: string
+      metadata: PublishMetadata
+      context?: PublishContext
+    }) => {
+      const ctx: PublishContext = { html: context?.html }
+      if (platform === 'markdown') {
+        const filePath = context?.filePath
+        if (!filePath || !approvedExportPaths.has(filePath)) {
+          return { success: false, platform, mode: 'file', error: '请先选择保存位置' }
+        }
+        approvedExportPaths.delete(filePath)
+        ctx.filePath = filePath
       }
+      return getManager().publish(String(platform), String(content ?? ''), metadata ?? { title: '' }, ctx)
+    },
+  )
 
-      return { success: true, results: resultsObj };
-    } catch (error) {
-      console.error('[Publish IPC] publish error:', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : String(error),
-      };
-    }
-  });
-
-  // 预览平台格式
-  ipcMain.handle('publish:preview-platform', async (_, { content, metadata, platform }) => {
-    try {
-      const manager = getPublishManager();
-      const adapter = manager.getAdapter(platform);
-
-      if (!adapter) {
-        throw new Error(`平台 ${platform} 不支持`);
-      }
-
-      const transformed = await adapter.transform(content, metadata);
-      return {
-        success: true,
-        preview: transformed,
-      };
-    } catch (error) {
-      console.error('[Publish IPC] preview error:', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : String(error),
-      };
-    }
-  });
-
-  // 保存平台凭证
-  ipcMain.handle('publish:save-credentials', async (_, { platform, credentials }) => {
-    try {
-      const manager = getPublishManager();
-      await manager.saveCredentials(platform, credentials);
-      return { success: true };
-    } catch (error) {
-      console.error('[Publish IPC] save credentials error:', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : String(error),
-      };
-    }
-  });
-
-  // 验证平台凭证
-  ipcMain.handle('publish:validate-credentials', async (_, { platform, credentials }) => {
-    try {
-      const manager = getPublishManager();
-      const isValid = await manager.validateCredentials(platform, credentials);
-      return { success: true, valid: isValid };
-    } catch (error) {
-      console.error('[Publish IPC] validate credentials error:', error);
-      return {
-        success: false,
-        valid: false,
-        error: error instanceof Error ? error.message : String(error),
-      };
-    }
-  });
-
-  // 导出为文件
-  ipcMain.handle('publish:export-file', async (_, { content, metadata, format, filePath }) => {
-    try {
-      const manager = getPublishManager();
-      const adapter = manager.getAdapter(format);
-
-      if (!adapter || format !== 'markdown') {
-        throw new Error(`格式 ${format} 不支持导出`);
-      }
-
-      const transformed = await adapter.transform(content, metadata);
-      const result = await adapter.publish(transformed, { filePath });
-
-      return result;
-    } catch (error) {
-      console.error('[Publish IPC] export file error:', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : String(error),
-      };
-    }
-  });
-
-  // 选择文件保存路径
-  ipcMain.handle('publish:select-save-path', async () => {
-    const window = BrowserWindow.getFocusedWindow();
-    if (!window) {
-      return { canceled: true };
-    }
-
-    const result = await dialog.showSaveDialog(window, {
-      title: '选择保存位置',
-      defaultPath: 'article.md',
+  // 选择导出位置
+  ipcMain.handle('publish:select-save-path', async (_, { defaultName }: { defaultName?: string } = {}) => {
+    const window = BrowserWindow.getFocusedWindow()
+    const options = {
+      title: '导出 Markdown',
+      defaultPath: `${sanitizeFileName(defaultName ?? '')}.md`,
       filters: [
         { name: 'Markdown', extensions: ['md'] },
-        { name: 'All Files', extensions: ['*'] },
       ],
-    });
-
-    if (result.canceled) {
-      return { canceled: true };
     }
-
-    return { canceled: false, filePath: result.filePath };
-  });
-
-  console.log('[Publish IPC] Publish IPC handlers initialized successfully');
+    const result = window ? await dialog.showSaveDialog(window, options) : await dialog.showSaveDialog(options)
+    if (result.canceled || !result.filePath) {
+      return { canceled: true }
+    }
+    approvedExportPaths.add(result.filePath)
+    return { canceled: false, filePath: result.filePath }
+  })
 }

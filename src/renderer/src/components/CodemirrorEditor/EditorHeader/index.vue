@@ -111,10 +111,51 @@ function copy() {
   }, 350)
 }
 
+// 生成公众号可直接粘贴的 HTML（主题样式已内联），完成后恢复预览区
+function renderWeChatHtml(): Promise<string> {
+  return new Promise((resolve) => {
+    emit(`startCopy`)
+    setTimeout(() => {
+      const isBeforeDark = isDark.value
+      if (isBeforeDark) {
+        toggleDark()
+      }
+      nextTick(() => {
+        let html = ``
+        try {
+          processClipboardContent(primaryColor.value)
+          const clipboardDiv = document.getElementById(`output`)!
+          html = clipboardDiv.innerHTML
+          clipboardDiv.innerHTML = output.value
+        }
+        finally {
+          if (isBeforeDark) {
+            nextTick(() => toggleDark())
+          }
+          editorRefresh()
+          emit(`endCopy`)
+          resolve(html)
+        }
+      })
+    }, 350)
+  })
+}
+
+function onRenderWeChatHtml(callback: unknown) {
+  if (typeof callback === `function`) {
+    renderWeChatHtml().then(html => callback(html))
+  }
+}
+
 onMounted(() => {
   emitter.on('settings', () => {
     store.isOpenRightSlider = !store.isOpenRightSlider
   })
+  emitter.on(`publish:render-wechat-html`, onRenderWeChatHtml)
+})
+
+onBeforeUnmount(() => {
+  emitter.off(`publish:render-wechat-html`, onRenderWeChatHtml)
 })
 </script>
 
