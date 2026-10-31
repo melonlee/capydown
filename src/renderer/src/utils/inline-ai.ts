@@ -4,6 +4,7 @@
  */
 
 import type { MarkdownEditor } from '@renderer/editor';
+import { toast } from '@renderer/utils/toast';
 
 export interface AISuggestion {
   text: string;
@@ -100,6 +101,8 @@ ${context.content.slice(-500)}`,
       if (error.name !== 'AbortError') {
         console.error('AI continue error:', error);
         this.clearGhost();
+        const msg = String(error?.message || error).replace(/^Error invoking remote method '[^']+': (Error: )?/, '');
+        toast.error(`AI 续写失败：${msg}`);
       }
     } finally {
       this.state.isGenerating = false;

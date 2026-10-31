@@ -67,6 +67,9 @@ const toggleNode = (nodeId: string) => {
 
 // 选择节点
 const handleSelect = (node: FileNode) => {
+  // 与 Typora 一致：单击文件夹整行即可展开 / 折叠
+  if (node.type === 'folder')
+    toggleNode(node.id)
   emit('select', node)
 }
 

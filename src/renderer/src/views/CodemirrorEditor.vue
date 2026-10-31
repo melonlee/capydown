@@ -61,7 +61,9 @@ function resolveImage(src: string): string | Promise<string> {
   }
   catch {}
   if (!path.isAbsolute(p)) {
-    const base = wb.docPath ? path.dirname(wb.docPath) : fileTree.currentWorkspacePath
+    // 载入文件时 wb.docPath 要等内容进入编辑器后才更新，而 store.currentFilePath 在读取前就已设置
+    const docFile = store.currentFilePath || wb.docPath
+    const base = docFile ? path.dirname(docFile) : fileTree.currentWorkspacePath
     p = path.join(base, p)
   }
   const cached = imageCache.get(p)
@@ -270,6 +272,20 @@ async function uploadMarkdownImages(md: { str: string, path: string }, list: { p
 const showPublishDialog = ref(false)
 const publishContent = ref('')
 
+/** 未配置 AI 时给出友好提示（带「去设置」入口），而不是在调用后才报错 */
+async function ensureAIReady(): Promise<boolean> {
+  try {
+    if (await window.$api.aiGetServiceConfig())
+      return true
+  }
+  catch {}
+  toast.info('还没有配置 AI', {
+    description: '在「偏好设置 → AI 设置」里填写 API Key 后即可使用 AI 写作。',
+    action: { label: '去设置', onClick: () => (store.isOpenRightSlider = true) },
+  })
+  return false
+}
+
 async function handleAICommand(commandId: string) {
   if (!editor)
     return
@@ -279,6 +295,8 @@ async function handleAICommand(commandId: string) {
     toast.error('请先选中要处理的文字')
     return
   }
+  if (commandId !== 'continue' && !(await ensureAIReady()))
+    return
   try {
     switch (commandId) {
       case 'continue':
@@ -325,7 +343,7 @@ async function handleAICommand(commandId: string) {
 
 async function handleAIContinue() {
   const inlineAI = getInlineAI()
-  if (!inlineAI || !editor)
+  if (!inlineAI || !editor || !(await ensureAIReady()))
     return
   await inlineAI.continueWriting({
     content: editor.getValue(),
@@ -804,7 +822,6 @@ window.addEventListener('beforeunload', () => {
 
     <PublishDialog v-model="showPublishDialog" :content="publishContent" />
 
-    <Toaster position="top-center" />
   </div>
 </template>
 

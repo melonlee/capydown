@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Toaster } from '@renderer/components/ui/sonner'
 import CodemirrorEditor from '@renderer/views/CodemirrorEditor.vue'
 import Welcome from '@renderer/views/Welcome.vue'
 import emitter from './utils/event';
@@ -77,6 +78,8 @@ onMounted(async () => {
   <!-- 根据工作空间状态显示不同页面 -->
   <Welcome v-if="!workspaceStore.hasOpenWorkspace" />
   <CodemirrorEditor v-else />
+  <!-- 全局只挂一个 Toaster：欢迎页和工作台的提示都靠它显示 -->
+  <Toaster position="top-center" :theme="store.isDark ? 'dark' : 'light'" :duration="2600" />
 </template>
 
 <style lang="less">

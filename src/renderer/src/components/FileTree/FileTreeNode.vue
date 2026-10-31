@@ -148,10 +148,10 @@ const paddingLeft = computed(() => `${props.level * 12 + 8}px`)
         :is-dragging="$attrs.draggingId === child.id"
         @toggle="emit('toggle', $event)"
         @select="emit('select', $event)"
-        @context-menu="emit('contextMenu', $event, arguments[1])"
-        @drag-start="emit('dragStart', $event, arguments[1])"
-        @drag-over="emit('dragOver', $event, arguments[1])"
-        @drop="emit('drop', $event, arguments[1])"
+        @context-menu="(e: MouseEvent, n: FileNode) => emit('contextMenu', e, n)"
+        @drag-start="(e: DragEvent, n: FileNode) => emit('dragStart', e, n)"
+        @drag-over="(e: DragEvent, n: FileNode) => emit('dragOver', e, n)"
+        @drop="(e: DragEvent, n: FileNode) => emit('drop', e, n)"
       />
     </template>
   </div>

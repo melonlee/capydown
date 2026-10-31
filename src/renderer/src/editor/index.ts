@@ -208,6 +208,8 @@ export class MarkdownEditor {
   loadDocument(content: string) {
     this.view.setState(this.createState(content))
     this.view.scrollDOM.scrollTop = 0
+    // setState 之后的首次测量可能恢复旧的滚动锚点，显式滚回文首
+    this.view.dispatch({ effects: EditorView.scrollIntoView(0, { y: 'start' }) })
   }
 
   /** 注意用 sliceDoc：它会用文件原本的换行符（CRLF 文件保持 CRLF）拼接 */
