@@ -1,10 +1,10 @@
-# Slothdown 字标与组合标志生成器（文字全部转曲，SVG 不依赖字体）。
+# Capydown 字标与组合标志生成器（文字全部转曲，SVG 不依赖字体）。
 # 图标 / 应用内标志 / 吉祥物由 build_icon.py 生成；这里只排字，并把它们和字标组合起来。
-# 产品只有一个名字 Slothdown（v0.3.1 起不再有中文字标）。
+# 产品只有一个名字 Capydown（Capybara + Markdown；原名 LazyBox / Slothdown）。
 #
-#   logo-wordmark-{light,dark}.svg      Slothdown（Manrope Bold，转曲）
-#   logo-lockup-{light,dark}.svg        单色标志（树懒头 + 钢笔）+ Slothdown —— 小尺寸、导航栏、横幅
-#   logo-lockup-icon-{light,dark}.svg   应用图标（抱着钢笔的树懒）+ Slothdown —— 只在图标能显示到 64px 以上时使用
+#   logo-wordmark-{light,dark}.svg      Capydown（Manrope Bold，转曲）
+#   logo-lockup-{light,dark}.svg        单色标志（卡皮巴拉侧面头像）+ Capydown —— 小尺寸、导航栏、横幅
+#   logo-lockup-icon-{light,dark}.svg   应用图标（托腮思考的卡皮巴拉）+ Capydown —— 只在图标能显示到 64px 以上时使用
 #   以及上面每个 SVG 的 2 倍 PNG
 #
 # 依赖：pip install fonttools；PNG 用 render-batch.mjs（需要能 import playwright-core 的 node 环境）
@@ -34,7 +34,7 @@ RENDER = os.environ.get('SD_RENDER', os.environ.get('LB_RENDER', os.path.join(SR
 INK = '#111111'  # 浅色背景上的墨色（与启动画面一致）
 PAPER = '#EDEDED'  # 深色背景上的反白色
 
-LATIN = 'Slothdown'
+LATIN = 'Capydown'
 
 
 def num(v):
@@ -66,7 +66,7 @@ def text_paths(font_path, text, size, tracking_em=0.0, wght=None, kern=None, bas
 
 
 # 手调字距（千分之一 em）：Manrope 的 GPOS 字距不会被 fontTools 应用
-LATIN_KERN = {'Sl': -8, 'lo': -6, 'ot': -14, 'th': -8, 'hd': -2, 'do': -6, 'ow': -16, 'wn': -12}
+LATIN_KERN = {'Ca': -6, 'ap': -4, 'py': -12, 'yd': -8, 'do': -6, 'ow': -16, 'wn': -12}
 
 
 def latin(size, baseline=0.0, x0=0.0):
@@ -78,10 +78,10 @@ def latin(size, baseline=0.0, x0=0.0):
 # ---------- 图形 ----------
 
 def mark_c(size, x, y, color):
-    """标志（树懒头 + 钢笔，单色）：取 build_icon.py 生成的应用内标志（200 网格，只用 currentColor），换成指定颜色。"""
+    """标志（卡皮巴拉侧面头像，单色）：取 build_icon.py 生成的应用内标志（24 网格，只用 currentColor），换成指定颜色。"""
     text = open(os.path.join(ROOT, 'src/renderer/src/assets/images/logo-mark.svg'), encoding='utf-8').read()
     g = ''.join(re.findall(r'<path fill="currentColor".*?/>', text, re.S)).replace('currentColor', color)
-    return f'  <g transform="translate({num(x)} {num(y)}) scale({num(size / 200)})">{g}</g>'
+    return f'  <g transform="translate({num(x)} {num(y)}) scale({num(size / 24)})">{g}</g>'
 
 
 def icon_a(size, x, y):
@@ -121,16 +121,16 @@ def fitted(d_bounds, d, color, pad):
 
 
 def lockup(kind, color):
-    """[标志]  Slothdown —— 字标以标志的垂直中线居中。kind: 'mark'（单色标志）或 'icon'（应用图标）。"""
+    """[标志]  Capydown —— 字标的大写高度区间以标志的垂直中线居中。kind: 'mark'（单色标志）或 'icon'（应用图标）。"""
     M = 128  # 标志高度
-    gap = M * (0.22 if kind == 'mark' else 0.24)
+    gap = M * (-0.06 if kind == 'mark' else 0.24)  # 头像字形的墨迹只占 24 网格的 1.5..22.6，右侧有留白，组合时往回收
     cap = 1440 / 2000  # Manrope 大写高度 / em
     lat_size = M * 0.40 / cap
     lat_d, lb = latin(lat_size, baseline=0, x0=M + gap)
-    lat_dy = M / 2 - (lb[1] + lb[3]) / 2 + M * 0.035  # 有升部（l t h d），视觉中心略低于墨迹中心
+    lat_dy = M / 2 + cap * lat_size / 2  # p / y 有降部：按「基线到大写字母顶」的中线对齐，不按墨迹中心
     W = lb[2] + 2
     pad = 12 if kind == 'icon' else 0  # 应用图标的落地投影
-    head = mark_c(M * 1.04, -M * 0.02, -M * 0.02, color) if kind == 'mark' else icon_a(M, pad, pad)
+    head = mark_c(M * 0.86, -M * 0.05, M / 2 - 11.9 / 24 * M * 0.86, color) if kind == 'mark' else icon_a(M, pad, pad)
     body = '\n'.join([
         head,
         f'  <g transform="translate({pad} {pad})">',
@@ -144,11 +144,11 @@ def main():
     for suffix, color in (('light', INK), ('dark', PAPER)):
         d, b = latin(200)
         w, h, body = fitted(b, d, color, 4)
-        write(os.path.join(BRAND, f'logo-wordmark-{suffix}.svg'), svg(w, h, body, 'Slothdown 字标（Manrope，已转曲）。由 build_brand.py 生成'))
+        write(os.path.join(BRAND, f'logo-wordmark-{suffix}.svg'), svg(w, h, body, 'Capydown 字标（Manrope，已转曲）。由 build_brand.py 生成'))
         w, h, body = lockup('mark', color)
-        write(os.path.join(BRAND, f'logo-lockup-{suffix}.svg'), svg(w, h, body, 'Slothdown 组合标志（单色标志 + 字标，已转曲）。由 build_brand.py 生成'))
+        write(os.path.join(BRAND, f'logo-lockup-{suffix}.svg'), svg(w, h, body, 'Capydown 组合标志（单色标志 + 字标，已转曲）。由 build_brand.py 生成'))
         w, h, body = lockup('icon', color)
-        write(os.path.join(BRAND, f'logo-lockup-icon-{suffix}.svg'), svg(w, h, body, 'Slothdown 组合标志（应用图标 + 字标，已转曲）。由 build_brand.py 生成'))
+        write(os.path.join(BRAND, f'logo-lockup-icon-{suffix}.svg'), svg(w, h, body, 'Capydown 组合标志（应用图标 + 字标，已转曲）。由 build_brand.py 生成'))
 
     # PNG：字标 / 组合标志按 viewBox 的 2 倍（吉祥物 PNG 由 export_icons.py 导出）
     jobs = []
