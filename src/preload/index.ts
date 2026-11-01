@@ -5,8 +5,8 @@ import { contextBridge, ipcRenderer } from 'electron'
 
 // Custom APIs for renderer
 const api = {
-  // 仅在端到端测试（LAZYBOX_E2E=1 启动）时为 true，用于暴露测试钩子
-  isE2E: process.env.LAZYBOX_E2E === '1',
+  // 仅在端到端测试（SLOTHDOWN_E2E=1 启动）时为 true，用于暴露测试钩子
+  isE2E: process.env.SLOTHDOWN_E2E === '1',
   onMessage: (callback: (...args: any[]) => void) => ipcRenderer.on('message-to-renderer', (_, ...args) => callback(...args)),
 
   // 应用信息 / 设置
@@ -80,7 +80,7 @@ const api = {
   setBootTheme: (theme: 'light' | 'paper' | 'dark') =>
     ipcRenderer.send('app:set-boot-theme', theme),
 
-  // 用 LazyBox 打开（系统「打开方式」/ 命令行参数）
+  // 用懒得排打开（系统「打开方式」/ 命令行参数）
   takePendingOpenFiles: () => ipcRenderer.invoke('app:take-pending-open-files'),
   resolveOpenTarget: (file: string, workspace?: string | null) =>
     ipcRenderer.invoke('app:resolve-open-target', { file, workspace }),

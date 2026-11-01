@@ -12,7 +12,7 @@ describe('isMarkdownPath', () => {
 
 describe('extractMarkdownArgs', () => {
   it('finds markdown files in a packaged launch', () => {
-    expect(extractMarkdownArgs(['/Applications/LazyBox.app/Contents/MacOS/LazyBox', '/Users/me/文章.md'], '/')).toEqual(['/Users/me/文章.md'])
+    expect(extractMarkdownArgs(['/Applications/Slothdown.app/Contents/MacOS/Slothdown', '/Users/me/文章.md'], '/')).toEqual(['/Users/me/文章.md'])
   })
 
   it('skips the dev entry script, switches and non-markdown arguments', () => {
@@ -21,12 +21,12 @@ describe('extractMarkdownArgs', () => {
   })
 
   it('converts file:// URLs and removes duplicates', () => {
-    const argv = ['LazyBox', 'file:///home/me/%E6%96%87.md', '/home/me/文.md']
+    const argv = ['Slothdown', 'file:///home/me/%E6%96%87.md', '/home/me/文.md']
     expect(extractMarkdownArgs(argv, '/')).toEqual(['/home/me/文.md'])
   })
 
   it('returns nothing for a plain launch', () => {
-    expect(extractMarkdownArgs(['LazyBox'], '/')).toEqual([])
+    expect(extractMarkdownArgs(['Slothdown'], '/')).toEqual([])
   })
 })
 

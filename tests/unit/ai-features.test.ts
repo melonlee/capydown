@@ -95,7 +95,7 @@ describe('proofreading through the real provider + mock server', () => {
 
 describe('titles + summary through the real provider + mock server', () => {
   it('returns 3-5 titles within 64 chars and a summary within 120 chars', async () => {
-    const out = await generateTitleSummary(provider(), '# 懒排\n\n像 Typora 一样专心写，一键排成公众号。')
+    const out = await generateTitleSummary(provider(), '# 懒得排\n\n像 Typora 一样专心写，一键排成公众号。')
     expect(out.titles.length).toBeGreaterThanOrEqual(3)
     expect(out.titles.length).toBeLessThanOrEqual(5)
     expect(out.titles.every(t => wechatLength(t.title) <= WECHAT_TITLE_MAX)).toBe(true)

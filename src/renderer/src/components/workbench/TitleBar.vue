@@ -4,6 +4,7 @@
  * 点击文档名可直接重命名。右侧只有一个低调的「公众号」开关。
  */
 import { useWorkbenchStore } from '@renderer/stores/workbench'
+import { APP_NAME_ZH } from '../../../../shared/brand'
 import { Smartphone } from 'lucide-vue-next'
 
 const props = defineProps<{ renaming: boolean }>()
@@ -59,7 +60,7 @@ function startRename() {
           :class="{ 'is-empty': !wb.docName }"
           :title="wb.docPath ? `${wb.docPath}\n点击重命名` : ''"
           @click="startRename"
-        >{{ wb.docName || 'LazyBox' }}</span>
+        >{{ wb.docName || APP_NAME_ZH }}</span>
         <span v-if="wb.dirty" class="lb-dirty" title="有未保存的修改" />
       </template>
     </div>

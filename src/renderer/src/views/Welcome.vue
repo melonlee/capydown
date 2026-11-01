@@ -123,7 +123,8 @@ const openInFinder = async (workspace: Workspace) => {
     <main class="lb-welcome-main">
       <header class="lb-welcome-brand">
         <BrandMark class="lb-welcome-logo" />
-        <h1>{{ APP_NAME }} <span class="lb-welcome-dot">·</span> {{ APP_NAME_ZH }}</h1>
+        <h1>{{ APP_NAME_ZH }}</h1>
+        <span class="lb-welcome-word">{{ APP_NAME }}</span>
         <p>{{ APP_TAGLINE }}</p>
       </header>
 
@@ -296,21 +297,29 @@ const openInFinder = async (workspace: Workspace) => {
   user-select: none;
 }
 
+/* 中文名用宋体标题，与启动画面「# 懒得排」排成的标题一致 */
 .lb-welcome-brand h1 {
   margin: 0;
-  font-size: 24px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
+  font: 700 28px/1.2 'Songti SC', 'STSong', 'Source Han Serif SC', 'Noto Serif CJK SC', 'Noto Serif SC', 'SimSun', serif;
+  letter-spacing: 0.06em;
+  text-indent: 0.06em;
   color: var(--lb-fg-strong);
 }
 
-.lb-welcome-dot {
+/* 英文名做成小号字标：大写、宽字距（与启动画面底部的 SLOTHDOWN 一致） */
+.lb-welcome-word {
+  display: block;
+  margin-top: 8px;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-indent: 0.32em;
+  text-transform: uppercase;
   color: var(--lb-faint);
-  font-weight: 400;
 }
 
 .lb-welcome-brand p {
-  margin: 6px 0 0;
+  margin: 12px 0 0;
   font-size: 14px;
   color: var(--lb-muted);
 }

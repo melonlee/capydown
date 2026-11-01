@@ -1,5 +1,5 @@
 /**
- * LazyBox 的主编辑器：CodeMirror 6 + Typora 式实时预览。
+ * 懒得排的主编辑器：CodeMirror 6 + Typora 式实时预览。
  *
  * 对外暴露一个 MarkdownEditor 对象，保留了旧代码（CodeMirror 5 时代）用到的那几个方法
  * （getValue / setValue / getSelection / replaceSelection / getCursor / replaceRange …），

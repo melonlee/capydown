@@ -199,13 +199,13 @@ function template(): MenuItemConstructorOptions[] {
         {
           label: '使用指南与快捷键',
           click: async () => {
-            await shell.openExternal('https://github.com/melonlee/LazyBox/blob/main/docs/usage.md')
+            await shell.openExternal('https://github.com/melonlee/slothdown/blob/main/docs/usage.md')
           },
         },
         {
           label: '反馈问题',
           click: async () => {
-            await shell.openExternal('https://github.com/melonlee/LazyBox/issues')
+            await shell.openExternal('https://github.com/melonlee/slothdown/issues')
           },
         },
       ],

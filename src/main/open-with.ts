@@ -1,5 +1,5 @@
 /**
- * 「用 LazyBox 打开」的纯逻辑（不依赖 electron，便于单元测试）：
+ * 「用懒得排打开」的纯逻辑（不依赖 electron，便于单元测试）：
  * 从命令行参数里找出要打开的 Markdown 文件，以及决定在哪个工作区里打开它。
  */
 import * as path from 'path'
@@ -15,7 +15,7 @@ export function isMarkdownPath(p: string): boolean {
 
 /**
  * Windows / Linux 通过命令行参数把文件交给应用：
- *   打包后  LazyBox.exe "C:\\a\\b.md"
+ *   打包后  Slothdown.exe "C:\\a\\b.md"
  *   开发时  electron out/main/index.cjs b.md
  * 跳过 argv[0]、所有 --开关、非 Markdown 参数（如入口脚本）；相对路径按 cwd 解析，file:// 转成路径。
  */

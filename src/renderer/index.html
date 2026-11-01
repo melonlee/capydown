@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="keywords" content="md,markdown,markdown-editor,LazyBox" />
-    <meta name="description" content="LazyBox | 公众号 Markdown 写作与排版桌面应用" />
+    <meta name="keywords" content="md,markdown,markdown-editor,Slothdown,懒得排" />
+    <meta name="description" content="懒得排 · Slothdown | 公众号 Markdown 写作与排版桌面应用" />
     <meta
       name="viewport"
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
-    <title>LazyBox · 懒排</title>
+    <title>懒得排 · Slothdown</title>
     <script>
       // 启动画面与即将应用的编辑器主题一致（Night 或跟随系统的深色 → 灰阶反相；Newsprint → 米色纸）
       try {
@@ -22,7 +22,7 @@
     </script>
     <style>
       /*
-       * 启动画面：Markdown 源码「# 懒排」→ 排好版的标题（实时预览的样子）→ 一句话介绍 → 淡出到应用。
+       * 启动画面：Markdown 源码「# 懒得排」→ 排好版的标题（实时预览的样子）→ 一句话介绍 → 淡出到应用。
        * 纯 CSS 动画，时间轴 ≈ 0.95 s，退场 0.28 s；应用就绪得早就加速播完，就绪得晚就停在最后一帧。
        * 控制逻辑见本文件底部的脚本；渲染进程挂载完成后调用 window.__lbSplash.ready()（utils/boot.ts）。
        */
@@ -71,7 +71,7 @@
         align-items: center;
         transform: translateY(-3vh); /* 视觉中心略高于几何中心 */
       }
-      /* 源码行与标题叠放在同一位置，中心对齐到「懒排」两个字 */
+      /* 源码行与标题叠放在同一位置，中心对齐到「懒得排」三个字 */
       .lb-splash-line {
         position: relative;
         display: flex;
@@ -149,7 +149,7 @@
        *    0–120  源码行淡入，光标闪一下（0–360）
        *  280–480  「# 」向左滑出
        *  340–600  源码放大淡出  ·  360–780 标题由小到大、去模糊成形（两者交叉 = 实时预览）
-       *  560–840  标题下细线展开  ·  620–880 一句话介绍上浮淡入  ·  700–950 LazyBox 字标淡入
+       *  560–840  标题下细线展开  ·  620–880 一句话介绍上浮淡入  ·  700–950 Slothdown 字标淡入
        */
       .is-playing .lb-splash-src { animation: lb-sp-in 120ms ease-out both; }
       .is-playing .lb-splash-caret { animation: lb-sp-blink 360ms steps(1, end) both; }
@@ -215,13 +215,13 @@
     <div id="lb-splash" class="lb-splash" aria-hidden="true">
       <div class="lb-splash-stage">
         <div class="lb-splash-line">
-          <span class="lb-splash-src"><span class="lb-splash-mk">#</span><span class="lb-splash-txt">懒排</span><span class="lb-splash-caret"></span></span>
-          <h1 class="lb-splash-h">懒排</h1>
+          <span class="lb-splash-src"><span class="lb-splash-mk">#</span><span class="lb-splash-txt">懒得排</span><span class="lb-splash-caret"></span></span>
+          <h1 class="lb-splash-h">懒得排</h1>
         </div>
         <div class="lb-splash-rule"></div>
         <p class="lb-splash-tag">像 Typora 一样专心写，一键排成公众号</p>
       </div>
-      <p class="lb-splash-word">LazyBox</p>
+      <p class="lb-splash-word">Slothdown</p>
     </div>
     <script>
       // 启动画面控制：窗口可见后开始播放；应用就绪（ready）后播完并淡出。

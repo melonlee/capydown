@@ -676,7 +676,7 @@ onMounted(() => {
   })
   editorRef.value = markRaw(editor)
   store.editor = markRaw(editor) as any
-  // 端到端测试钩子：只在开发模式或 LAZYBOX_E2E=1 启动时暴露
+  // 端到端测试钩子：只在开发模式或 SLOTHDOWN_E2E=1 启动时暴露
   if (import.meta.env.DEV || window.$api?.isE2E)
     (window as any).__lbEditor = editor
   editor.setSourceMode(wb.sourceMode)

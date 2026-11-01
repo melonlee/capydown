@@ -1,8 +1,9 @@
 {
   "type": "module",
-  "name": "lazybox",
+  "name": "slothdown",
+  "productName": "Slothdown",
   "version": "0.3.0",
-  "description": "给公众号作者的 Markdown 桌面编辑器：本地写作、主题排版、图床上传、一键复制到公众号",
+  "description": "懒得排 · Slothdown：给公众号作者的 Markdown 桌面编辑器，像 Typora 一样专心写，一键排成公众号",
   "main": "./out/main/index.cjs",
   "author": "melonlee",
   "scripts": {
@@ -121,10 +122,13 @@
     "wxt": "^0.19.25",
     "yup": "^1.6.1"
   },
-  "homepage": "https://github.com/melonlee/LazyBox",
+  "homepage": "https://github.com/melonlee/slothdown",
   "repository": {
     "type": "git",
-    "url": "https://github.com/melonlee/LazyBox.git"
+    "url": "https://github.com/melonlee/slothdown.git"
+  },
+  "bugs": {
+    "url": "https://github.com/melonlee/slothdown/issues"
   },
   "license": "MIT",
   "pnpm": {

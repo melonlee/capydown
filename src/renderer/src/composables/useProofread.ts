@@ -39,6 +39,7 @@ const state = reactive({
  * 设置「校对时包含风格建议」：打开后额外检查中英文之间的空格。默认关闭，
  * 只报错别字、语病、标点和重复用词。偏好设置（AI 一节）和校对面板共用这个值。
  */
+// 存储键沿用改名前的 lazybox- 前缀（改名会丢掉用户已有的设置）
 export const proofreadIncludeStyle = useStorage('lazybox-proofread-style', false)
 
 let getEditor: () => MarkdownEditor | null = () => null

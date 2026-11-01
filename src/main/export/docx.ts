@@ -460,7 +460,7 @@ export function buildDocument(markdown: string, images: Map<string, LoadedImage 
     style: { paragraph: { indent: { left: INDENT_STEP * (level + 1), hanging: 360 } } },
   }))
   return new Document({
-    creator: 'LazyBox',
+    creator: 'Slothdown',
     styles: {
       default: {
         document: {

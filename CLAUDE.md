@@ -22,11 +22,17 @@ AI is limited to two features — pre-publish proofreading and title/summary gen
 
 Experimental modules (MCP, Skill, vector/knowledge graph, templates, AI image generation) are only registered when the `experimental_features_enabled` store key is true (`src/main/config/experimental.ts`). Publishing is honest: only WeChat (clipboard) and Markdown export are implemented (`src/main/publish/`).
 
-PDF / Word export lives in `src/main/export/` (`ipc-export.ts`): the renderer builds a print HTML (`src/renderer/src/utils/export-document.ts`) that a hidden sandboxed window prints to PDF; `.docx` is built in main from `marked` lexer tokens with the `docx` library. "Open with LazyBox" (file associations in `electron-builder.yml`, macOS `open-file`, argv + single-instance lock) is in `src/main/open-with*.ts` and `src/renderer/src/composables/useOpenWith.ts`. New main-process runtime deps must be added to the `externalizeDepsPlugin` exclude list in `electron.vite.config.ts` so they are bundled (electron-builder drops transitive deps in this pnpm repo).
+PDF / Word export lives in `src/main/export/` (`ipc-export.ts`): the renderer builds a print HTML (`src/renderer/src/utils/export-document.ts`) that a hidden sandboxed window prints to PDF; `.docx` is built in main from `marked` lexer tokens with the `docx` library. "Open with Slothdown" (file associations in `electron-builder.yml`, macOS `open-file`, argv + single-instance lock) is in `src/main/open-with*.ts` and `src/renderer/src/composables/useOpenWith.ts`. New main-process runtime deps must be added to the `externalizeDepsPlugin` exclude list in `electron.vite.config.ts` so they are bundled (electron-builder drops transitive deps in this pnpm repo).
+
+## Branding
+
+The product is **懒得排 · Slothdown** (renamed from LazyBox · 懒排). Display names live in `src/shared/brand.ts` (`APP_NAME_ZH` 懒得排, `APP_NAME` Slothdown, `APP_DISPLAY_NAME` 懒得排 · Slothdown); the splash in `src/renderer/index.html` hardcodes them. Bundle / executable name is `Slothdown` (`productName` in `package.json` and `electron-builder.yml`). Kept on purpose: `appId: com.lazybox.app` and the Windows AppUserModelId `com.lazybox` (changing them makes macOS/Windows treat it as a different app — permissions, file associations, pinned shortcuts), and storage keys with the `lazybox-` prefix (`lazybox-first-run-4`, `lazybox-proofread-style`). `src/main/user-data.ts` (first import in `src/main/index.ts`) copies the old `LazyBox`/`lazybox` userData dir into the new `Slothdown` one on first launch (copy, never delete; skipped with `--user-data-dir` or when the new dir already has data). E2E env vars are `SLOTHDOWN_E2E`, `SLOTHDOWN_USER_DATA`, `SLOTHDOWN_E2E_EXPORT_DIR`.
+
+Icons: the mascot is a monochrome sloth. `docs/assets/brand/src/tools/build_sloth.py` generates `app-icon-large.svg` (A, peeking sloth — 64px and up), `app-icon-small.svg` (C, front face — 16–48px) and the in-app mark `src/renderer/src/assets/images/logo-mark.svg` (`currentColor`, inlined by `components/brand/BrandMark.vue`); `export_icons.py` renders `build/icon.icns` / `icon.ico` / `build/icons/` (Linux) / `resources/icon.png` / favicon.
 
 ## Project Architecture
 
-LazyBox is an Electron-based desktop Markdown editor, forked from doocs/md. The app uses a multi-process Electron architecture:
+Slothdown is an Electron-based desktop Markdown editor, forked from doocs/md. The app uses a multi-process Electron architecture:
 
 ### Process Structure
 
@@ -47,7 +53,7 @@ The app uses a workspace-based file management system:
 
 - **Workspace Store** (`src/renderer/src/stores/workspace.ts`) - Manages multiple workspaces, tracks current/recent workspaces, persists to localStorage
 - **File Tree Store** (`src/renderer/src/stores/fileTree.ts`) - Handles file tree loading, file/folder CRUD operations
-- **Local File Operations** (`src/main/local.ts`) - Main process file system utilities with `defaultAppDir = ~/documents/codes/LazyBox`
+- **Local File Operations** (`src/main/local.ts`) - Main process file system utilities with `defaultAppDir` (`~/Documents/codes/LazyBox` if it exists from before the rename, else `~/Documents/Slothdown`)
 
 #### View Routing
 App.vue conditionally renders based on workspace state:
@@ -82,9 +88,10 @@ Theme customization flows through:
 
 ### Key Constants
 
-- Default workspace path: `~/documents/codes/LazyBox`
+- Default workspace path: `~/Documents/codes/LazyBox` if it exists (pre-rename installs), otherwise `~/Documents/Slothdown`
 - Default document name: `探索 Markdown`
-- First-run flag key: `lazybox-first-run-4`
+- First-run flag key: `lazybox-first-run-4` (keeps the old prefix)
+- appId: `com.lazybox.app` (kept across the rename)
 
 ### TypeScript Configuration
 

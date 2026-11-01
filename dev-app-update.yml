@@ -1,4 +1,4 @@
 provider: github
 owner: melonlee
-repo: LazyBox
-updaterCacheDirName: lazybox-updater
+repo: slothdown
+updaterCacheDirName: slothdown-updater

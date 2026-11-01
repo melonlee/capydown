@@ -10,7 +10,7 @@ import {
 
 describe('wechatLength', () => {
   it('counts characters, not UTF-16 units', () => {
-    expect(wechatLength('懒排')).toBe(2)
+    expect(wechatLength('懒得排')).toBe(3)
     expect(wechatLength('AI 写作')).toBe(5)
     expect(wechatLength('😀好')).toBe(2)
   })

@@ -22,7 +22,7 @@ const useMock = process.argv.includes('--mock')
 
 // 1. 用 esbuild 把 TypeScript 源码打包成一个临时 ESM 文件（放在 node_modules/.cache 里，便于解析依赖）
 const { build } = await import('esbuild')
-const outDir = join(ROOT, 'node_modules', '.cache', 'lazybox')
+const outDir = join(ROOT, 'node_modules', '.cache', 'slothdown')
 mkdirSync(outDir, { recursive: true })
 const outfile = join(outDir, 'ai-smoke-bundle.mjs')
 await build({

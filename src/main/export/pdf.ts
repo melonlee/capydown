@@ -11,7 +11,7 @@ import { BrowserWindow } from 'electron'
  * HTML 先写进临时文件再 loadFile（data: URL 有长度上限，图片多时会失败）。
  */
 export async function renderHtmlToPdf(html: string): Promise<Buffer> {
-  const dir = await mkdtemp(join(tmpdir(), 'lazybox-pdf-'))
+  const dir = await mkdtemp(join(tmpdir(), 'slothdown-pdf-'))
   const file = join(dir, 'export.html')
   const win = new BrowserWindow({
     show: false,

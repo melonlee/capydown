@@ -1,5 +1,6 @@
+# appId 沿用改名前的值：改了 macOS 会把它当成另一个应用（权限授权、文件关联都要重来），Windows 安装程序也认不出旧版本
 appId: com.lazybox.app
-productName: LazyBox
+productName: Slothdown
 copyright: Copyright © 2025-2026 melonlee
 directories:
   buildResources: build
@@ -17,7 +18,7 @@ files:
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 asarUnpack:
   - resources/**
-# 注册为 Markdown 的打开方式（右键 → 打开方式 → LazyBox）。
+# 注册为 Markdown 的打开方式（右键 → 打开方式 → Slothdown）。
 # macOS 用 Alternate：出现在「打开方式」里，但不抢系统默认应用；Windows 由 NSIS 安装程序写注册表；Linux 写进 .desktop 的 MimeType
 fileAssociations:
   - ext: [md, markdown, mdown, mkd, mkdn]
@@ -27,7 +28,7 @@ fileAssociations:
     mimeType: text/markdown
     rank: Alternate
 win:
-  executableName: LazyBox
+  executableName: Slothdown
   target:
     - target: nsis
       arch: [x64]
@@ -48,14 +49,20 @@ mac:
     - target: zip
       arch: [arm64, x64]
   extendInfo:
-    - NSDocumentsFolderUsageDescription: LazyBox 需要访问“文稿”文件夹来读写你的文章。
-    - NSDownloadsFolderUsageDescription: LazyBox 需要访问“下载”文件夹来打开或导出文件。
+    - NSDocumentsFolderUsageDescription: 懒得排需要访问“文稿”文件夹来读写你的文章。
+    - NSDownloadsFolderUsageDescription: 懒得排需要访问“下载”文件夹来打开或导出文件。
   # 目前没有 Apple Developer 证书：不签名、不公证
   identity: null
   notarize: false
 dmg:
   artifactName: ${productName}-${version}-mac-${arch}.${ext}
 linux:
+  executableName: slothdown
+  icon: build/icons
+  desktop:
+    Name: 懒得排 · Slothdown
+    GenericName: Markdown 编辑器
+    Comment: 像 Typora 一样专心写，一键排成公众号
   target:
     - AppImage
     - deb
@@ -63,7 +70,7 @@ linux:
   category: Office
   mimeTypes:
     - text/markdown
-  synopsis: Markdown 写作与公众号排版
+  synopsis: 懒得排 · Slothdown — Markdown 写作与公众号排版
 appImage:
   artifactName: ${productName}-${version}-linux-${arch}.${ext}
 deb:
@@ -73,5 +80,5 @@ npmRebuild: false
 publish:
   provider: github
   owner: melonlee
-  repo: LazyBox
+  repo: slothdown
   releaseType: draft

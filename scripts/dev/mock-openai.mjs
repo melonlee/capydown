@@ -3,7 +3,7 @@
  *
  *   node scripts/dev/mock-openai.mjs [--port 8787]
  *
- * 然后在 LazyBox「偏好设置 → AI」里选「OpenAI 兼容」，Base URL 填 http://127.0.0.1:8787/v1，
+ * 然后在懒得排「偏好设置 → AI」里选「OpenAI 兼容」，Base URL 填 http://127.0.0.1:8787/v1，
  * API Key 随便填（bad-key 会返回 401），模型随便填。
  *
  * 支持 POST /v1/chat/completions（stream: true 走 SSE，否则普通 JSON）和 GET /v1/models。
@@ -79,7 +79,7 @@ export function mockTitleSummary() {
     titles: [
       { title: '写公众号三年，我把排版时间从一小时压到一分钟', angle: '结论先行' },
       { title: '为什么你的公众号排版总是很累？', angle: '提出问题' },
-      { title: '「懒排」上手指南：5 个让写作更专心的习惯', angle: '数字清单' },
+      { title: '「懒得排」上手指南：5 个让写作更专心的习惯', angle: '数字清单' },
       { title: `这是一个故意写得很长的标题，${'用来验证客户端会过滤超过六十四个字的候选标题，'.repeat(3)}`, angle: '超长（应被过滤）' },
       { title: '从 Markdown 到公众号：一次讲清楚', angle: '教程' },
     ],
