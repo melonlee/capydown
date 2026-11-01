@@ -125,5 +125,11 @@
     "type": "git",
     "url": "https://github.com/melonlee/LazyBox.git"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "electron",
+      "esbuild"
+    ]
+  }
 }
