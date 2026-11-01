@@ -16,10 +16,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # .npmrc 指向国内镜像（方便本地开发）；CI 在海外，删掉它，依赖和 Electron 都走官方源
+      # .npmrc 里的国内镜像方便本地开发；CI 在海外，只去掉镜像两行，改走官方源。
+      # 其余设置（shamefully-hoist 等）必须保留：没有它 electron-builder 会漏打间接依赖（如 electron-store → conf）
       - name: Use official registries
         shell: bash
-        run: rm -f .npmrc
+        run: sed -i.bak -E '/^(electron_mirror|registry)=/d' .npmrc && rm -f .npmrc.bak && cat .npmrc
 
       - uses: pnpm/action-setup@v4
         with:

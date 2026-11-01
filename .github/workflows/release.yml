@@ -27,10 +27,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # .npmrc 指向国内镜像（方便本地开发）；CI 在海外，删掉它，依赖和 Electron 都走官方源
+      # .npmrc 里的国内镜像方便本地开发；CI 在海外，只去掉镜像两行，改走官方源。
+      # 其余设置（shamefully-hoist 等）必须保留：没有它 electron-builder 会漏打间接依赖（如 electron-store → conf）
       - name: Use official registries
         shell: bash
-        run: rm -f .npmrc
+        run: sed -i.bak -E '/^(electron_mirror|registry)=/d' .npmrc && rm -f .npmrc.bak && cat .npmrc
 
       - uses: pnpm/action-setup@v4
         with:
@@ -57,3 +58,17 @@ jobs:
           # 还没有 Apple Developer 证书：跳过签名。拿到证书后配置 CSC_LINK / CSC_KEY_PASSWORD /
           # APPLE_ID / APPLE_APP_SPECIFIC_PASSWORD / APPLE_TEAM_ID，并在 electron-builder.yml 中开启 notarize
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+
+      # 打包产物冒烟测试：用 Electron 直接加载安装包里的 app.asar，主进程缺模块等加载错误会让任务失败。
+      # （上传发生在上一步，Release 是草稿；此步失败就不要发布这个草稿）
+      - name: Smoke test packaged app (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          APP=$(ls -d dist/mac*/LazyBox.app | head -1)
+          npx electron "$APP/Contents/Resources/app.asar" > smoke.log 2>&1 &
+          PID=$!
+          sleep 20
+          kill $PID 2>/dev/null || true
+          cat smoke.log
+          if grep -E -q "App threw an error|Cannot find module" smoke.log; then exit 1; fi
