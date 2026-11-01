@@ -10,7 +10,9 @@ import DEFAULT_DOCUMENT_PATH from '../../resources/markdown.md?asset';
 
 const promiseFs = fs.promises;
 
-export const defaultAppDir = path.join(app.getPath('documents'), 'codes', 'LazyBox');
+// 默认工作区：改名前的 ~/Documents/codes/LazyBox 存在就继续用（老用户的文章都在里面），新安装用 ~/Documents/Slothdown
+const legacyAppDir = path.join(app.getPath('documents'), 'codes', 'LazyBox');
+export const defaultAppDir = fs.existsSync(legacyAppDir) ? legacyAppDir : path.join(app.getPath('documents'), 'Slothdown');
 export const defaultDocumentName = '探索 Markdown';
 export const defaultDocumentPath = path.join(defaultAppDir, `${defaultDocumentName}.md`);
 
@@ -115,7 +117,7 @@ export const getFileContent = async (dirname: string, filename: string) => {
 export const initDocumentDir = async () => {
   await createDir(defaultAppDir);
 
-  // 如果第一次启动应用，则创建默认文件
+  // 如果第一次启动应用，则创建默认文件（存储键沿用改名前的 lazybox- 前缀，老用户不会再收到一份示例文档）
   if (!getStore('lazybox-first-run-4')) {
     const defaultFileContent = await promiseFs.readFile(DEFAULT_DOCUMENT_PATH, { encoding: 'utf-8' });
     writeContent2File(defaultAppDir, `${defaultDocumentName}.md`, defaultFileContent);

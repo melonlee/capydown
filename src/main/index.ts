@@ -1,3 +1,5 @@
+// 必须是第一个导入：迁移改名前（LazyBox）的用户数据目录，之后的模块（electron-store 等）才会读取 userData
+import './user-data'
 import { app, shell, BrowserWindow, Menu, ipcMain, nativeTheme } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -28,11 +30,7 @@ const BOOT_BACKGROUNDS = { light: '#ffffff', paper: '#f6f6f3', dark: '#1e1e1e' }
 type BootTheme = keyof typeof BOOT_BACKGROUNDS
 const BOOT_THEME_KEY = 'ui.bootTheme'
 
-// 端到端测试使用独立的用户数据目录，不碰真实的偏好与工作区记录
-if (process.env.LAZYBOX_E2E === '1' && process.env.LAZYBOX_USER_DATA)
-  app.setPath('userData', process.env.LAZYBOX_USER_DATA)
-
-// 「用 LazyBox 打开」：尽早监听 macOS 的 open-file，并保证只有一个实例（第二个实例把文件交给第一个后退出）
+// 「用懒得排打开」：尽早监听 macOS 的 open-file，并保证只有一个实例（第二个实例把文件交给第一个后退出）
 const isPrimaryInstance = setupOpenWith()
 if (!isPrimaryInstance)
   app.quit()
@@ -110,9 +108,10 @@ app.whenReady().then(() => {
     return
 
   // Set app user model id for windows
+  // Windows 任务栏分组 id：沿用改名前的值，已固定到任务栏的图标不受影响
   electronApp.setAppUserModelId('com.lazybox')
 
-  // 「关于」面板显示中文产品名（安装包名仍为 LazyBox）
+  // 「关于」面板显示「懒得排 · Slothdown」（安装包 / 菜单栏应用名是 productName Slothdown）
   app.setAboutPanelOptions({
     applicationName: APP_DISPLAY_NAME,
     applicationVersion: app.getVersion(),
