@@ -4,6 +4,16 @@
 
 ## [0.3.0] - 未发布
 
+### 改名：懒得排 · Slothdown
+
+LazyBox · 懒排 改名为 **懒得排 · Slothdown**，换上一只黑白树懒。
+
+- **名字**：Slothdown = Markdown + sloth（树懒），也是 slow down——慢下来，专心写；懒得排 = 懒得排版？交给它
+- **吉祥物与图标**：大尺寸是从圆角方形左下角探出头的树懒（Dock、安装包、≥64px），小尺寸和应用内标志是正脸树懒（菜单栏、favicon、16–48px）；仍然只有黑白灰
+- 启动画面 `# 懒得排` → 宋体标题 → 标语 → `SLOTHDOWN`；欢迎页和「关于」面板同步改名
+- 安装包与可执行文件改名为 `Slothdown`（`Slothdown-0.3.0-mac-arm64.dmg` 等），仓库与官网迁到 `github.com/melonlee/slothdown`、`melonlee.github.io/slothdown`
+- **老用户无需操作**：首次启动时把旧版（LazyBox）的配置目录复制到新目录——偏好设置、AI 配置、工作区列表都会带过来；旧目录不删除。应用 ID 保持 `com.lazybox.app`，macOS 权限与「打开方式」不受影响；默认工作区仍是 `~/Documents/codes/LazyBox`（如果存在）
+
 ### 编辑区操作
 
 格式和设置不再只藏在顶部菜单里，常用操作出现在编辑区，界面仍然没有常驻工具栏。它们执行的都是菜单里的同一条命令，可以撤销。
@@ -23,7 +33,7 @@
 
 ### 打开方式
 
-- 安装后登记为 `.md` / `.markdown` / `.mdown` / `.mkd` / `.mkdn` 的打开方式：macOS 访达右键 → 打开方式 → LazyBox（不抢默认应用），Windows「打开方式 → 选择其他应用」，Linux 登记 `text/markdown`
+- 安装后登记为 `.md` / `.markdown` / `.mdown` / `.mkd` / `.mkdn` 的打开方式：macOS 访达右键 → 打开方式 → Slothdown（不抢默认应用），Windows「打开方式 → 选择其他应用」，Linux 登记 `text/markdown`
 - 文件在当前工作区内直接打开，否则把它所在的文件夹作为工作区打开；应用已运行时交给已有窗口（单实例）；打开文件不会改动文件
 
 ## [0.2.0] - 2026-11-01
@@ -101,6 +111,6 @@
 - 图床上传：GitHub、阿里云 OSS、腾讯云 COS、七牛云、MinIO、Cloudflare R2 等
 - 一键复制为公众号格式或 HTML，导出 Markdown / HTML
 
-[0.3.0]: https://github.com/melonlee/LazyBox/compare/v0.2.0...HEAD
-[0.2.0]: https://github.com/melonlee/LazyBox/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/melonlee/LazyBox/releases/tag/v0.1.0
+[0.3.0]: https://github.com/melonlee/slothdown/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/melonlee/slothdown/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/melonlee/slothdown/releases/tag/v0.1.0
