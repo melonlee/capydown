@@ -117,6 +117,7 @@ declare module 'vue' {
     SelectTrigger: typeof import('./src/components/ui/select/SelectTrigger.vue')['default']
     SelectValue: typeof import('./src/components/ui/select/SelectValue.vue')['default']
     Separator: typeof import('./src/components/ui/separator/Separator.vue')['default']
+    SidebarActions: typeof import('./src/components/workbench/SidebarActions.vue')['default']
     Sonner: typeof import('./src/components/ui/sonner/Sonner.vue')['default']
     StatusBar: typeof import('./src/components/workbench/StatusBar.vue')['default']
     Switch: typeof import('./src/components/ui/switch/Switch.vue')['default']

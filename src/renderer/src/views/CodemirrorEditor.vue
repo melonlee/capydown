@@ -17,6 +17,7 @@ import CommandPalette from '@renderer/components/workbench/CommandPalette.vue'
 import InsertMenu from '@renderer/components/workbench/InsertMenu.vue'
 import OutlinePanel from '@renderer/components/workbench/OutlinePanel.vue'
 import SelectionToolbar from '@renderer/components/workbench/SelectionToolbar.vue'
+import SidebarActions from '@renderer/components/workbench/SidebarActions.vue'
 import StatusBar from '@renderer/components/workbench/StatusBar.vue'
 import TitleBar from '@renderer/components/workbench/TitleBar.vue'
 import ProofreadPanel from '@renderer/components/workbench/ProofreadPanel.vue'
@@ -725,6 +726,7 @@ window.addEventListener('beforeunload', () => {
         </div>
         <FileTreePanel v-show="wb.sidebarTab === 'files'" />
         <OutlinePanel v-show="wb.sidebarTab === 'outline'" @jump="line => editor?.scrollToLine(line)" />
+        <SidebarActions @run="runCommand" />
       </div>
       <div v-if="wb.sidebarOpen" class="lb-sidebar-resizer" @mousedown.prevent="startResize" />
     </aside>
@@ -771,7 +773,7 @@ window.addEventListener('beforeunload', () => {
             </p>
           </div>
 
-          <StatusBar @toggle-sidebar="runCommand('view.sidebar')" @toggle-source="runCommand('view.sourceMode')" />
+          <StatusBar @toggle-sidebar="runCommand('view.sidebar')" @toggle-source="runCommand('view.sourceMode')" @open-settings="runCommand('app.settings')" />
         </main>
 
         <WeChatPanel ref="wechatPanel" @publish="runCommand('wechat.publish')" />

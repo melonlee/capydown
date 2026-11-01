@@ -3,9 +3,11 @@
  * Typora 式底部状态栏：左下角侧边栏开关，右下角字数（点击看详情）与源代码模式开关。
  */
 import { useWorkbenchStore } from '@renderer/stores/workbench'
-import { Code2, PanelLeft } from 'lucide-vue-next'
+import { useStore } from '@renderer/stores'
+import { Code2, PanelLeft, Settings } from 'lucide-vue-next'
 
-const emit = defineEmits<{ toggleSidebar: [], toggleSource: [] }>()
+const emit = defineEmits<{ toggleSidebar: [], toggleSource: [], openSettings: [] }>()
+const store = useStore()
 const wb = useWorkbenchStore()
 const isMac = /Mac/i.test(navigator.userAgent)
 const showDetail = ref(false)
@@ -34,9 +36,22 @@ const rows = computed(() => {
 
 <template>
   <div class="lb-statusbar">
+    <!-- 侧边栏收起时，设置入口挪到这里，保持一键可达 -->
+    <button
+      v-if="!wb.sidebarOpen"
+      class="lb-sb-btn"
+      :class="{ 'is-on': store.isOpenRightSlider }"
+      aria-label="设置"
+      data-cmd="app.settings"
+      :title="`设置（${isMac ? '⌘,' : 'Ctrl+,'}）`"
+      @click="emit('openSettings')"
+    >
+      <Settings class="size-3.5" />
+    </button>
     <button
       class="lb-sb-btn"
       :class="{ 'is-on': wb.sidebarOpen }"
+      aria-label="侧边栏"
       :title="`侧边栏（${isMac ? '⇧⌘L' : 'Ctrl+Shift+L'}）`"
       @click="emit('toggleSidebar')"
     >
