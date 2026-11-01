@@ -4,15 +4,17 @@
 <link rel="stylesheet" href="_base.css">
 <style>
   body { width: 1280px; height: 640px; text-align: center; }
-  .lockup { position: absolute; left: 50%; top: 64px; transform: translateX(-50%); height: 44px; }
+  .lockup { position: absolute; left: 50%; top: 60px; transform: translateX(-50%); height: 46px; }
   h1 { position: absolute; left: 0; right: 0; top: 146px; font-size: 44px; line-height: 1.3; }
   .sub { position: absolute; left: 0; right: 0; top: 218px; font-size: 18px; color: var(--muted); letter-spacing: .02em; }
-  .shot { position: absolute; left: 50%; top: 290px; transform: translateX(-50%); }
+  .peek { position: absolute; left: 960px; top: 238px; width: 130px; }
+  .shot { position: absolute; left: 50%; top: 290px; transform: translateX(-50%); z-index: 1; }
 </style></head>
 <body>
-  <img class="lockup" src="../logo-lockup-light.svg" alt="LazyBox · 懒排">
+  <img class="lockup" src="../logo-lockup-light.svg" alt="懒得排 · Slothdown">
   <h1 class="serif">像 Typora 一样专心写，一键排成公众号。</h1>
-  <p class="sub">Markdown 实时预览 · 公众号主题排版 · 发布前 AI 校对 · 免费开源</p>
+  <p class="sub">Markdown 实时预览 · 公众号主题排版 · 发布前 AI 校对 · 导出 PDF / Word · 免费开源</p>
+  <img class="peek" src="../sloth-peek.svg" alt="">
   <div class="shot win">
     <div class="crop" style="--x:0; --y:0; --w:1440; --h:900; --cw:1000"><img src="../../screenshots/06-wechat.png"></div>
   </div>

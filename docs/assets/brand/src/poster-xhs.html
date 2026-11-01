@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- 小红书 / 朋友圈 poster for 公众号作者 · 1080×1440 -->
+<!-- 小红书 / 朋友圈海报，写给公众号作者 · 1080×1440 -->
 <html lang="zh-CN"><head><meta charset="utf-8">
 <link rel="stylesheet" href="_base.css">
 <style>
@@ -7,32 +7,34 @@
   .top { position: absolute; left: 88px; right: 88px; top: 84px; display: flex; align-items: center; justify-content: space-between; }
   .lockup { height: 46px; }
   .meta { font-size: 20px; color: var(--muted); letter-spacing: .06em; }
-  .eyebrow { position: absolute; left: 88px; top: 220px; font-size: 26px; letter-spacing: .08em; }
-  .lede { position: absolute; left: 88px; top: 418px; font-size: 26px; color: var(--ink-2); }
-  h1 { position: absolute; left: 84px; top: 262px; font-size: 92px; line-height: 1.22; letter-spacing: .02em; }
-  ol { position: absolute; left: 88px; right: 88px; top: 520px; list-style: none; border-top: 1px solid var(--line); }
-  li { display: grid; grid-template-columns: 68px 1fr; align-items: baseline; padding: 22px 0; border-bottom: 1px solid var(--line); }
+  .eyebrow { position: absolute; left: 88px; top: 226px; font-size: 26px; letter-spacing: .08em; }
+  h1 { position: absolute; left: 82px; top: 270px; font-size: 112px; line-height: 1.18; letter-spacing: .02em; }
+  .lede { position: absolute; left: 88px; top: 556px; font-size: 26px; line-height: 1.6; color: var(--ink-2); }
+  ol { position: absolute; left: 88px; right: 88px; top: 664px; list-style: none; border-top: 1px solid var(--line); }
+  li { display: grid; grid-template-columns: 68px 1fr; align-items: baseline; padding: 18px 0; border-bottom: 1px solid var(--line); }
   .n { font-size: 22px; color: var(--faint); font-variant-numeric: tabular-nums; letter-spacing: .04em; }
-  .t { font-family: var(--font-serif); font-weight: 700; font-size: 34px; }
-  .d { grid-column: 2; margin-top: 8px; font-size: 22px; line-height: 1.55; color: var(--muted); }
-  .shot { position: absolute; left: 88px; top: 1076px; }
+  .t { font-family: var(--font-serif); font-weight: 700; font-size: 32px; }
+  .d { grid-column: 2; margin-top: 6px; font-size: 22px; line-height: 1.55; color: var(--muted); }
+  /* the mascot: a big sloth peeking up from the bottom edge */
+  .peek { position: absolute; left: 452px; bottom: 0; width: 660px; }
+  .say { position: absolute; left: 88px; bottom: 132px; font-family: var(--font-serif); font-weight: 700; font-size: 30px; line-height: 1.5; }
+  .url { position: absolute; left: 88px; bottom: 84px; font-size: 20px; color: var(--muted); letter-spacing: .03em; }
 </style></head>
 <body>
   <div class="top">
-    <img class="lockup" src="../logo-lockup-light.svg" alt="LazyBox · 懒排">
-    <span class="meta">免费开源 · macOS · Windows / Linux 随版本发布</span>
+    <img class="lockup" src="../logo-lockup-light.svg" alt="懒得排 · Slothdown">
+    <span class="meta">免费开源 · macOS / Windows / Linux</span>
   </div>
   <p class="eyebrow muted">还在公众号后台一段一段调格式？</p>
-  <h1 class="serif">写完，就排好了。</h1>
-  <p class="lede">LazyBox · 懒排，给公众号作者的 Markdown 编辑器</p>
+  <h1 class="serif">懒得排版？<br>交给树懒。</h1>
+  <p class="lede">懒得排 · Slothdown，给公众号作者的 Markdown 编辑器。<br>你慢慢写，排版它来。</p>
   <ol>
-    <li><span class="n">01</span><span class="t">像 Typora 一样专心写</span><span class="d">Markdown 实时预览，专注模式、打字机模式</span></li>
+    <li><span class="n">01</span><span class="t">像 Typora 一样专心写</span><span class="d">实时预览，专注模式、打字机模式</span></li>
     <li><span class="n">02</span><span class="t">发布前，AI 帮你校对</span><span class="d">只挑错别字和标点，改不改由你决定</span></li>
-    <li><span class="n">03</span><span class="t">一键排成公众号</span><span class="d">选一个主题，点「复制到公众号」，粘贴即可</span></li>
-    <li><span class="n">04</span><span class="t">稿子永远是你的</span><span class="d">本地 .md 文件，粘贴的图片自动存进 assets</span></li>
+    <li><span class="n">03</span><span class="t">一键排成公众号</span><span class="d">选一个主题，「复制到公众号」，粘贴即可</span></li>
+    <li><span class="n">04</span><span class="t">也能导出 PDF、Word</span><span class="d">稿子是本地 .md 文件，永远是你的</span></li>
   </ol>
-  <!-- real screenshot, bleeding off the right and bottom edges -->
-  <div class="shot win">
-    <div class="crop" style="--x:0; --y:0; --w:1440; --h:900; --cw:1100"><img src="../../screenshots/06-wechat.png"></div>
-  </div>
+  <p class="say">写完，<br>就排好了。</p>
+  <p class="url">github.com/melonlee/slothdown</p>
+  <img class="peek" src="../sloth-peek.svg" alt="">
 </body></html>

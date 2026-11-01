@@ -6,16 +6,19 @@
   body { width: 1280px; height: 400px; }
   .left { position: absolute; left: 88px; top: 0; bottom: 0; width: 540px; display: flex; flex-direction: column; justify-content: center; }
   .lockup { height: 40px; width: auto; align-self: flex-start; }
-  h1 { margin-top: 40px; font-size: 38px; line-height: 1.42; }
+  h1 { margin-top: 38px; font-size: 38px; line-height: 1.42; }
   .sub { margin-top: 18px; font-size: 16px; line-height: 1.6; color: var(--muted); }
-  .shot { position: absolute; left: 676px; top: 64px; }
+  /* the sloth peeks over the top edge of the app window */
+  .peek { position: absolute; left: 1010px; top: 26px; width: 150px; }
+  .shot { position: absolute; left: 676px; top: 100px; z-index: 1; }
 </style></head>
 <body>
   <div class="left">
-    <img class="lockup" src="../logo-lockup-light.svg" alt="LazyBox · 懒排">
+    <img class="lockup" src="../logo-lockup-light.svg" alt="懒得排 · Slothdown">
     <h1 class="serif">像 Typora 一样专心写，<br>一键排成公众号。</h1>
-    <p class="sub">给公众号作者的 Markdown 编辑器 · 发布前 AI 校对 · 免费开源</p>
+    <p class="sub">给公众号作者的 Markdown 编辑器<br>发布前 AI 校对 · 导出 PDF / Word · 免费开源</p>
   </div>
+  <img class="peek" src="../sloth-peek.svg" alt="">
   <!-- bleeds off the right and bottom edges on purpose -->
   <div class="shot win">
     <div class="crop" style="--x:0; --y:0; --w:1060; --h:700; --cw:720"><img src="../../screenshots/01-writing.png"></div>

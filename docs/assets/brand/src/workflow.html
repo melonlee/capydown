@@ -1,32 +1,30 @@
 <!doctype html>
-<!-- 写作 → 校对 → 排版 → 复制到公众号 · 1600×700 -->
+<!-- 写作 → 校对 → 排版 → 复制到公众号 / 导出 PDF·Word · 1600×700 -->
 <html lang="zh-CN"><head><meta charset="utf-8">
 <link rel="stylesheet" href="_base.css">
 <style>
   body { width: 1600px; height: 700px; }
-  header { position: absolute; left: 0; right: 0; top: 64px; text-align: center; }
+  header { position: absolute; left: 0; right: 0; top: 60px; text-align: center; }
   header h1 { font-size: 36px; }
   header p { margin-top: 12px; font-size: 17px; color: var(--muted); }
-  .steps { position: absolute; left: 82px; right: 82px; top: 200px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 56px; --card: 330px; }
+  .steps { position: absolute; left: 82px; right: 82px; top: 196px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 56px; }
   .step { position: relative; }
-  .step + .step::before { /* thin connector arrow between cards */
-    content: "→"; position: absolute; left: -44px; top: 108px; width: 32px; text-align: center;
-    font-size: 22px; color: var(--faint);
-  }
+  .step + .step::before { content: "→"; position: absolute; left: -44px; top: 108px; width: 32px; text-align: center; font-size: 22px; color: var(--faint); }
   .win { border-radius: 10px; }
   .label { margin-top: 26px; display: flex; align-items: baseline; gap: 12px; }
   .n { font-size: 15px; color: var(--faint); letter-spacing: .06em; font-variant-numeric: tabular-nums; }
   .t { font-family: var(--font-serif); font-weight: 700; font-size: 26px; }
   .d { margin-top: 8px; font-size: 15px; line-height: 1.6; color: var(--muted); }
+  .peek { position: absolute; right: 70px; bottom: 0; width: 132px; }
 </style></head>
 <body>
   <header>
     <h1 class="serif">从第一行字到群发，一个窗口</h1>
-    <p>LazyBox · 懒排 的写作流程</p>
+    <p>懒得排 · Slothdown 的写作流程</p>
   </header>
   <div class="steps">
     <div class="step">
-      <div class="win"><div class="crop" style="--x:420; --y:40; --w:640; --h:480; --cw:330"><img src="../../screenshots/01-writing.png"></div></div>
+      <div class="win"><div class="crop" style="--x:380; --y:40; --w:640; --h:480; --cw:330"><img src="../../screenshots/01-writing.png"></div></div>
       <div class="label"><span class="n">01</span><span class="t">写作</span></div>
       <p class="d">Markdown 实时预览，像 Typora 一样专心</p>
     </div>
@@ -41,9 +39,10 @@
       <p class="d">选一个公众号主题，所见即所得</p>
     </div>
     <div class="step">
-      <div class="win"><div class="crop" style="--x:1000; --y:570; --w:440; --h:330; --cw:330"><img src="../../screenshots/06-wechat.png"></div></div>
+      <div class="win"><div class="crop" style="--x:400; --y:40; --w:640; --h:480; --cw:330"><img src="../../screenshots/12-export-menu.png"></div></div>
       <div class="label"><span class="n">04</span><span class="t">复制到公众号</span></div>
-      <p class="d">一键复制，粘贴到后台即可群发</p>
+      <p class="d">一键复制粘贴到后台；也能导出 PDF · Word</p>
     </div>
   </div>
+  <img class="peek" src="../sloth-peek.svg" alt="">
 </body></html>
