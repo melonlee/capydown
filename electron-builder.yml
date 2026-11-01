@@ -8,6 +8,7 @@ files:
   - '!**/.vscode/*'
   - '!src/*'
   - '!docs/*'
+  - '!website/**'
   - '!tests/*'
   - '!electron.vite.config.{js,ts,mjs,cjs}'
   - '!{vitest.config.ts,doocs.vite.config.ts,eslint.config.mjs,components.json,uno.config.ts,tailwind.config.cjs,postcss.config.mjs}'
