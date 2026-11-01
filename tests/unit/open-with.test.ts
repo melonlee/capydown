@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { decideOpenTarget, extractMarkdownArgs, isMarkdownPath } from '../../src/main/open-with'
 
+// Paths in these cases are POSIX; Windows resolves them with drive letters and backslashes.
+const posixPaths = process.platform !== 'win32'
+
 describe('isMarkdownPath', () => {
   it('accepts the registered extensions, case-insensitively', () => {
     for (const f of ['a.md', 'b.MARKDOWN', 'c.mdown', 'd.mkd', 'e.mkdn'])
@@ -10,7 +13,7 @@ describe('isMarkdownPath', () => {
   })
 })
 
-describe('extractMarkdownArgs', () => {
+describe.runIf(posixPaths)('extractMarkdownArgs', () => {
   it('finds markdown files in a packaged launch', () => {
     expect(extractMarkdownArgs(['/Applications/Slothdown.app/Contents/MacOS/Slothdown', '/Users/me/文章.md'], '/')).toEqual(['/Users/me/文章.md'])
   })
@@ -30,7 +33,7 @@ describe('extractMarkdownArgs', () => {
   })
 })
 
-describe('decideOpenTarget', () => {
+describe.runIf(posixPaths)('decideOpenTarget', () => {
   it('opens a file inside the current workspace without switching', () => {
     expect(decideOpenTarget('/ws/sub/a.md', '/ws', {}, false)).toEqual({ switchWorkspace: false, workspace: '/ws', file: '/ws/sub/a.md' })
   })

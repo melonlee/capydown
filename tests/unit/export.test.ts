@@ -19,7 +19,10 @@ async function documentXml(buf: Buffer): Promise<string> {
   return zip.file('word/document.xml')!.async('string')
 }
 
-describe('export default names', () => {
+// Paths in these cases are POSIX; Windows resolves them with drive letters and backslashes.
+const posixPaths = process.platform !== 'win32'
+
+describe.runIf(posixPaths)('export default names', () => {
   it('uses the document folder and name with the new extension', () => {
     expect(defaultExportPath('/a/b/我的文章.md', 'pdf', '/docs')).toBe('/a/b/我的文章.pdf')
     expect(defaultExportPath('/a/b/notes.markdown', 'docx', '/docs')).toBe('/a/b/notes.docx')
@@ -33,7 +36,7 @@ describe('export default names', () => {
   })
 })
 
-describe('image helpers', () => {
+describe.runIf(posixPaths)('image helpers', () => {
   it('reads PNG / GIF / JPEG dimensions', () => {
     expect(readImageInfo(fakePng(640, 480))).toEqual({ type: 'png', width: 640, height: 480 })
     const gif = Buffer.alloc(32)
@@ -60,7 +63,7 @@ describe('image helpers', () => {
   })
 })
 
-describe('markdown → docx', () => {
+describe.runIf(posixPaths)('markdown → docx', () => {
   const md = [
     '---',
     'title: front matter is dropped',
