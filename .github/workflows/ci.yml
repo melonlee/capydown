@@ -9,17 +9,17 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  # 仓库的 .npmrc 指向国内镜像，CI 在海外机房，直接用官方源更快
-  npm_config_registry: https://registry.npmjs.org/
-  npm_config_electron_mirror: https://github.com/electron/electron/releases/download/
-
 jobs:
   test-and-build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+
+      # .npmrc 指向国内镜像（方便本地开发）；CI 在海外，删掉它，依赖和 Electron 都走官方源
+      - name: Use official registries
+        shell: bash
+        run: rm -f .npmrc
 
       - uses: pnpm/action-setup@v4
         with:

@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * 本地 OpenAI 兼容模拟服务（只用于开发 / 测试，不需要真实 Key）。
  *
