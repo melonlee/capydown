@@ -9,7 +9,7 @@
 [![License](https://img.shields.io/github/license/melonlee/LazyBox?style=flat-square&color=111111)](./LICENSE)
 [![Platform](https://img.shields.io/badge/platform-macOS%20%C2%B7%20Windows%20%C2%B7%20Linux-111111?style=flat-square)](#download)
 
-[简体中文](./README.md) · **English** · [Download](https://github.com/melonlee/LazyBox/releases) · [User guide (zh)](./docs/usage.md) · [Changelog](./CHANGELOG.md) · [Roadmap](./docs/ROADMAP.md)
+[简体中文](./README.md) · **English** · [Website](https://melonlee.github.io/LazyBox/) · [Download](https://github.com/melonlee/LazyBox/releases) · [User guide (zh)](./docs/usage.md) · [Changelog](./CHANGELOG.md) · [Roadmap](./docs/ROADMAP.md)
 
 </div>
 
@@ -159,7 +159,7 @@ pnpm test         # unit tests (Vitest)
 pnpm build:mac    # package; also build:win / build:linux
 ```
 
-Stack: Electron · Vue 3 · electron-vite · TypeScript · CodeMirror 6 · Pinia · Tailwind / UnoCSS. See [CLAUDE.md](./CLAUDE.md) and [docs/dev/](./docs/dev/). The website is a build-free static page in [`website/`](./website/).
+Stack: Electron · Vue 3 · electron-vite · TypeScript · CodeMirror 6 · Pinia · Tailwind / UnoCSS. See [CLAUDE.md](./CLAUDE.md) and [docs/dev/](./docs/dev/). Website: <https://melonlee.github.io/LazyBox/> (source in [`website/`](./website/), auto-deployed to GitHub Pages).
 
 ## Contributing
 

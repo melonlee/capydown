@@ -9,7 +9,7 @@
 [![License](https://img.shields.io/github/license/melonlee/LazyBox?style=flat-square&color=111111)](./LICENSE)
 [![Platform](https://img.shields.io/badge/platform-macOS%20%C2%B7%20Windows%20%C2%B7%20Linux-111111?style=flat-square)](#下载)
 
-**简体中文** · [English](./README.en.md) · [下载](https://github.com/melonlee/LazyBox/releases) · [使用指南](./docs/usage.md) · [更新日志](./CHANGELOG.md) · [路线图](./docs/ROADMAP.md)
+**简体中文** · [English](./README.en.md) · [官网](https://melonlee.github.io/LazyBox/) · [下载](https://github.com/melonlee/LazyBox/releases) · [使用指南](./docs/usage.md) · [更新日志](./CHANGELOG.md) · [路线图](./docs/ROADMAP.md)
 
 </div>
 
@@ -189,7 +189,7 @@ pnpm build:mac    # 打安装包；另有 build:win / build:linux
 
 技术栈：Electron · Vue 3 · electron-vite · TypeScript · CodeMirror 6 · Pinia · Tailwind / UnoCSS。项目结构见 [CLAUDE.md](./CLAUDE.md)，设计记录见 [docs/dev/](./docs/dev/)。
 
-官网是一个无需构建的静态页面，见 [`website/`](./website/)。
+官网：**<https://melonlee.github.io/LazyBox/>**（源码在 [`website/`](./website/)，无需构建，推送到 main 后由 GitHub Pages 自动发布）。
 
 ## 参与贡献
 
