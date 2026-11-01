@@ -2,10 +2,11 @@
  * 导出 PDF / Word 的 IPC：保存对话框、生成文件、在访达中显示。
  */
 import { writeFile } from 'fs/promises'
-import { basename, join } from 'path'
+import { basename, dirname, join } from 'path'
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
 import { defaultExportPath, type ExportFormat } from './export/names'
 import { renderHtmlToPdf } from './export/pdf'
+import { markdownToDocx } from './export/docx'
 
 export interface ExportResult {
   canceled?: boolean
@@ -74,6 +75,13 @@ export function initExportIPCHandlers(): void {
     if (typeof html !== 'string' || !html)
       return { error: '没有可导出的内容' }
     return runExport(event.sender, 'pdf', { docPath, title }, () => renderHtmlToPdf(html))
+  })
+
+  ipcMain.handle('export:docx', async (event, { markdown, docPath, title }: { markdown: string, docPath?: string, title?: string }) => {
+    if (typeof markdown !== 'string')
+      return { error: '没有可导出的内容' }
+    const baseDir = docPath ? dirname(docPath) : app.getPath('documents')
+    return runExport(event.sender, 'docx', { docPath, title }, () => markdownToDocx(markdown, { baseDir }))
   })
 
   ipcMain.handle('export:show-in-folder', (_, { filePath }: { filePath: string }) => {
