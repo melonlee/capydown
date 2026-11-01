@@ -7,6 +7,7 @@ import { initDocumentDir, defaultDocumentPath, defaultDocumentName } from './loc
 import { initIpcMain } from './ipc'
 import { initAIIpcHandlers } from './ipc-ai'
 import { initPublishIPCHandlers } from './ipc-publish'
+import { initExportIPCHandlers } from './ipc-export'
 import { initImageIPCHandlers } from './ipc-image'
 import { initTemplateIPCHandlers } from './ipc-template'
 import { initVectorIPCHandlers } from './ipc-vector'
@@ -24,6 +25,10 @@ import { getStore, setStore } from './store'
 const BOOT_BACKGROUNDS = { light: '#ffffff', paper: '#f6f6f3', dark: '#1e1e1e' } as const
 type BootTheme = keyof typeof BOOT_BACKGROUNDS
 const BOOT_THEME_KEY = 'ui.bootTheme'
+
+// 端到端测试使用独立的用户数据目录，不碰真实的偏好与工作区记录
+if (process.env.LAZYBOX_E2E === '1' && process.env.LAZYBOX_USER_DATA)
+  app.setPath('userData', process.env.LAZYBOX_USER_DATA)
 
 function bootBackground(): string {
   const saved = getStore(BOOT_THEME_KEY) as BootTheme | undefined
@@ -144,6 +149,7 @@ app.whenReady().then(() => {
   initIpcMain()
   initAIIpcHandlers()
   initPublishIPCHandlers()
+  initExportIPCHandlers()
 
   // 未完成的实验模块：默认不注册，只有在设置中开启「实验功能」并重启后才可用
   if (isExperimentalEnabled()) {

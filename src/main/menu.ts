@@ -71,7 +71,13 @@ function template(): MenuItemConstructorOptions[] {
         cmd('file.import'),
         {
           label: '导出',
-          submenu: [cmd('file.exportMd', { label: 'Markdown…' }), cmd('file.exportHtml', { label: 'HTML…' })],
+          submenu: [
+            cmd('file.exportPdf', { label: 'PDF…' }),
+            cmd('file.exportDocx', { label: 'Word (.docx)…' }),
+            sep,
+            cmd('file.exportMd', { label: 'Markdown…' }),
+            cmd('file.exportHtml', { label: 'HTML…' }),
+          ],
         },
         sep,
         cmd('wechat.copy'),

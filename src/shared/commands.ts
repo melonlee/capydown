@@ -29,6 +29,8 @@ export const APP_COMMANDS: AppCommand[] = [
   { id: 'file.import', label: '导入 Markdown…', category: '文件', accelerator: 'Shift+CmdOrCtrl+I' },
   { id: 'file.exportMd', label: '导出 Markdown', category: '文件' },
   { id: 'file.exportHtml', label: '导出 HTML', category: '文件' },
+  { id: 'file.exportPdf', label: '导出 PDF…', category: '文件' },
+  { id: 'file.exportDocx', label: '导出 Word (.docx)…', category: '文件' },
   { id: 'file.closeWorkspace', label: '关闭工作区', category: '文件', accelerator: 'Shift+CmdOrCtrl+W' },
   { id: 'app.settings', label: '偏好设置…', category: '文件', accelerator: 'CmdOrCtrl+,' },
   { id: 'app.commandPalette', label: '命令面板…', category: '文件', accelerator: 'Shift+CmdOrCtrl+P', palette: false },

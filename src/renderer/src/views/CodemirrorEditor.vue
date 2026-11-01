@@ -31,6 +31,7 @@ import { checkImage, formatDoc, toBase64 } from '@renderer/utils'
 import emitter from '@renderer/utils/event'
 import fileApi from '@renderer/utils/file'
 import { loadLocalImage } from '@renderer/utils/local-image'
+import { buildPrintHtml } from '@renderer/utils/export-document'
 import DOMPurify from 'dompurify'
 import { Marked } from 'marked'
 import mermaid from 'mermaid'
@@ -371,6 +372,56 @@ function toggleSidebarTab(tab: 'files' | 'outline') {
   }
 }
 
+// ------------------------------------------------------------------ 导出 PDF / Word
+
+const exporting = ref(false)
+async function exportDocument(format: 'pdf' | 'docx') {
+  if (!editor || store.currentFileType === 'image' || store.currentFileType === 'pdf') {
+    toast.error('请先打开一篇 Markdown 文档')
+    return
+  }
+  if (exporting.value)
+    return
+  exporting.value = true
+  const markdown = editor.getValue()
+  const docPath = store.currentFilePath || wb.docPath || undefined
+  const title = wb.docName || '未命名'
+  const label = format === 'pdf' ? 'PDF' : 'Word'
+  try {
+    let result: { canceled?: boolean, filePath?: string, error?: string }
+    if (format === 'pdf') {
+      const html = await buildPrintHtml({
+        markdown,
+        // Night 是屏幕主题，打印一律用浅色
+        theme: wb.effectiveTheme === 'newsprint' ? 'newsprint' : 'github',
+        baseDir: docPath ? path.dirname(docPath) : fileTree.currentWorkspacePath,
+        title,
+      })
+      result = await window.$api.exportPdf(html, docPath, title)
+    }
+    else {
+      result = await window.$api.exportDocx(markdown, docPath, title)
+    }
+    if (result.canceled)
+      return
+    if (result.error || !result.filePath) {
+      toast.error(`导出 ${label} 失败：${result.error || '未知错误'}`)
+      return
+    }
+    const filePath = result.filePath
+    toast.success(`已导出 ${label}：${path.basename(filePath)}`, {
+      duration: 6000,
+      action: { label: isMac ? '在访达中显示' : '在文件夹中显示', onClick: () => window.$api.showExportedFile(filePath) },
+    })
+  }
+  catch (error: any) {
+    toast.error(`导出 ${label} 失败：${error?.message || error}`)
+  }
+  finally {
+    exporting.value = false
+  }
+}
+
 function formatDocument() {
   if (!editor)
     return
@@ -417,6 +468,8 @@ function runCommand(id: string) {
     case 'file.import': store.importMarkdownContent(); break
     case 'file.exportMd': store.exportEditorContent2MD(); break
     case 'file.exportHtml': store.exportEditorContent2HTML(); break
+    case 'file.exportPdf': exportDocument('pdf'); break
+    case 'file.exportDocx': exportDocument('docx'); break
     case 'file.closeWorkspace':
       doc.flushSave().then(() => workspace.closeCurrentWorkspace())
       break

@@ -60,6 +60,11 @@ interface LazyBoxAPI {
   updateMenuState: (state: Record<string, unknown>) => void
   setBootTheme?: (theme: 'light' | 'paper' | 'dark') => void
 
+  // 导出 PDF / Word：返回导出的路径；用户取消时 canceled = true
+  exportPdf: (html: string, docPath?: string, title?: string) => Promise<{ canceled?: boolean; filePath?: string; error?: string }>
+  exportDocx: (markdown: string, docPath?: string, title?: string) => Promise<{ canceled?: boolean; filePath?: string; error?: string }>
+  showExportedFile: (filePath: string) => Promise<void>
+
   // ========== AI 配置管理 ==========
   aiGetConfig: () => Promise<{
     enabled: boolean

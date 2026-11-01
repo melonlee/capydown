@@ -73,6 +73,14 @@ const api = {
   setBootTheme: (theme: 'light' | 'paper' | 'dark') =>
     ipcRenderer.send('app:set-boot-theme', theme),
 
+  // 导出 PDF / Word
+  exportPdf: (html: string, docPath?: string, title?: string) =>
+    ipcRenderer.invoke('export:pdf', { html, docPath, title }),
+  exportDocx: (markdown: string, docPath?: string, title?: string) =>
+    ipcRenderer.invoke('export:docx', { markdown, docPath, title }),
+  showExportedFile: (filePath: string) =>
+    ipcRenderer.invoke('export:show-in-folder', { filePath }),
+
   // ========== AI 配置管理 ==========
   aiGetConfig: () => ipcRenderer.invoke('ai:get-config'),
   aiSetConfig: (config: any) => ipcRenderer.invoke('ai:set-config', config),
