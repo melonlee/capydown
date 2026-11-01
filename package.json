@@ -2,7 +2,7 @@
   "type": "module",
   "name": "capydown",
   "productName": "Capydown",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Capydown：给公众号作者的 Markdown 桌面编辑器，像 Typora 一样专心写，一键排成公众号",
   "main": "./out/main/index.cjs",
   "author": "melonlee",
