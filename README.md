@@ -274,5 +274,7 @@ pnpm build:mac    # 打安装包；另有 build:win / build:linux
 <div align="center">
   <img src="docs/assets/brand/logo-mark.png" width="36" alt="">
   <br>
+  <sub>树懒吉祥物和 喵想 · FantasyAI Lab 同一家族</sub>
+  <br>
   <sub>懒得排 · Slothdown · Made by <a href="https://github.com/melonlee">Melon</a> · <a href="https://fantasyailab.com/">FantasyAI Lab</a></sub>
 </div>

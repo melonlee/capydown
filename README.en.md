@@ -238,5 +238,7 @@ Issues and pull requests are welcome. Please run `pnpm test` and `pnpm build` be
 <div align="center">
   <img src="docs/assets/brand/logo-mark.png" width="36" alt="">
   <br>
+  <sub>The sloth belongs to the same mascot family as 喵想 · FantasyAI Lab</sub>
+  <br>
   <sub>懒得排 · Slothdown · Made by <a href="https://github.com/melonlee">Melon</a> · <a href="https://fantasyailab.com/">FantasyAI Lab</a></sub>
 </div>
