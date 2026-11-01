@@ -170,18 +170,18 @@ export interface InsertItem {
 }
 
 export const INSERT_ITEMS: InsertItem[] = [
-  { kind: 'h1', label: '标题 1', command: 'para.h1', hint: 'H1' },
-  { kind: 'h2', label: '标题 2', command: 'para.h2', hint: 'H2' },
-  { kind: 'h3', label: '标题 3', command: 'para.h3', hint: 'H3' },
-  { kind: 'ul', label: '无序列表', command: 'para.ul', hint: '•' },
+  { kind: 'h1', label: '标题 1', command: 'para.h1', hint: '#' },
+  { kind: 'h2', label: '标题 2', command: 'para.h2', hint: '##' },
+  { kind: 'h3', label: '标题 3', command: 'para.h3', hint: '###' },
+  { kind: 'ul', label: '无序列表', command: 'para.ul', hint: '-' },
   { kind: 'ol', label: '有序列表', command: 'para.ol', hint: '1.' },
-  { kind: 'task', label: '任务列表', command: 'para.task', hint: '☐' },
-  { kind: 'quote', label: '引用', command: 'para.quote', hint: '“' },
-  { kind: 'codeBlock', label: '代码块', command: 'para.codeBlock', hint: '</>' },
-  { kind: 'table', label: '表格', hint: '▦' },
-  { kind: 'image', label: '图片', command: 'fmt.uploadImage', hint: '▣' },
-  { kind: 'hr', label: '分割线', command: 'para.hr', hint: '—' },
-  { kind: 'mermaid', label: 'Mermaid 图', hint: '◇' },
+  { kind: 'task', label: '任务列表', command: 'para.task', hint: '- [ ]' },
+  { kind: 'quote', label: '引用', command: 'para.quote', hint: '>' },
+  { kind: 'codeBlock', label: '代码块', command: 'para.codeBlock', hint: '```' },
+  { kind: 'table', label: '表格', hint: '| |' },
+  { kind: 'image', label: '图片…', command: 'fmt.uploadImage', hint: '![]()' },
+  { kind: 'hr', label: '分割线', command: 'para.hr', hint: '---' },
+  { kind: 'mermaid', label: 'Mermaid 图', hint: 'graph' },
 ]
 
 export const TABLE_SNIPPET = '| 列 1 | 列 2 | 列 3 |\n| --- | --- | --- |\n|  |  |  |\n|  |  |  |\n'

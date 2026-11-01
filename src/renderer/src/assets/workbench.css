@@ -217,6 +217,40 @@
   background: var(--lb-selection) !important;
 }
 
+/* 空行左侧的「+」（editor/insert-button.ts）：停在空行时淡入，悬停加深 */
+.lb-editor .cm-lb-insert-btn {
+  position: absolute;
+  z-index: 3;
+  width: 22px;
+  height: 22px;
+  margin: -11px 0 0 -32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--lb-faint);
+  opacity: 0;
+  pointer-events: none;
+  cursor: pointer;
+  transition: opacity 0.12s ease, color 0.12s ease, background-color 0.12s ease;
+}
+
+.lb-editor .cm-lb-insert-btn.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  /* 连续回车时不闪：稍等再出现 */
+  transition-delay: 0.12s, 0s, 0s;
+}
+
+.lb-editor .cm-lb-insert-btn:hover,
+.lb-editor .cm-lb-insert-btn.is-pinned {
+  color: var(--lb-fg-strong);
+  background: var(--lb-hover);
+}
+
 .lb-editor .cm-placeholder {
   color: var(--lb-faint);
 }

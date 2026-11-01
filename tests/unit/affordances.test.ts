@@ -116,8 +116,8 @@ describe('insert menu', () => {
   })
 
   it('inserts a table on the empty line and selects the first header', () => {
-    const r = apply(at('a\n\nb', 2), insertSnippet(at('a\n\nb', 2), 'table'))
-    expect(r.text).toBe(`a\n${TABLE_SNIPPET}\nb`)
+    const r = apply(at('\n\nb', 0), insertSnippet(at('\n\nb', 0), 'table'))
+    expect(r.text).toBe(`${TABLE_SNIPPET}\n\nb`)
     expect(r.text.slice(r.sel.from, r.sel.to)).toBe('列 1')
   })
 
@@ -126,6 +126,13 @@ describe('insert menu', () => {
     const r = apply(s, insertSnippet(s, 'mermaid'))
     expect(r.text).toBe(MERMAID_SNIPPET)
     expect(r.text.slice(0, r.sel.head)).toBe('```mermaid\ngraph TD\n  A[开始] --> B[结束]')
+  })
+
+  it('keeps a blank line between the previous paragraph and an inserted block', () => {
+    const s = at('text\n\nmore', 5)
+    expect(apply(s, insertSnippet(s, 'table')).text).toBe(`text\n\n${TABLE_SNIPPET}\nmore`)
+    const s2 = at('a\n\n\nb', 3)
+    expect(apply(s2, insertSnippet(s2, 'mermaid')).text).toBe(`a\n\n${MERMAID_SNIPPET}\nb`)
   })
 
   it('quotes an empty line instead of doing nothing', () => {

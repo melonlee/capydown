@@ -120,7 +120,9 @@ export function insertBlock(state: EditorState, block: string, cursorOffset?: nu
   const atEmptyLine = line.text.trim() === '' && range.empty
   const from = atEmptyLine ? line.from : range.empty ? line.to : range.from
   const to = atEmptyLine ? line.to : range.to
-  const prefix = from === 0 || atEmptyLine ? '' : '\n\n'
+  // 空行紧跟在文字后面时补一个空行：否则 "---" 会把上一行变成二级标题、表格 / 代码块会粘在上一段上
+  const prevNonEmpty = atEmptyLine && line.number > 1 && state.doc.line(line.number - 1).text.trim() !== ''
+  const prefix = from === 0 || (atEmptyLine && !prevNonEmpty) ? '' : atEmptyLine ? '\n' : '\n\n'
   const insert = `${prefix}${block}`
   const caret = from + prefix.length + (cursorOffset ?? block.length)
   return {

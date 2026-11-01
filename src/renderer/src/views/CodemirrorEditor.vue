@@ -14,6 +14,7 @@ import UploadImgDialog from '@renderer/components/CodemirrorEditor/UploadImgDial
 import PublishDialog from '@renderer/components/PublishDialog.vue'
 import RunLoading from '@renderer/components/RunLoading.vue'
 import CommandPalette from '@renderer/components/workbench/CommandPalette.vue'
+import InsertMenu from '@renderer/components/workbench/InsertMenu.vue'
 import OutlinePanel from '@renderer/components/workbench/OutlinePanel.vue'
 import SelectionToolbar from '@renderer/components/workbench/SelectionToolbar.vue'
 import StatusBar from '@renderer/components/workbench/StatusBar.vue'
@@ -53,6 +54,7 @@ registerWeChatHtmlProvider()
 const isMac = /Mac/i.test(navigator.userAgent)
 const editorHost = ref<HTMLElement>()
 const mainEl = ref<HTMLElement>()
+const insertMenu = ref<InstanceType<typeof InsertMenu>>()
 /** 给浮动工具栏 / 插入菜单用的编辑器引用（editor 变量本身不是响应式的） */
 const editorRef = shallowRef<MarkdownEditor | null>(null)
 const wechatPanel = ref<InstanceType<typeof WeChatPanel>>()
@@ -669,6 +671,7 @@ onMounted(() => {
     onDropFiles,
     openLink: url => window.open(url, '_blank'),
     onContextMenu: ctx => window.$api.showEditorContextMenu?.(ctx),
+    onInsertButton: anchor => insertMenu.value?.show(anchor),
   })
   editorRef.value = markRaw(editor)
   store.editor = markRaw(editor) as any
@@ -738,6 +741,7 @@ window.addEventListener('beforeunload', () => {
         <main ref="mainEl" class="lb-main">
           <div v-show="isTextView" ref="editorHost" class="lb-editor" />
           <SelectionToolbar v-if="isTextView" :editor="editorRef" :container="mainEl" @run="runCommand" />
+          <InsertMenu ref="insertMenu" :editor="editorRef" @run="runCommand" />
 
           <div v-if="store.currentFileType === 'image'" class="lb-file-view">
             <img v-if="imageBase64" :src="imageBase64" :alt="wb.docName">
