@@ -30,13 +30,15 @@ function dataMtime(dir: string): number {
   for (const name of ['config.json', 'Local Storage']) {
     try {
       newest = Math.max(newest, fs.statSync(path.join(dir, name)).mtimeMs)
-    } catch {}
+    } catch {
+      // 不存在：不算数据
+    }
   }
   return newest
 }
 
 /** 目录里是否已有用户数据（偏好或 Local Storage） */
-const hasUserData = (dir: string) => dataMtime(dir) > 0
+const hasUserData = (dir: string): boolean => dataMtime(dir) > 0
 
 export type MigrationResult =
   | { status: 'migrated', from: string, to: string }
@@ -84,7 +86,9 @@ export function migrateLegacyUserData(): MigrationResult {
   } catch (e) {
     try {
       fs.rmSync(tmp, { recursive: true, force: true })
-    } catch {}
+    } catch {
+      // 临时目录删不掉也不影响启动
+    }
     console.error('[user-data] migration failed, starting with a fresh profile:', e)
     return { status: 'failed', error: String(e) }
   }
