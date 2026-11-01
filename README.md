@@ -6,7 +6,7 @@
 
 <p><i>懒得排版？交给树懒。</i></p>
 
-<p>Slothdown 是给公众号作者的 Markdown 桌面编辑器：<br>像 Typora 一样专心写，一键排成公众号，发布前让 AI 再校对一遍。</p>
+<p>像 Typora 一样专心写，一键排成公众号，发布前让 AI 再校对一遍。</p>
 
 [![CI](https://img.shields.io/github/actions/workflow/status/melonlee/slothdown/ci.yml?style=flat-square&label=CI&color=111111)](https://github.com/melonlee/slothdown/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/melonlee/slothdown?style=flat-square&color=111111)](https://github.com/melonlee/slothdown/releases)
@@ -278,7 +278,7 @@ pnpm build:mac    # 打安装包；另有 build:win / build:linux
 <div align="center">
   <img src="docs/assets/brand/logo-mark.png" width="36" alt="">
   <br>
-  <sub>树懒吉祥物和 喵想 · FantasyAI Lab 同一家族</sub>
+  <sub>图标是一只抱着钢笔打盹的树懒，和 喵想 · FantasyAI Lab 同一吉祥物家族</sub>
   <br>
   <sub>Slothdown · Made by <a href="https://github.com/melonlee">Melon</a> · <a href="https://fantasyailab.com/">FantasyAI Lab</a></sub>
 </div>
