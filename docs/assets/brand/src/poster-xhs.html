@@ -1,48 +1,38 @@
 <!doctype html>
+<!-- 小红书 / 朋友圈 poster for 公众号作者 · 1080×1440 -->
 <html lang="zh-CN"><head><meta charset="utf-8">
 <link rel="stylesheet" href="_base.css">
 <style>
-  body { width: 1080px; height: 1440px; position: relative; color: #16132E;
-    background:
-      radial-gradient(700px 500px at 100% 0%, rgba(167,139,250,.35), transparent 60%),
-      radial-gradient(600px 500px at 0% 100%, rgba(196,181,253,.45), transparent 60%),
-      #F7F5FF; }
-  .top { position: absolute; left: 80px; right: 80px; top: 70px; display: flex; justify-content: space-between; align-items: center; }
-  .top img { height: 54px; }
-  .tag { font-size: 24px; color: #6D28D9; font-weight: 600; padding: 8px 20px; border-radius: 999px; background: #EDE9FE; }
-  h1 { position: absolute; left: 80px; top: 170px; font-size: 92px; line-height: 1.18; font-weight: 800; letter-spacing: .01em; }
-  h1 .hl { background: linear-gradient(transparent 62%, #C4B5FD 62%, #C4B5FD 92%, transparent 92%); }
-  .sub { position: absolute; left: 80px; top: 410px; font-size: 32px; color: #4B4870; line-height: 1.55; }
-  .sub b { color: #6D28D9; }
-  .phones { position: absolute; left: 0; right: 0; top: 530px; height: 580px; }
-  .phone { position: absolute; top: 0; width: 320px; height: 570px; border-radius: 40px; background: #111; padding: 12px; box-shadow: 0 30px 60px -20px rgba(45,20,110,.45); }
-  .phone .screen { width: 100%; height: 100%; border-radius: 30px; overflow: hidden; background: #f3f3f6; }
-  .phone img { width: 100%; display: block; }
-  .p1 { left: 160px; transform: rotate(-4deg); }
-  .p2 { left: 600px; transform: rotate(4deg); top: 6px; }
-  .arrow { position: absolute; left: 490px; top: 240px; width: 100px; text-align: center; font-size: 22px; color: #6D28D9; font-weight: 700; line-height: 1.4; }
-  .arrow i { display: block; font-style: normal; font-size: 46px; }
-  .caption { position: absolute; top: 1148px; left: 0; right: 0; text-align: center; font-size: 26px; color: #6E6A9E; }
-  .list { position: absolute; left: 80px; right: 80px; top: 1210px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 30px; font-size: 27px; font-weight: 500; }
-  .list div::before { content: "✓"; color: #fff; background: #7C3AED; border-radius: 50%; width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 12px; vertical-align: 3px; }
-  .cta { position: absolute; left: 80px; right: 80px; bottom: 56px; display: flex; justify-content: space-between; align-items: center; font-size: 24px; color: #6E6A9E; }
-  .cta b { color: #16132E; font-size: 28px; }
+  body { width: 1080px; height: 1440px; }
+  .top { position: absolute; left: 88px; right: 88px; top: 84px; display: flex; align-items: center; justify-content: space-between; }
+  .lockup { height: 46px; }
+  .meta { font-size: 20px; color: var(--muted); letter-spacing: .06em; }
+  .eyebrow { position: absolute; left: 88px; top: 220px; font-size: 26px; letter-spacing: .08em; }
+  .lede { position: absolute; left: 88px; top: 418px; font-size: 26px; color: var(--ink-2); }
+  h1 { position: absolute; left: 84px; top: 262px; font-size: 92px; line-height: 1.22; letter-spacing: .02em; }
+  ol { position: absolute; left: 88px; right: 88px; top: 520px; list-style: none; border-top: 1px solid var(--line); }
+  li { display: grid; grid-template-columns: 68px 1fr; align-items: baseline; padding: 22px 0; border-bottom: 1px solid var(--line); }
+  .n { font-size: 22px; color: var(--faint); font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+  .t { font-family: var(--font-serif); font-weight: 700; font-size: 34px; }
+  .d { grid-column: 2; margin-top: 8px; font-size: 22px; line-height: 1.55; color: var(--muted); }
+  .shot { position: absolute; left: 88px; top: 1076px; }
 </style></head>
 <body>
-  <div class="top"><img src="../logo-wordmark-light.svg" alt="LazyBox"><span class="tag">公众号作者必备</span></div>
-  <h1>公众号排版<br>别再<span class="hl">一段一段调</span>了</h1>
-  <p class="sub">用 Markdown 专心写，<b>换个主题就是排版</b>，<br>一键复制，到公众号后台直接粘贴。</p>
-  <div class="phones">
-    <div class="phone p1"><div class="screen"><img src="crops/preview-classic.jpg"></div></div>
-    <div class="arrow"><i>⇄</i>换主题</div>
-    <div class="phone p2"><div class="screen"><img src="crops/preview-green.jpg"></div></div>
+  <div class="top">
+    <img class="lockup" src="../logo-lockup-light.svg" alt="LazyBox · 懒排">
+    <span class="meta">免费开源 · Mac / Win / Linux</span>
   </div>
-  <div class="caption">同一篇文章，两套主题 · 应用内真实截图</div>
-  <div class="list">
-    <div>本地文件夹管理文章</div>
-    <div>图片一键上传图床</div>
-    <div>代码高亮、表格、流程图</div>
-    <div>AI 起标题、写摘要（自带 Key）</div>
+  <p class="eyebrow muted">还在公众号后台一段一段调格式？</p>
+  <h1 class="serif">写完，就排好了。</h1>
+  <p class="lede">LazyBox · 懒排，给公众号作者的 Markdown 编辑器</p>
+  <ol>
+    <li><span class="n">01</span><span class="t">像 Typora 一样专心写</span><span class="d">Markdown 实时预览，专注模式、打字机模式</span></li>
+    <li><span class="n">02</span><span class="t">发布前，AI 帮你校对</span><span class="d">只挑错别字和标点，改不改由你决定</span></li>
+    <li><span class="n">03</span><span class="t">一键排成公众号</span><span class="d">选一个主题，点「复制到公众号」，粘贴即可</span></li>
+    <li><span class="n">04</span><span class="t">稿子永远是你的</span><span class="d">本地 .md 文件，粘贴的图片自动存进 assets</span></li>
+  </ol>
+  <!-- real screenshot, bleeding off the right and bottom edges -->
+  <div class="shot win">
+    <div class="crop" style="--x:0; --y:0; --w:1440; --h:900; --cw:1100"><img src="../../screenshots/06-wechat.png"></div>
   </div>
-  <div class="cta"><span><b>GitHub 搜索 LazyBox</b>　开源免费的桌面应用</span><span>格式，本该如此简单。</span></div>
 </body></html>

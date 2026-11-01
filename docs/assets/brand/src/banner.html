@@ -1,27 +1,23 @@
 <!doctype html>
+<!-- README hero · 1280×400 -->
 <html lang="zh-CN"><head><meta charset="utf-8">
 <link rel="stylesheet" href="_base.css">
 <style>
-  body { width: 1280px; height: 400px; position: relative; }
-  .wrap { position: absolute; inset: 0; display: flex; align-items: center; padding: 0 0 0 72px; }
-  .left { width: 560px; position: relative; z-index: 2; }
-  .logo { height: 64px; display: block; margin-bottom: 26px; }
-  h1 { font-size: 44px; font-weight: 700; letter-spacing: .02em; line-height: 1.25; }
-  h1 em { font-style: normal; background: linear-gradient(90deg, #C4B5FD, #8B5CF6); -webkit-background-clip: text; color: transparent; }
-  p.sub { margin-top: 14px; font-size: 19px; color: var(--muted); line-height: 1.6; }
-  .flow { margin-top: 22px; display: flex; gap: 10px; align-items: center; font-size: 15px; color: #DDD6FE; }
-  .flow b { font-weight: 500; padding: 5px 12px; border-radius: 8px; background: rgba(139,92,246,.16); border: 1px solid rgba(167,139,250,.3); }
-  .flow span { color: #6E6A9E; }
-  .shot { position: absolute; right: 40px; top: 50px; width: 620px; transform: perspective(1800px) rotateY(-10deg) rotateX(3deg); transform-origin: left center; }
+  body { width: 1280px; height: 400px; }
+  .left { position: absolute; left: 88px; top: 0; bottom: 0; width: 540px; display: flex; flex-direction: column; justify-content: center; }
+  .lockup { height: 40px; width: auto; align-self: flex-start; }
+  h1 { margin-top: 40px; font-size: 38px; line-height: 1.42; }
+  .sub { margin-top: 18px; font-size: 16px; line-height: 1.6; color: var(--muted); }
+  .shot { position: absolute; left: 676px; top: 64px; }
 </style></head>
-<body class="bg-dark grid">
-  <div class="wrap">
-    <div class="left">
-      <img class="logo" src="../logo-wordmark-dark.svg" alt="LazyBox">
-      <h1>格式，<em>本该如此简单。</em></h1>
-      <p class="sub">给公众号作者的 Markdown 桌面编辑器</p>
-      <div class="flow"><b>写作</b><span>→</span><b>排版</b><span>→</span><b>图片</b><span>→</span><b>发布</b></div>
-    </div>
+<body>
+  <div class="left">
+    <img class="lockup" src="../logo-lockup-light.svg" alt="LazyBox · 懒排">
+    <h1 class="serif">像 Typora 一样专心写，<br>一键排成公众号。</h1>
+    <p class="sub">给公众号作者的 Markdown 编辑器 · 发布前 AI 校对 · 免费开源</p>
   </div>
-  <div class="shot window"><div class="bar"><i></i><i></i><i></i></div><img src="../../screenshots/02-editor-split.png"></div>
+  <!-- bleeds off the right and bottom edges on purpose -->
+  <div class="shot win">
+    <div class="crop" style="--x:0; --y:0; --w:1060; --h:700; --cw:720"><img src="../../screenshots/01-writing.png"></div>
+  </div>
 </body></html>

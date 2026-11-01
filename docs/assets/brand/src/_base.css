@@ -1,49 +1,64 @@
-/* LazyBox brand tokens */
+/*
+ * LazyBox · 懒排 marketing tokens — strict monochrome.
+ * The only colour allowed on a marketing image is whatever appears inside a real
+ * screenshot (公众号 article themes). Typography does the work: a Chinese serif for
+ * headlines, PingFang / system sans for everything else.
+ *
+ * Render: node <playwright shot tool> <page>.html <out>.png <w> <h> false 2
+ */
 :root {
-  --ink: #0D0F24;
-  --ink-2: #1A1640;
-  --violet: #8B5CF6;
-  --violet-2: #7C3AED;
-  --violet-3: #A78BFA;
-  --lilac: #EDE9FE;
-  --text: #F5F3FF;
-  --muted: #A5A3C9;
-  --font-cn: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  --ink: #111111;
+  --ink-2: #333333;
+  --muted: #6e6e6e;
+  --faint: #a3a3a3;
+  --line: #e7e7e5;
+  --paper: #ffffff;
+  --paper-2: #f6f6f4;
+  --font-serif: "Songti SC", "Source Han Serif SC", "Noto Serif SC", "STSong", serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { width: 100%; height: 100%; }
 body {
-  font-family: var(--font-cn);
-  color: var(--text);
-  -webkit-font-smoothing: antialiased;
+  position: relative;
   overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
-.bg-dark {
-  background:
-    radial-gradient(900px 500px at 78% 30%, rgba(139, 92, 246, .28), transparent 60%),
-    radial-gradient(600px 400px at 10% 110%, rgba(124, 58, 237, .22), transparent 60%),
-    linear-gradient(160deg, #1B1745 0%, #0D0F24 60%, #090A1A 100%);
+
+/* Serif headline — the brand voice. */
+.serif { font-family: var(--font-serif); font-weight: 700; letter-spacing: .01em; }
+.muted { color: var(--muted); }
+
+/* Real screenshot in a quiet macOS window frame. The screenshots already carry the
+   app's own title bar (inactive grey traffic lights), so the frame only adds the
+   rounded corners, a hairline and a soft shadow. */
+.win {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, .10),
+    0 2px 6px rgba(0, 0, 0, .04),
+    0 28px 60px -18px rgba(0, 0, 0, .24);
 }
-.grid::before {
-  content: ""; position: absolute; inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
-  background-size: 40px 40px;
-  mask-image: radial-gradient(ellipse at 60% 40%, #000 30%, transparent 75%);
+.win > img { display: block; width: 100%; }
+
+/*
+ * Crop a region of a 1440×900 screenshot without pre-cut files.
+ *   <div class="crop" style="--x:420; --y:40; --w:720; --h:540; --cw:600">
+ *     <img src="../../screenshots/01-writing.png"></div>
+ * --x/--y/--w/--h: source rect in CSS px of the screenshot; --cw: rendered width in px.
+ */
+.crop { --k: calc(var(--cw) / var(--w)); width: calc(var(--cw) * 1px); height: calc(var(--h) * var(--k) * 1px); overflow: hidden; }
+.crop > img {
+  display: block; max-width: none;
+  width: calc(1440px * var(--k));
+  margin-left: calc(var(--x) * var(--k) * -1px);
+  margin-top: calc(var(--y) * var(--k) * -1px);
 }
-.window {
-  border-radius: 14px; overflow: hidden;
-  background: #1f2433;
-  box-shadow: 0 40px 80px -20px rgba(0,0,0,.65), 0 0 0 1px rgba(255,255,255,.08);
-}
-.window .bar { height: 26px; background: #171b28; display: flex; align-items: center; gap: 7px; padding: 0 12px; }
-.window .bar i { width: 10px; height: 10px; border-radius: 50%; display: block; }
-.window .bar i:nth-child(1) { background: #ff5f57; } .window .bar i:nth-child(2) { background: #febc2e; } .window .bar i:nth-child(3) { background: #28c840; }
-.window img { display: block; width: 100%; }
-.pill {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 6px 14px; border-radius: 999px;
-  background: rgba(139, 92, 246, .14); border: 1px solid rgba(167, 139, 250, .35);
-  color: #DDD6FE; font-size: 15px; font-weight: 500;
-}
+
+.eyebrow { font-size: 14px; letter-spacing: .14em; color: var(--muted); }
+.rule { height: 1px; background: var(--line); }
