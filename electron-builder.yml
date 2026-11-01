@@ -75,8 +75,8 @@ mac:
       arch: [arm64, x64]
   # extendInfo 必须是映射（写成列表时 electron-builder 会静默忽略）
   extendInfo:
-    NSDocumentsFolderUsageDescription: 懒得排需要访问“文稿”文件夹来读写你的文章。
-    NSDownloadsFolderUsageDescription: 懒得排需要访问“下载”文件夹来打开或导出文件。
+    NSDocumentsFolderUsageDescription: Slothdown 需要访问“文稿”文件夹来读写你的文章。
+    NSDownloadsFolderUsageDescription: Slothdown 需要访问“下载”文件夹来打开或导出文件。
   # 目前没有 Apple Developer 证书：不签名、不公证
   identity: null
   notarize: false
@@ -86,7 +86,7 @@ linux:
   executableName: slothdown
   icon: build/icons
   desktop:
-    Name: 懒得排 · Slothdown
+    Name: Slothdown
     GenericName: Markdown 编辑器
     Comment: 像 Typora 一样专心写，一键排成公众号
   target:
@@ -96,7 +96,7 @@ linux:
   category: Office
   mimeTypes:
     - text/markdown
-  synopsis: 懒得排 · Slothdown — Markdown 写作与公众号排版
+  synopsis: Slothdown — Markdown 写作与公众号排版
 appImage:
   artifactName: ${productName}-${version}-linux-${arch}.${ext}
 deb:

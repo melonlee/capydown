@@ -1,5 +1,5 @@
 /*
- * 懒得排 · Slothdown — landing page
+ * Slothdown — landing page
  * Strict monochrome, typography-led. No web fonts: system serif for headlines,
  * system sans for text. The only colour on the page comes from real screenshots.
  */
@@ -99,7 +99,7 @@ h1, h2, h3 { margin: 0; font-weight: 700; }
 .hero-stage .peek { position: absolute; right: 7%; bottom: 100%; width: 240px; height: auto; margin-bottom: -3px; z-index: 0; pointer-events: none; }
 .hero-shot { position: relative; z-index: 1; }
 
-/* splash-like intro: # 懒得排 (source) is "typeset" into the serif heading, then the SLOTHDOWN word */
+/* splash-like intro: # Slothdown (source) is "typeset" into the serif heading, then the SLOTHDOWN word */
 .anim .mark-src { animation: src-in 0.25s ease-out 0.15s both; }
 .anim .mark-src .caret { animation: blink 0.7s steps(1, end) 0.15s both; }
 .anim .mark-src .mk { animation: mk-out 0.35s cubic-bezier(0.4, 0, 1, 1) 0.75s both; }

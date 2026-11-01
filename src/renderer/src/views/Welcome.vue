@@ -3,7 +3,7 @@ import { useWorkspaceStore } from '@renderer/stores'
 import BrandMark from '@renderer/components/brand/BrandMark.vue'
 import { Edit2, ExternalLink, FolderOpen, FolderPlus, MoreHorizontal, Trash2 } from 'lucide-vue-next'
 import type { Workspace } from '@renderer/types'
-import { APP_NAME, APP_NAME_ZH, APP_TAGLINE } from '../../../shared/brand'
+import { APP_NAME, APP_TAGLINE } from '../../../shared/brand'
 import { markAppReady } from '@renderer/utils/boot'
 
 const workspaceStore = useWorkspaceStore()
@@ -123,8 +123,7 @@ const openInFinder = async (workspace: Workspace) => {
     <main class="lb-welcome-main">
       <header class="lb-welcome-brand">
         <BrandMark class="lb-welcome-logo" />
-        <h1>{{ APP_NAME_ZH }}</h1>
-        <span class="lb-welcome-word">{{ APP_NAME }}</span>
+        <h1 class="lb-welcome-word">{{ APP_NAME }}</h1>
         <p>{{ APP_TAGLINE }}</p>
       </header>
 
@@ -297,25 +296,12 @@ const openInFinder = async (workspace: Workspace) => {
   user-select: none;
 }
 
-/* 中文名用宋体标题，与启动画面「# 懒得排」排成的标题一致 */
-.lb-welcome-brand h1 {
-  margin: 0;
-  font: 700 28px/1.2 'Songti SC', 'STSong', 'Source Han Serif SC', 'Noto Serif CJK SC', 'Noto Serif SC', 'SimSun', serif;
-  letter-spacing: 0.06em;
-  text-indent: 0.06em;
-  color: var(--lb-fg-strong);
-}
-
-/* 英文名做成小号字标：大写、宽字距（与启动画面底部的 SLOTHDOWN 一致） */
+/* 名字只有 Slothdown：Manrope 风格的几何无衬线字标，和启动画面一致 */
 .lb-welcome-word {
-  display: block;
-  margin-top: 8px;
-  font-size: 10.5px;
-  font-weight: 500;
-  letter-spacing: 0.32em;
-  text-indent: 0.32em;
-  text-transform: uppercase;
-  color: var(--lb-faint);
+  margin: 0;
+  font: 700 30px/1.15 'Manrope', 'Avenir Next', 'Helvetica Neue', 'Segoe UI', system-ui, sans-serif;
+  letter-spacing: -0.02em;
+  color: var(--lb-fg-strong);
 }
 
 .lb-welcome-brand p {

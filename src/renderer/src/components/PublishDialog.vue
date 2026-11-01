@@ -2,7 +2,7 @@
   发布对话框
 
   能做的事情如实说明：
-  - 微信公众号：把排版好的内容复制到剪贴板，到公众号后台粘贴（懒得排不会替你自动发文）
+  - 微信公众号：把排版好的内容复制到剪贴板，到公众号后台粘贴（Slothdown 不会替你自动发文）
   - Markdown 文件：导出带 Front Matter 的 .md
   其它平台显示为「暂不支持」。
 -->
@@ -191,7 +191,7 @@ watch(() => props.modelValue, async (open) => {
       <DialogHeader>
         <DialogTitle>发布</DialogTitle>
         <DialogDescription>
-          复制排版好的内容到公众号后台粘贴，或导出 Markdown 文件。懒得排不会替你自动发文。
+          复制排版好的内容到公众号后台粘贴，或导出 Markdown 文件。Slothdown 不会替你自动发文。
         </DialogDescription>
       </DialogHeader>
 

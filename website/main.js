@@ -1,4 +1,4 @@
-// 懒得排 · Slothdown landing page — progressive enhancement only; the page works without it.
+// Slothdown landing page — progressive enhancement only; the page works without it.
 (function () {
   'use strict'
 

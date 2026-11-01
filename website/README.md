@@ -1,4 +1,4 @@
-# 懒得排 · Slothdown 官网
+# Slothdown 官网
 
 无需构建的纯静态页面：HTML + CSS + 少量原生 JS，没有 CDN、Web 字体和统计脚本，全部使用相对路径。
 

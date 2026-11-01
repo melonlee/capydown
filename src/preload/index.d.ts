@@ -61,7 +61,7 @@ interface SlothdownAPI {
   showEditorContextMenu: (ctx: { hasSelection: boolean, linkUrl: string | null, imageUrl: string | null }) => Promise<boolean>
   setBootTheme?: (theme: 'light' | 'paper' | 'dark') => void
 
-  // 用懒得排打开：取走启动前排队的文件；判断在哪个工作区打开
+  // 用 Slothdown 打开：取走启动前排队的文件；判断在哪个工作区打开
   takePendingOpenFiles: () => Promise<string[]>
   resolveOpenTarget: (file: string, workspace?: string | null) => Promise<{ switchWorkspace: boolean; workspace: string; file: string } | null>
 

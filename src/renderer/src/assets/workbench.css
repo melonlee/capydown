@@ -1,5 +1,5 @@
 /*
- * 懒得排 · Slothdown 工作台：编辑器主题（GitHub / Newsprint / Night）与 CodeMirror 6 实时预览样式。
+ * Slothdown 工作台：编辑器主题（GitHub / Newsprint / Night）与 CodeMirror 6 实时预览样式。
  * 主题只定义 CSS 变量；界面组件和编辑器都只引用变量。
  * 公众号文章的排版主题与这里无关（见 config/theme.ts）。
  */

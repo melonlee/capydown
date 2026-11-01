@@ -175,7 +175,7 @@ const testConnection = async () => {
     </h2>
 
     <p class="text-xs text-muted-foreground leading-relaxed">
-      AI 只做两件事：<strong class="font-medium text-foreground">发布前校对</strong>（错别字、语病、标点、重复用词）和在发布对话框里<strong class="font-medium text-foreground">拟标题、写摘要</strong>。请求由本机直接发给你选择的服务商，懒得排不经手、不保存你的文章。
+      AI 只做两件事：<strong class="font-medium text-foreground">发布前校对</strong>（错别字、语病、标点、重复用词）和在发布对话框里<strong class="font-medium text-foreground">拟标题、写摘要</strong>。请求由本机直接发给你选择的服务商，Slothdown 不经手、不保存你的文章。
     </p>
 
     <div v-if="configured" class="flex items-center gap-1 text-xs text-muted-foreground">

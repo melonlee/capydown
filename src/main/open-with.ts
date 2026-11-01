@@ -1,5 +1,5 @@
 /**
- * 「用懒得排打开」的纯逻辑（不依赖 electron，便于单元测试）：
+ * 「用 Slothdown 打开」的纯逻辑（不依赖 electron，便于单元测试）：
  * 从命令行参数里找出要打开的 Markdown 文件，以及决定在哪个工作区里打开它。
  */
 import * as path from 'path'

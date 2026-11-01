@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="docs/assets/brand/banner.png" alt="懒得排 · Slothdown — write with Typora-like calm, format for WeChat in one click." width="100%">
+<img src="docs/assets/brand/banner.png" alt="Slothdown — write with Typora-like calm, format for WeChat in one click." width="100%">
 
-<p><b>Slothdown (懒得排)</b> is a desktop Markdown editor for WeChat Official Account (公众号) writers:<br>write with Typora-like calm, format for 公众号 in one click, and let AI proofread before you publish.</p>
+<p><b>Slothdown</b> is a desktop Markdown editor for WeChat Official Account (公众号) writers:<br>write with Typora-like calm, format for 公众号 in one click, and let AI proofread before you publish.</p>
 
 [![CI](https://img.shields.io/github/actions/workflow/status/melonlee/slothdown/ci.yml?style=flat-square&label=CI&color=111111)](https://github.com/melonlee/slothdown/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/melonlee/slothdown?style=flat-square&color=111111)](https://github.com/melonlee/slothdown/releases)
@@ -19,7 +19,7 @@
 **About the name**
 
 - **Slothdown** — Markdown with a sloth, and *slow down*: calm, focused writing.
-- **懒得排** ("can't be bothered to format") — too lazy to format? It formats for you.
+- Chinese slogan **懒得排版？交给树懒。** ("Too lazy to format? Leave it to the sloth.") — you write, it formats.
 
 <img src="docs/assets/screenshots/01-writing.png" alt="Slothdown writing view with live preview" width="100%">
 
@@ -240,5 +240,5 @@ Issues and pull requests are welcome. Please run `pnpm test` and `pnpm build` be
   <br>
   <sub>The sloth belongs to the same mascot family as 喵想 · FantasyAI Lab</sub>
   <br>
-  <sub>懒得排 · Slothdown · Made by <a href="https://github.com/melonlee">Melon</a> · <a href="https://fantasyailab.com/">FantasyAI Lab</a></sub>
+  <sub>Slothdown · Made by <a href="https://github.com/melonlee">Melon</a> · <a href="https://fantasyailab.com/">FantasyAI Lab</a></sub>
 </div>

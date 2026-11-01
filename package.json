@@ -3,7 +3,7 @@
   "name": "slothdown",
   "productName": "Slothdown",
   "version": "0.3.0",
-  "description": "懒得排 · Slothdown：给公众号作者的 Markdown 桌面编辑器，像 Typora 一样专心写，一键排成公众号",
+  "description": "Slothdown：给公众号作者的 Markdown 桌面编辑器，像 Typora 一样专心写，一键排成公众号",
   "main": "./out/main/index.cjs",
   "author": "melonlee",
   "scripts": {

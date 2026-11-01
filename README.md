@@ -1,8 +1,12 @@
 <div align="center">
 
-<img src="docs/assets/brand/banner.png" alt="懒得排 · Slothdown — 像 Typora 一样专心写，一键排成公众号。" width="100%">
+<img src="docs/assets/brand/banner.png" alt="Slothdown — 像 Typora 一样专心写，一键排成公众号。" width="100%">
 
-<p><b>懒得排 · Slothdown</b> 是给公众号作者的 Markdown 桌面编辑器：<br>像 Typora 一样专心写，一键排成公众号，发布前让 AI 再校对一遍。</p>
+<p><b>Slothdown · 给公众号作者的 Markdown 编辑器</b></p>
+
+<p><i>懒得排版？交给树懒。</i></p>
+
+<p>Slothdown 是给公众号作者的 Markdown 桌面编辑器：<br>像 Typora 一样专心写，一键排成公众号，发布前让 AI 再校对一遍。</p>
 
 [![CI](https://img.shields.io/github/actions/workflow/status/melonlee/slothdown/ci.yml?style=flat-square&label=CI&color=111111)](https://github.com/melonlee/slothdown/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/melonlee/slothdown?style=flat-square&color=111111)](https://github.com/melonlee/slothdown/releases)
@@ -14,14 +18,14 @@
 </div>
 
 > [!NOTE]
-> **原名 LazyBox · 懒排**，从 v0.3.0 起改名为懒得排 · Slothdown。老用户直接安装新版即可：第一次启动时，旧版的偏好设置、AI 配置和工作区列表会自动带过来（旧数据原样保留），文章本来就在你自己的文件夹里。
+> **原名 LazyBox · 懒排**，从 v0.3.0 起改名为 Slothdown（v0.3.1 起只用 Slothdown 这一个名字）。老用户直接安装新版即可：第一次启动时，旧版的偏好设置、AI 配置和工作区列表会自动带过来（旧数据原样保留），文章本来就在你自己的文件夹里。
 
 **为什么叫这个名字？**
 
 - **Slothdown**：Markdown 加一只树懒（sloth），也是 *slow down*——慢下来，专心把字写好。
-- **懒得排**：懒得排版？交给它。你只管写，排版一键完成。
+- 标语：**懒得排版？交给树懒。** 你只管写，排版一键完成。
 
-<img src="docs/assets/screenshots/01-writing.png" alt="懒得排写作界面：单栏实时预览" width="100%">
+<img src="docs/assets/screenshots/01-writing.png" alt="Slothdown 写作界面：单栏实时预览" width="100%">
 
 ## 下载
 
@@ -40,13 +44,13 @@
 > xattr -cr /Applications/Slothdown.app
 > ```
 
-## 为什么做懒得排
+## 为什么做 Slothdown
 
 公众号作者想要的其实是两样东西：Typora 那样安静的写作环境，和一键就排好的公众号格式。现实往往是在 Typora 里写完，再去另一个网页工具排版，最后粘进后台。
 
 还有一件更要命的事：**文章发出去以后，正文最多只能改 20 个字**。错别字一旦发出去，基本就改不回来了。
 
-所以懒得排只做三件事：把写作体验做到接近 Typora；把公众号排版收进一个面板；在你点「发布」之前，让 AI 帮你把错别字挑出来。界面只有黑白灰，颜色只留给你的文章。
+所以 Slothdown 只做三件事：把写作体验做到接近 Typora；把公众号排版收进一个面板；在你点「发布」之前，让 AI 帮你把错别字挑出来。界面只有黑白灰，颜色只留给你的文章。
 
 <img src="docs/assets/brand/workflow.png" alt="写作 → 校对 → 排版 → 复制到公众号 / 导出 PDF · Word" width="100%">
 
@@ -118,11 +122,11 @@
 
 ## 用 Slothdown 打开 .md <sup>v0.3.0</sup>
 
-安装后，懒得排会登记为 `.md` / `.markdown` 等文件的「打开方式」，但**不抢默认应用**：在访达里右键 `.md` → 打开方式 → Slothdown（Windows：「打开方式 → 选择其他应用」；Linux 登记 `text/markdown`）。文件在当前工作区里就直接打开，否则把它所在的文件夹作为工作区打开；应用已在运行时交给已有窗口。打开文件不会改动文件。
+安装后，Slothdown 会登记为 `.md` / `.markdown` 等文件的「打开方式」，但**不抢默认应用**：在访达里右键 `.md` → 打开方式 → Slothdown（Windows：「打开方式 → 选择其他应用」；Linux 登记 `text/markdown`）。文件在当前工作区里就直接打开，否则把它所在的文件夹作为工作区打开；应用已在运行时交给已有窗口。打开文件不会改动文件。
 
 ## 两个 AI 帮手
 
-AI 在懒得排里只做两件事，都在发布前用到。默认不开启，用你自己的 API Key（BYOK）。
+AI 在 Slothdown 里只做两件事，都在发布前用到。默认不开启，用你自己的 API Key（BYOK）。
 
 <table>
   <tr>
@@ -146,7 +150,7 @@ AI 在懒得排里只做两件事，都在发布前用到。默认不开启，�
 
 使用：菜单「文件 → 发布前校对…」，或在命令面板搜「校对」；标题和摘要在发布对话框里点「AI 拟标题和摘要」。
 
-> **隐私**：只有在你主动点击校对或拟标题时，文章内容才会发给你配置的服务商。懒得排没有自己的服务器，不经手你的文章和 Key；费用由你的服务商按用量计算。
+> **隐私**：只有在你主动点击校对或拟标题时，文章内容才会发给你配置的服务商。Slothdown 没有自己的服务器，不经手你的文章和 Key；费用由你的服务商按用量计算。
 
 ## 本地优先
 
@@ -171,7 +175,7 @@ macOS 下的 `⌘` 在 Windows / Linux 上是 `Ctrl`，`⌥` 是 `Alt`。完整�
 
 ## 已知差距
 
-懒得排是「Typora 式」的编辑器，但不是 Typora。目前还有这些不足：
+Slothdown 是「Typora 式」的编辑器，但不是 Typora。目前还有这些不足：
 
 - 表格在光标进入后以 Markdown 源码编辑，没有表格控件
 - 数学公式和 HTML 块按源码显示，不做渲染
@@ -185,19 +189,19 @@ macOS 下的 `⌘` 在 Windows / Linux 上是 `Ctrl`，`⌥` 是 `Alt`。完整�
 <details>
 <summary><b>我用的是 LazyBox，要做什么？</b></summary>
 
-什么都不用做。LazyBox · 懒排就是懒得排 · Slothdown 的旧名字。安装新版后第一次启动，会把旧版的偏好设置、AI 配置、工作区列表复制到新的配置目录（旧目录保留，不删除）；文章在你自己的文件夹里，不受影响。确认一切正常后，可以删掉旧的 `LazyBox.app`。
+什么都不用做。LazyBox · 懒排就是 Slothdown 的旧名字。安装新版后第一次启动，会把旧版的偏好设置、AI 配置、工作区列表复制到新的配置目录（旧目录保留，不删除）；文章在你自己的文件夹里，不受影响。确认一切正常后，可以删掉旧的 `LazyBox.app`。
 </details>
 
 <details>
 <summary><b>和 Typora 是什么关系？</b></summary>
 
-没有关系。懒得排是独立的开源项目，只是写作体验以 Typora 为参照。如果你不写公众号，Typora 依然是很好的选择。
+没有关系。Slothdown 是独立的开源项目，只是写作体验以 Typora 为参照。如果你不写公众号，Typora 依然是很好的选择。
 </details>
 
 <details>
 <summary><b>复制到公众号后图片不见了？</b></summary>
 
-公众号后台读不到你电脑上的本地图片。复制时如果检测到本地图片，懒得排会提醒你：到公众号后台重新上传这些图片，或者先在偏好设置里配置图床（GitHub、阿里云 OSS、腾讯云 COS、七牛云、MinIO、Cloudflare R2 等），之后粘贴的图片会直接上传。
+公众号后台读不到你电脑上的本地图片。复制时如果检测到本地图片，Slothdown 会提醒你：到公众号后台重新上传这些图片，或者先在偏好设置里配置图床（GitHub、阿里云 OSS、腾讯云 COS、七牛云、MinIO、Cloudflare R2 等），之后粘贴的图片会直接上传。
 </details>
 
 <details>
@@ -215,7 +219,7 @@ macOS 下的 `⌘` 在 Windows / Linux 上是 `Ctrl`，`⌥` 是 `Alt`。完整�
 <details>
 <summary><b>和 doocs/md 有什么区别？</b></summary>
 
-懒得排的公众号排版能力来自 [doocs/md](https://github.com/doocs/md)。在此之上，懒得排是本地优先的桌面写作工具：实时预览编辑器、工作区与文件树、发布前校对、PDF / Word 导出。如果你只想在浏览器里偶尔排一篇，doocs/md 的在线版就很好用。
+Slothdown 的公众号排版能力来自 [doocs/md](https://github.com/doocs/md)。在此之上，Slothdown 是本地优先的桌面写作工具：实时预览编辑器、工作区与文件树、发布前校对、PDF / Word 导出。如果你只想在浏览器里偶尔排一篇，doocs/md 的在线版就很好用。
 </details>
 
 <details>
@@ -250,7 +254,7 @@ pnpm build:mac    # 打安装包；另有 build:win / build:linux
 
 ## 致谢
 
-- [doocs/md](https://github.com/doocs/md)：Markdown 渲染与公众号排版能力，懒得排由它 fork 而来
+- [doocs/md](https://github.com/doocs/md)：Markdown 渲染与公众号排版能力，Slothdown 由它 fork 而来
 - [electron-vite](https://github.com/alex8088/electron-vite)
 - [CodeMirror](https://codemirror.net/)
 - 截图中的配图来自 [Unsplash](https://unsplash.com/)
@@ -276,5 +280,5 @@ pnpm build:mac    # 打安装包；另有 build:win / build:linux
   <br>
   <sub>树懒吉祥物和 喵想 · FantasyAI Lab 同一家族</sub>
   <br>
-  <sub>懒得排 · Slothdown · Made by <a href="https://github.com/melonlee">Melon</a> · <a href="https://fantasyailab.com/">FantasyAI Lab</a></sub>
+  <sub>Slothdown · Made by <a href="https://github.com/melonlee">Melon</a> · <a href="https://fantasyailab.com/">FantasyAI Lab</a></sub>
 </div>
