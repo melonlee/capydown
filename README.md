@@ -1,173 +1,210 @@
 <div align="center">
 
-<img src="docs/assets/brand/banner.png" alt="LazyBox — 格式，本该如此简单。" width="100%">
+<img src="docs/assets/brand/banner.png" alt="LazyBox · 懒排 — 像 Typora 一样专心写，一键排成公众号。" width="100%">
 
-<h3>给公众号作者的 Markdown 桌面编辑器</h3>
+<p><b>LazyBox · 懒排</b> 是给公众号作者的 Markdown 桌面编辑器：<br>像 Typora 一样专心写，一键排成公众号，发布前让 AI 再校对一遍。</p>
 
-<p>本地写作 · 一键换主题 · 图片上传图床 · 复制到公众号后台直接粘贴</p>
-
-[![Release](https://img.shields.io/github/v/release/melonlee/LazyBox?style=flat-square&color=7C3AED)](https://github.com/melonlee/LazyBox/releases)
-[![CI](https://img.shields.io/github/actions/workflow/status/melonlee/LazyBox/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/melonlee/LazyBox/actions/workflows/ci.yml)
-[![Downloads](https://img.shields.io/github/downloads/melonlee/LazyBox/total?style=flat-square&color=8B5CF6)](https://github.com/melonlee/LazyBox/releases)
-[![Stars](https://img.shields.io/github/stars/melonlee/LazyBox?style=flat-square&color=A78BFA)](https://github.com/melonlee/LazyBox/stargazers)
-[![License](https://img.shields.io/github/license/melonlee/LazyBox?style=flat-square)](./LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/melonlee/LazyBox/ci.yml?style=flat-square&label=CI&color=111111)](https://github.com/melonlee/LazyBox/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/melonlee/LazyBox?style=flat-square&color=111111)](https://github.com/melonlee/LazyBox/releases)
+[![License](https://img.shields.io/github/license/melonlee/LazyBox?style=flat-square&color=111111)](./LICENSE)
+[![Platform](https://img.shields.io/badge/platform-macOS%20%C2%B7%20Windows%20%C2%B7%20Linux-111111?style=flat-square)](#下载)
 
 **简体中文** · [English](./README.en.md) · [下载](https://github.com/melonlee/LazyBox/releases) · [使用指南](./docs/usage.md) · [更新日志](./CHANGELOG.md) · [路线图](./docs/ROADMAP.md)
 
 </div>
 
----
+<br>
 
-## 为什么做 LazyBox
-
-在公众号后台写长文，时间往往花在格式上：选中、改字号、改颜色，再选中下一段……换个风格，就得从头再调一遍。稿子还锁在后台草稿箱里，不好备份，也不好复用。
-
-LazyBox 把这件事拆开：**你只管用 Markdown 写字，格式交给主题。** 文章是你硬盘上的 `.md` 文件，写完一键复制，到公众号后台粘贴即可。
-
-<div align="center">
-  <img src="docs/assets/brand/workflow.png" alt="写作 → 排版 → 图片 → 发布" width="100%">
-</div>
-
-## 截图
-
-<table>
-  <tr>
-    <td width="50%"><img src="docs/assets/screenshots/02-editor-split.png" alt="编辑与公众号预览"><p align="center"><b>分屏写作</b>：左边 Markdown，右边就是公众号效果</p></td>
-    <td width="50%"><img src="docs/assets/screenshots/03-themes.png" alt="主题切换"><p align="center"><b>一键换主题</b>：主题、字体、主题色、代码块样式</p></td>
-  </tr>
-  <tr>
-    <td><img src="docs/assets/screenshots/06-publish.png" alt="复制到公众号"><p align="center"><b>发布</b>：复制到公众号，或导出带 Front Matter 的 .md</p></td>
-    <td><img src="docs/assets/screenshots/04-upload-image.png" alt="图片上传"><p align="center"><b>图片上传</b>：GitHub、阿里云、腾讯云、七牛等图床</p></td>
-  </tr>
-  <tr>
-    <td><img src="docs/assets/screenshots/05-ai-command.png" alt="AI 命令面板"><p align="center"><b>AI 助手（可选）</b>：⌘K 润色、扩写、续写、翻译</p></td>
-    <td><img src="docs/assets/screenshots/01-welcome.png" alt="工作空间"><p align="center"><b>工作空间</b>：任意文件夹就是一个文章库</p></td>
-  </tr>
-</table>
-
-<sub>以上均为应用内真实截图，文章为演示内容。</sub>
-
-## 功能
-
-**✍️ 写作**
-- 打开任意文件夹作为工作空间，树形管理文章：新建、重命名、拖拽移动、搜索
-- 编辑 / 分屏两种视图，自动保存
-- 常用格式工具栏与快捷键，支持表格、代码高亮、Mermaid 流程图
-
-**🎨 排版**
-- 实时预览公众号效果
-- 三套主题，可调字体、字号、主题色、代码块主题、图注样式
-- 自定义 CSS，在默认主题基础上微调任何细节
-
-**🖼️ 图片**
-- 拖拽上传到 GitHub、阿里云 OSS、腾讯云 COS、七牛云、MinIO、Cloudflare R2、公众号图床，或自定义上传
-
-**🚀 发布**
-- 复制为公众号格式（样式已内联），到公众号后台直接粘贴
-- 复制前检查本地 / base64 图片，避免粘贴后图片丢失
-- 导出带 Front Matter 的 Markdown（适合 Hexo / Hugo / VitePress），或导出 HTML
-
-**🤖 AI（可选，自带 API Key）**
-- 支持 Claude，以及 DeepSeek、Kimi、通义千问、OpenAI 等 OpenAI 兼容接口
-- 拟标题、写 120 字以内的公众号摘要、润色、扩写、续写、中英互译
-- 请求从你的电脑直接发往你选择的服务商，LazyBox 不经手你的文章
-
-> 知乎、掘金、语雀、飞书、Notion 的「一键发布」目前**暂不支持**；MCP、知识库、AI 生图等原型模块默认关闭，见[路线图](./docs/ROADMAP.md)。
+<img src="docs/assets/screenshots/01-writing.png" alt="LazyBox 写作界面：单栏实时预览" width="100%">
 
 ## 下载
 
-到 **[Releases 页面](https://github.com/melonlee/LazyBox/releases)** 下载最新版本。
+到 **[GitHub Releases](https://github.com/melonlee/LazyBox/releases)** 下载最新版本。
 
-| 系统 | 安装包 |
-| --- | --- |
-| macOS（Apple 芯片 / Intel） | `.dmg` |
-| Windows | `-setup.exe` |
-| Linux | `.AppImage` / `.deb` |
+| 系统 | 安装包 | 说明 |
+| --- | --- | --- |
+| macOS（Apple 芯片 / Intel） | `.dmg` | 主要开发与测试平台 |
+| Windows 10 / 11 | `-setup.exe` | 从 v0.2.0 起随版本自动构建，实机测试较少 |
+| Linux | `.AppImage` / `.deb` | 从 v0.2.0 起随版本自动构建，实机测试较少 |
 
-> 安装包暂未签名。macOS 若提示「已损坏」或「无法验证开发者」，请看[使用指南 · 安装](./docs/usage.md#安装)。
+> [!NOTE]
+> macOS 安装包**没有签名和公证**（还没有 Apple Developer 账号）。首次打开如果提示「已损坏」或「无法验证开发者」，把应用拖进「应用程序」后在终端执行：
+>
+> ```bash
+> xattr -cr /Applications/LazyBox.app
+> ```
 
-## 三步上手
+## 为什么做懒排
 
-1. 打开 LazyBox，**新建工作空间**或**打开已有文件夹**
-2. 新建一篇文章，在分屏模式下写作，⌘, 打开设置挑一个主题
-3. 点右上角 **发布 → 复制到公众号**，到 [公众号后台](https://mp.weixin.qq.com/) 粘贴
+公众号作者想要的其实是两样东西：Typora 那样安静的写作环境，和一键就排好的公众号格式。现实往往是在 Typora 里写完，再去另一个网页工具排版，最后粘进后台。
 
-更多细节见 **[使用指南](./docs/usage.md)**。
+还有一件更要命的事：**文章发出去以后，正文最多只能改 20 个字**。错别字一旦发出去，基本就改不回来了。
+
+所以懒排只做三件事：把写作体验做到接近 Typora；把公众号排版收进一个面板；在你点「发布」之前，让 AI 帮你把错别字挑出来。
+
+## 写作体验
+
+<img src="docs/assets/screenshots/02-outline.png" alt="大纲侧边栏" width="100%">
+
+- **实时预览**：基于 CodeMirror 6，Markdown 输入后立刻显示为排好的样子，光标进入时才露出 `#`、`**` 等标记
+- **文件原样保存**：打开、不改、关闭，文件逐字节不变；换行符（LF / CRLF）、缩进、表格对齐都不会被「格式化」
+- **源代码模式** `⌘/`、**文件 / 大纲侧边栏** `⇧⌘L`、**专注模式** `F8`、**打字机模式** `F9`
+- **快速打开** `⌘P` 与 **命令面板** `⇧⌘P`：所有菜单命令都能搜到
+- **编辑器主题**：GitHub、Newsprint、Night，可跟随系统深色模式
+- **图片**：粘贴或拖入的图片保存到文档旁的 `assets/` 文件夹，写入相对路径；配置了图床时改为上传图床
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/assets/screenshots/03-focus.png" alt="专注模式"><p align="center"><sub>专注模式：只有当前段落是清晰的</sub></p></td>
+    <td width="50%"><img src="docs/assets/screenshots/07-quick-open.png" alt="快速打开"><p align="center"><sub><code>⌘P</code> 快速打开工作区里的文章</sub></p></td>
+  </tr>
+  <tr>
+    <td><img src="docs/assets/screenshots/05-newsprint.png" alt="Newsprint 主题"><p align="center"><sub>Newsprint 主题</sub></p></td>
+    <td><img src="docs/assets/screenshots/04-night.png" alt="Night 主题"><p align="center"><sub>Night 主题，可跟随系统深色模式</sub></p></td>
+  </tr>
+</table>
+
+## 公众号排版
+
+<img src="docs/assets/screenshots/06-wechat.png" alt="公众号预览面板" width="100%">
+
+- `⌥⌘P` 打开右侧的公众号预览面板，按公众号的实际效果渲染当前文章
+- 经典、优雅、简洁三套文章主题，可调字体、字号、主题色、代码块样式，支持自定义 CSS
+- **复制到公众号**（`⇧⌘C`）：样式内联后写入剪贴板，到公众号后台编辑器直接粘贴
+- 文中有本地图片时会提醒你：这些图片需要在公众号后台重新上传（或者先配置图床）
+- 也可以导出带 Front Matter 的 Markdown，或导出 HTML
+
+## 两个 AI 帮手
+
+AI 在懒排里只做两件事，都在发布前用到。默认不开启，需要你自己的 API Key。
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/assets/screenshots/08-proofread.png" alt="发布前校对"></td>
+    <td width="50%"><img src="docs/assets/screenshots/09-publish-titles.png" alt="AI 拟标题和摘要"></td>
+  </tr>
+  <tr>
+    <td valign="top"><b>发布前校对</b><br><sub>检查错别字、语病、标点和重复用词。逐条定位、接受或忽略，也可以「全部接受」，一次 <code>⌘Z</code> 就能全部还原。代码块、链接、Front Matter 不会被改动。中英文之间的空格属于可选的「风格建议」，默认不报。</sub></td>
+    <td valign="top"><b>标题 + 摘要</b><br><sub>在发布对话框里，根据全文拟 3～5 个标题（每个不超过 64 字）和一段不超过 120 字的摘要。点击填入，或一键复制。</sub></td>
+  </tr>
+</table>
+
+## 本地优先
+
+- 文章就是你硬盘上的 `.md` 文件，任意文件夹都可以作为工作区；没有账号，没有云同步
+- 图片就在文档旁边的 `assets/` 里，整个文件夹放进 Git、网盘，或用 Typora、Obsidian 打开都没问题
+- AI 请求从你的电脑直接发到你选择的服务商；API Key 只保存在本机的应用配置里
+- 应用里没有统计和追踪代码
+
+## 快捷键
+
+macOS 下的 `⌘` 在 Windows / Linux 上是 `Ctrl`，`⌥` 是 `Alt`。完整列表见 [使用指南](./docs/usage.md#快捷键)。
+
+| 操作 | 快捷键 | 操作 | 快捷键 |
+| --- | --- | --- | --- |
+| 快速打开 | `⌘P` | 命令面板 | `⇧⌘P` |
+| 源代码模式 | `⌘/` | 侧边栏 | `⇧⌘L` |
+| 大纲 / 文件 | `⌃⌘1` / `⌃⌘3` | 公众号预览 | `⌥⌘P` |
+| 专注模式 | `F8` | 打字机模式 | `F9` |
+| 标题 1～6 / 正文 | `⌘1`～`⌘6` / `⌘0` | 加粗 / 斜体 | `⌘B` / `⌘I` |
+| 行内代码 | `⌘E` | 超链接 | `⌥⌘K` |
+| 复制到公众号 | `⇧⌘C` | 偏好设置 | `⌘,` |
+
+## 配置 AI
+
+打开 **偏好设置 → AI**（`⌘,`）：
+
+1. **服务商**：Claude（Anthropic），或「OpenAI 兼容」——DeepSeek、Kimi、通义千问、OpenAI，以及任何兼容 `chat/completions` 的网关
+2. **Base URL**（OpenAI 兼容时填写）：通常以 `/v1` 结尾，例如 `https://api.deepseek.com/v1`；设置页里有常用服务的一键预填
+3. **API Key** 与 **模型**：例如 `deepseek-chat`、`qwen-plus`、`claude-sonnet-4-6`
+4. 点 **测试连接**，通过后保存
+
+使用：菜单「文件 → 发布前校对…」，或在命令面板搜「校对」；标题和摘要在发布对话框里点「AI 拟标题和摘要」。
+
+> **隐私**：只有在你主动点击校对或拟标题时，文章内容才会发给你配置的服务商。懒排没有自己的服务器，不经手你的文章和 Key；费用由你的服务商按用量计算。
+
+## 已知差距
+
+懒排是「Typora 式」的编辑器，但不是 Typora。目前还有这些不足：
+
+- 表格在光标进入后以 Markdown 源码编辑，没有表格控件
+- 数学公式和 HTML 块按源码显示，不做渲染
+- 从网页粘贴富文本时按纯文本插入，不会转成 Markdown
+- 公众号预览只跟随编辑区滚动（单向同步）
+- 只能复制到剪贴板，还不能直接存进公众号草稿箱
 
 ## 常见问题
 
 <details>
-<summary><b>粘贴到公众号后图片不见了？</b></summary>
+<summary><b>和 Typora 是什么关系？</b></summary>
 
-公众号无法读取本地图片。先用工具栏的「上传图片」把图片传到图床；通过「发布 → 复制到公众号」复制时，LazyBox 会提示哪些图片有问题。
+没有关系。懒排是独立的开源项目，只是写作体验以 Typora 为参照。如果你不写公众号，Typora 依然是很好的选择。
 </details>
 
 <details>
-<summary><b>能直接存进公众号草稿箱吗？</b></summary>
+<summary><b>复制到公众号后图片不见了？</b></summary>
 
-暂时不能。通过公众号官方接口（需要 AppID / AppSecret 和 IP 白名单）直接存草稿在路线图中。目前请复制后到后台粘贴。
+公众号后台读不到你电脑上的本地图片。复制时如果检测到本地图片，懒排会提醒你：到公众号后台重新上传这些图片，或者先在偏好设置里配置图床（GitHub、阿里云 OSS、腾讯云 COS、七牛云、MinIO、Cloudflare R2 等），之后粘贴的图片会直接上传。
 </details>
 
 <details>
-<summary><b>必须用 AI 吗？会上传我的文章吗？</b></summary>
+<summary><b>不配置 AI 能用吗？</b></summary>
 
-不必须，不配置 API Key 就不会发出任何 AI 请求。配置后，只有你主动触发的 AI 操作才会把相关文本发送给你选择的服务商。
+可以。写作、排版、复制到公众号都不需要 AI。
+</details>
+
+<details>
+<summary><b>校对会不会乱改我的文章？</b></summary>
+
+不会自动修改。每条建议都要你点「接受」才会写入，而且只做字词级的小改动：改动过大、改动 Markdown 标记、落在代码 / 链接 / Front Matter 里的建议都会被丢弃。接受后可以用 `⌘Z` 撤销。
 </details>
 
 <details>
 <summary><b>和 doocs/md 有什么区别？</b></summary>
 
-LazyBox 的排版能力来自 [doocs/md](https://github.com/doocs/md)。在此基础上，LazyBox 是一个桌面应用：文章以本地文件管理，增加了工作空间、文件树、发布检查与 AI 助手。如果你只需要在浏览器里偶尔排一篇，doocs/md 的在线版就很好用。
+懒排的公众号排版能力来自 [doocs/md](https://github.com/doocs/md)。在此之上，懒排是本地优先的桌面写作工具：实时预览编辑器、工作区与文件树、发布前校对。如果你只想在浏览器里偶尔排一篇，doocs/md 的在线版就很好用。
+</details>
+
+<details>
+<summary><b>macOS 提示「已损坏，无法打开」？</b></summary>
+
+安装包未签名所致，执行上面 [下载](#下载) 一节里的 `xattr -cr` 命令即可。
 </details>
 
 ## 路线图
 
-- [x] v0.2：真实可用的发布流程、AI 助手（Claude / OpenAI 兼容）、安全加固、多平台构建
-- [ ] 公众号草稿箱直传（官方接口）
-- [ ] 图片自动压缩、上传并替换正文中的本地图片
-- [ ] 公众号手机宽度预览与长段落 / 大图提示
-- [ ] macOS 签名公证与自动更新
+接下来计划：表格可视化编辑、数学公式渲染、公众号草稿箱直传（AppID / AppSecret）、macOS 签名与公证、Windows / Linux 实机测试。详见 [docs/ROADMAP.md](./docs/ROADMAP.md)。
 
-完整内容见 [docs/ROADMAP.md](./docs/ROADMAP.md)。
+## 开发
 
-## 本地开发
-
-需要 Node.js 20+ 和 pnpm。
+需要 Node.js 20+ 与 pnpm。
 
 ```bash
-git clone https://github.com/melonlee/LazyBox.git
-cd LazyBox
 pnpm install
-pnpm dev          # 启动开发模式
-pnpm test         # 单元测试
-pnpm build        # 构建到 out/
-pnpm build:mac    # 打包安装包（另有 build:win / build:linux）
+pnpm dev          # 开发模式（热更新）
+pnpm build        # 构建
+pnpm test         # 单元测试（Vitest）
+pnpm build:mac    # 打安装包；另有 build:win / build:linux
 ```
 
-技术栈：Electron 28 · Vue 3 · Vite（electron-vite）· TypeScript · CodeMirror 5 · Pinia · Tailwind / UnoCSS。
+技术栈：Electron · Vue 3 · electron-vite · TypeScript · CodeMirror 6 · Pinia · Tailwind / UnoCSS。项目结构见 [CLAUDE.md](./CLAUDE.md)，设计记录见 [docs/dev/](./docs/dev/)。
 
-```
-src/
-├── main/        主进程：窗口、文件系统、IPC、AI 服务、发布
-├── preload/     预加载脚本，通过 contextBridge 暴露 window.$api
-└── renderer/    Vue 应用：编辑器、预览、文件树、设置
-```
+官网是一个无需构建的静态页面，见 [`website/`](./website/)。
 
-发布新版本：更新 `package.json` 版本号和 `CHANGELOG.md`，推送 `v*` 标签，GitHub Actions 会构建 macOS / Windows / Linux 安装包并创建 Release 草稿。
+## 参与贡献
 
-## 贡献
-
-欢迎 Issue 和 Pull Request。提交前请运行 `pnpm test` 与 `pnpm build`。想认领路线图里的功能，可以先开一个 Issue 讨论方案。
+欢迎 Issue 和 Pull Request。提交前请运行 `pnpm test` 与 `pnpm build`；想做路线图里的功能，可以先开 Issue 讨论方案。
 
 ## 致谢
 
-- [doocs/md](https://github.com/doocs/md)：Markdown 渲染与公众号排版能力
+- [doocs/md](https://github.com/doocs/md)：Markdown 渲染与公众号排版能力，懒排由它 fork 而来
 - [electron-vite](https://github.com/alex8088/electron-vite)
+- [CodeMirror](https://codemirror.net/)
 - 截图中的配图来自 [Unsplash](https://unsplash.com/)
 
 ## 许可证
 
-[MIT](./LICENSE)
+[MIT](./LICENSE)，保留原项目的版权声明。
 
 ## Star History
 
@@ -179,8 +216,10 @@ src/
  </picture>
 </a>
 
+<br><br>
+
 <div align="center">
-  <img src="docs/assets/brand/logo-mark.png" width="40" alt="">
+  <img src="docs/assets/brand/logo-mark.png" width="36" alt="">
   <br>
-  <sub>Made by <a href="https://github.com/melonlee">@melonlee</a> · 格式，本该如此简单。</sub>
+  <sub>Made by <a href="https://github.com/melonlee">Melon</a> · <a href="https://fantasyailab.com/">FantasyAI Lab</a></sub>
 </div>
