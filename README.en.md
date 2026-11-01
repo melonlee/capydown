@@ -52,6 +52,7 @@ So LazyBox does three things: writing that feels close to Typora, 公众号 form
 - **Byte-exact files**: open, don't edit, close, and the file is unchanged — line endings, indentation and table alignment are never reformatted
 - **Source mode** `⌘/`, **Files / Outline sidebar** `⇧⌘L`, **Focus mode** `F8`, **Typewriter mode** `F9`
 - **Quick open** `⌘P` and a **command palette** `⇧⌘P` covering every menu command
+- **Formatting where you write**: a floating toolbar on text selection (bold, link, headings, quote…), a right-click menu with paragraph / format / insert, and a "+" on empty lines to insert tables, code blocks and Mermaid; settings, light/dark and the 公众号 preview sit at the bottom-left of the sidebar
 - **Editor themes**: GitHub, Newsprint and Night, optionally following the system dark mode
 - **Images**: pasted or dropped images are saved to an `assets/` folder next to the document with a relative path; if an image host is configured they are uploaded instead
 - **Export to PDF / Word**: PDF follows the editor theme (code highlighting, tables, local images, Mermaid); Word keeps headings, lists, tables and code blocks and embeds images
