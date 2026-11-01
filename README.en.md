@@ -14,7 +14,7 @@
 </div>
 
 > [!NOTE]
-> **Formerly LazyBox · 懒排.** Renamed in v0.3.0. Existing users just install the new version: on first launch your preferences, AI settings and workspace list are copied over automatically (the old data is left untouched), and your articles stay in your own folders.
+> **Formerly LazyBox.** Renamed in v0.3.0. Existing users just install the new version: on first launch your preferences, AI settings and workspace list are copied over automatically (the old data is left untouched), and your articles stay in your own folders.
 
 **About the name**
 
@@ -180,7 +180,7 @@ Slothdown is Typora-style, not Typora:
 
 ## FAQ
 
-**I use LazyBox — what do I need to do?** Nothing. LazyBox · 懒排 is Slothdown's old name. On first launch the new version copies your old preferences, AI settings and workspace list into its new profile (the old one is kept). Your articles live in your own folders and are unaffected. Once everything looks right you can delete the old `LazyBox.app`.
+**I use LazyBox — what do I need to do?** Nothing. LazyBox is Slothdown's old name. On first launch the new version copies your old preferences, AI settings and workspace list into its new profile (the old one is kept). Your articles live in your own folders and are unaffected. Once everything looks right you can delete the old `LazyBox.app`.
 
 **Is this affiliated with Typora?** No. Slothdown is an independent open-source project that uses Typora as its reference for the writing experience.
 
