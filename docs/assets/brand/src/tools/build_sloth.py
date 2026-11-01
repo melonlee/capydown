@@ -5,6 +5,7 @@
   docs/assets/brand/src/app-icon-small.svg   C 正脸树懒的小尺寸简化版（16–48px、favicon；无模糊、眼睛和嘴，像素更干净）
   src/renderer/src/assets/images/logo-mark.svg   应用内标志（C 的单色字形，currentColor）
   docs/assets/brand/logo-mark.svg / logo-mark-dark.svg  同一字形的浅色 / 深色版本
+  docs/assets/brand/sloth-peek.svg / sloth-peek-dark.svg  吉祥物：无外框、从底边探头的树懒（宣传图、官网）
 
 几何是手调的；描边 / 圆角方形等密集路径在这里采样，SVG 本身不含脚本。
 用法（仓库根目录）：python3 docs/assets/brand/src/tools/build_sloth.py，然后运行 export_icons.py 导出 PNG / icns / ico。"""
@@ -260,6 +261,38 @@ def glyph_inline():
 '''
 
 
+# ---------------------------------------------------------------- 吉祥物 · 无外框的探头树懒（宣传图 / 官网）
+def build_peek(dark=False):
+    """A 的树懒头去掉圆角方形：从画面底边探出来。透明背景，底边是平切口——放在卡片 / 页面底边上用。
+    dark=True 给深色背景用（毛色更亮，阴影更淡）。"""
+    shade = '#FFFFFF' if dark else '#000000'
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 640" width="1100" height="640">
+  <!-- 懒得排 · Slothdown 吉祥物：从底边探头的树懒（{'深色背景' if dark else '浅色背景'}）。由 docs/assets/brand/src/tools/build_sloth.py 生成 -->
+  <defs>{COMMON_DEFS}
+    <clipPath id="view"><rect width="1100" height="640"/></clipPath>
+    <radialGradient id="furP" cx="0.36" cy="0.18" r="0.9">
+      <stop offset="0" stop-color="{'#F4F4F4' if dark else '#CFCFCF'}"/><stop offset="0.45" stop-color="{'#C9C9C9' if dark else '#9C9C9C'}"/>
+      <stop offset="0.8" stop-color="{'#8E8E8E' if dark else '#5E5E5E'}"/><stop offset="1" stop-color="{'#6A6A6A' if dark else '#3A3A3A'}"/>
+    </radialGradient>
+    <filter id="drop" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="{shade}" flood-opacity="{'0.0' if dark else '0.16'}"/>
+    </filter>
+  </defs>
+  <g clip-path="url(#view)">
+    <g filter="url(#drop)"><circle cx="550" cy="680" r="540" fill="url(#furP)"/></g>
+    <clipPath id="headP"><circle cx="550" cy="680" r="540"/></clipPath>
+    <g clip-path="url(#headP)"><g transform="translate(578 440) rotate(-10)">
+      <path d="{face_disc(0, 48, 350, 282)}" fill="#5A5A5A" opacity="0.45" filter="url(#halo)"/>
+      <path d="{face_disc(0, 44, 312, 242)}" fill="url(#face)" filter="url(#soft4)"/>
+      <g transform="scale(0.96)">
+{face_features(1.0)}
+      </g>
+    </g></g>
+  </g>
+</svg>
+'''
+
+
 if __name__ == '__main__':
     ROOT = os.getcwd()
     BRAND = os.path.join(ROOT, 'docs/assets/brand')
@@ -269,6 +302,8 @@ if __name__ == '__main__':
         os.path.join(ROOT, 'src/renderer/src/assets/images/logo-mark.svg'): glyph_inline(),
         os.path.join(BRAND, 'logo-mark.svg'): glyph_C().replace('style="color:#111"', 'style="color:#111111"'),
         os.path.join(BRAND, 'logo-mark-dark.svg'): glyph_C_dark(),
+        os.path.join(BRAND, 'sloth-peek.svg'): build_peek(),
+        os.path.join(BRAND, 'sloth-peek-dark.svg'): build_peek(dark=True),
     }
     for path, text in out.items():
         open(path, 'w', encoding='utf-8').write(text)

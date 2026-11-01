@@ -1,10 +1,10 @@
 /*
- * LazyBox · 懒排 marketing tokens — strict monochrome.
+ * 懒得排 · Slothdown marketing tokens — strict monochrome.
  * The only colour allowed on a marketing image is whatever appears inside a real
  * screenshot (公众号 article themes). Typography does the work: a Chinese serif for
  * headlines, PingFang / system sans for everything else.
  *
- * Render: node <playwright shot tool> <page>.html <out>.png <w> <h> false 2
+ * Render: node tools/render.mjs <page>.html <out>.png <w> <h> 2 false
  */
 :root {
   --ink: #111111;
