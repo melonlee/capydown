@@ -1,4 +1,4 @@
-# Slothdown 官网
+# Capydown 官网
 
 无需构建的纯静态页面：HTML + CSS + 少量原生 JS，没有 CDN、Web 字体和统计脚本，全部使用相对路径。
 
@@ -34,11 +34,11 @@ python3 -m http.server 8080      # 或 npx serve .
 
 ## 地址与分享图
 
-页面部署在 <https://melonlee.github.io/slothdown/>。`og:image`、`twitter:image`、`og:url`、`canonical` 和 `hreflang` 都写的是这个绝对地址；换自定义域名时在两个页面里一并修改。分享图 `assets/social-preview.png` 复制自 `docs/assets/brand/social-preview.png`（2560×1280）。
+页面部署在 <https://melonlee.github.io/capydown/>。`og:image`、`twitter:image`、`og:url`、`canonical` 和 `hreflang` 都写的是这个绝对地址；换自定义域名时在两个页面里一并修改。分享图 `assets/social-preview.png` 复制自 `docs/assets/brand/social-preview.png`（2560×1280）。
 
 ## 品牌素材
 
-`assets/favicon.svg` / `favicon-32.png` 是小尺寸图标（头 + 钢笔，裁到圆角方形主体），`apple-touch-icon.png` / `icon-512.png` 是完整的应用图标（抱着钢笔打盹的树懒，和 喵想 · FantasyAI Lab 同一吉祥物家族），都由 `docs/assets/brand/src/tools/export_icons.py` 生成；`sloth-pen.svg` 是首屏和结尾处的吉祥物（`docs/assets/brand/sloth-pen-art.svg` 的副本）。
+`assets/favicon.svg` / `favicon-32.png` 是小尺寸图标（卡皮巴拉的头 + 托腮的爪，裁到圆角方形主体），`apple-touch-icon.png` / `icon-512.png` 是完整的应用图标（托腮思考的卡皮巴拉，头顶的泡泡里是 #；和 喵想 · FantasyAI Lab 同一吉祥物家族），都由 `docs/assets/brand/src/tools/export_icons.py` 生成；`capybara.svg` 是首屏和结尾处的吉祥物（`docs/assets/brand/capybara-art.svg` 的副本）。首屏的组合标志（标志 + 思考泡泡 + 字标）和应用启动画面是同一组路径。
 
 ## 更新截图
 

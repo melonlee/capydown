@@ -71,6 +71,8 @@ def art(dark):
     s = s.replace('</g>\n<use href="#squircle" fill="none" stroke="url(#rim)" stroke-width="3"/>\n', '</g></g>\n', 1)
     if not dark:
         s = s.replace('fill="url(#bub)" fill-opacity="0.93"', 'fill="url(#bub)" fill-opacity="0.93" stroke="#111111" stroke-opacity="0.14" stroke-width="3"')
+        s = s.replace('<feComponentTransfer><feFuncA type="linear" slope="0.7"/></feComponentTransfer>',
+                      '<feComponentTransfer><feFuncA type="linear" slope="0.16"/></feComponentTransfer>', 1)  # 投影：白底上只留一点点
     label = '深色' if dark else '浅色'
     assert 'artMaskB' in s and 'url(#bg)' not in s.split('</defs>')[1]
     return s.replace('<defs>', f'<!-- Capydown 吉祥物：托腮思考的卡皮巴拉，无底板（{label}背景）。{GEN} -->\n<defs>', 1)

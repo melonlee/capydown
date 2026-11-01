@@ -3,27 +3,27 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Slothdown — Write like Typora, publish to WeChat in one click</title>
-  <meta name="description" content="Slothdown (formerly LazyBox) is a desktop Markdown editor for WeChat Official Account writers: Typora-style live preview, one-click 公众号 formatting, PDF / Word export and AI proofreading before you publish. Free, open source, local .md files.">
+  <title>Capydown — Write like Typora, publish to WeChat in one click</title>
+  <meta name="description" content="Capydown (formerly LazyBox / Slothdown) is a desktop Markdown editor for WeChat Official Account writers: Typora-style live preview, one-click 公众号 formatting, PDF / Word export and AI proofreading before you publish. Free, open source, local .md files.">
   <meta name="theme-color" content="#ffffff">
-  <link rel="alternate" hreflang="zh-CN" href="https://melonlee.github.io/slothdown/">
-  <link rel="alternate" hreflang="en" href="https://melonlee.github.io/slothdown/en/">
+  <link rel="alternate" hreflang="zh-CN" href="https://melonlee.github.io/capydown/">
+  <link rel="alternate" hreflang="en" href="https://melonlee.github.io/capydown/en/">
 
   <!-- Open Graph / Twitter (absolute URLs point at GitHub Pages; update when moving to a custom domain) -->
-  <link rel="canonical" href="https://melonlee.github.io/slothdown/en/">
+  <link rel="canonical" href="https://melonlee.github.io/capydown/en/">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://melonlee.github.io/slothdown/en/">
-  <meta property="og:site_name" content="Slothdown">
-  <meta property="og:title" content="Slothdown — Write like Typora, publish to WeChat in one click">
+  <meta property="og:url" content="https://melonlee.github.io/capydown/en/">
+  <meta property="og:site_name" content="Capydown">
+  <meta property="og:title" content="Capydown — Write like Typora, publish to WeChat in one click">
   <meta property="og:description" content="A desktop Markdown editor for WeChat Official Account writers. Live preview, one-click formatting, AI proofreading before publishing. Free and open source.">
-  <meta property="og:image" content="https://melonlee.github.io/slothdown/assets/social-preview.png">
+  <meta property="og:image" content="https://melonlee.github.io/capydown/assets/social-preview.png">
   <meta property="og:image:width" content="2560">
   <meta property="og:image:height" content="1280">
   <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Slothdown — Write like Typora, publish to WeChat in one click">
+  <meta name="twitter:title" content="Capydown — Write like Typora, publish to WeChat in one click">
   <meta name="twitter:description" content="A desktop Markdown editor for WeChat Official Account writers. Live preview, one-click formatting, AI proofreading before publishing. Free and open source.">
-  <meta name="twitter:image" content="https://melonlee.github.io/slothdown/assets/social-preview.png">
+  <meta name="twitter:image" content="https://melonlee.github.io/capydown/assets/social-preview.png">
 
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
@@ -35,9 +35,9 @@
 
 <header class="nav">
   <div class="wrap">
-    <a class="brand" href="./" aria-label="Slothdown home">
+    <a class="brand" href="./" aria-label="Capydown home">
       <img src="../assets/favicon.svg" alt="" width="24" height="24">
-      <span>Slothdown</span>
+      <span>Capydown</span>
     </a>
     <nav class="nav-links" aria-label="Sections">
       <a href="#writing">Writing</a>
@@ -46,7 +46,7 @@
       <a href="#ai">AI</a>
       <a href="#shortcuts">Shortcuts</a>
       <a href="#faq">FAQ</a>
-      <a class="keep" href="https://github.com/melonlee/slothdown">GitHub</a>
+      <a class="keep" href="https://github.com/melonlee/capydown">GitHub</a>
     </nav>
     <a class="lang" href="../" hreflang="zh-CN" lang="zh-CN">中文</a>
   </div>
@@ -56,31 +56,31 @@
   <!-- ============================================================ hero -->
   <section class="hero anim">
     <div class="wrap">
-      <h1 class="sr-only">Slothdown</h1>
-      <!-- logo: the pen-sloth mark + Slothdown wordmark; an ink line is drawn from the pen nib into the underline (same as the app's splash) -->
+      <h1 class="sr-only">Capydown</h1>
+      <!-- logo: the capybara glyph thinks a # bubble, then the Capydown wordmark slides in (same as the app's splash; 232 × 88 grid) -->
       <div class="hero-lockup" aria-hidden="true">
-        <svg class="hl-mark" viewBox="0 0 200 200"><path fill="currentColor" fill-rule="evenodd" d="M 58.6 121.4 C 56.6 85.4 77.6 58.5 104.1 52.5 Q 104.1 45.8 109.3 41.8 Q 109.7 47 113.6 49.7 Q 116 42.6 123.1 40.6 Q 120.4 46.2 122.7 51.3 Q 126.7 48.6 130.3 49.7 Q 128.3 51.7 129.1 53.7 C 156.4 60 176.2 87.4 173.4 121.4 C 171.4 151.9 146.1 167.4 116 167.4 C 85.9 167.4 60.6 151.9 58.6 121.4 Z M 106.8 123.8 C 112.3 117.3 111.5 107.6 104.9 102.1 C 98.4 96.6 88.7 97.4 83.2 104 C 76.2 114.2 74.1 129.2 71.6 138.7 Q 71.7 141.6 74.7 141.3 C 83.5 137.2 98 132.4 106.8 123.8 Z M 148.8 104 C 143.3 97.4 133.6 96.6 127.1 102.1 C 120.5 107.6 119.7 117.3 125.2 123.8 C 134 132.4 148.5 137.2 157.3 141.3 Q 160.3 141.6 160.4 138.7 C 157.9 129.2 155.8 114.2 148.8 104 Z M 86.7 113.5 Q 95.8 109.5 104.9 113.5 C 104.9 120.7 100.6 124.2 95.8 124.2 C 91 124.2 86.7 120.7 86.7 113.5 Z M 127.1 113.5 Q 136.2 109.5 145.3 113.5 C 145.3 120.7 141 124.2 136.2 124.2 C 131.4 124.2 127.1 120.7 127.1 113.5 Z M 107.7 132.1 Q 116 128.6 124.3 132.1 Q 123.9 138.5 116 140.8 Q 108.1 138.5 107.7 132.1 Z"/><path fill="currentColor" fill-rule="evenodd" d="M 157.4 43.9 L 174.1 27.8 A 12.5 12.5 0 0 1 191.5 45.7 L 175.3 61.4 A 73 73 0 0 0 157.4 43.9 Z M 137.8 61.4 L 145 54.5 L 163.7 73.9 L 156.5 80.8 Z"/><path fill="currentColor" d="M 22 192 L 47.3 152 L 54.5 143.3 A 73 73 0 0 1 71.3 161.7 L 62.9 168.1 Z"/></svg>
-        <svg class="hl-word" viewBox="0 0 998.64 158"><path fill="currentColor" transform="translate(-3.8 151)" d="M67.74 3Q51.88 3 39.15 -2.56Q26.42 -8.12 18.23 -18.49Q10.04 -28.85 7.8 -43.18L34.2 -47.12Q37.29 -34.48 47.02 -27.59Q56.75 -20.7 69.36 -20.7Q76.65 -20.7 83.26 -22.99Q89.87 -25.28 94.03 -29.7Q98.2 -34.11 98.2 -40.48Q98.2 -43.19 97.34 -45.52Q96.49 -47.86 94.73 -49.78Q92.96 -51.71 90.04 -53.33Q87.11 -54.95 82.98 -56.22L45.72 -67.2Q41.16 -68.51 35.6 -70.82Q30.04 -73.13 25 -77.24Q19.96 -81.35 16.68 -87.92Q13.4 -94.5 13.4 -104.34Q13.4 -118.49 20.57 -127.98Q27.73 -137.48 39.77 -142.2Q51.81 -146.91 66.52 -146.82Q81.34 -146.64 92.99 -141.71Q104.64 -136.78 112.47 -127.42Q120.29 -118.06 123.62 -104.64L96.32 -99.98Q94.74 -107.33 90.27 -112.44Q85.8 -117.56 79.49 -120.25Q73.19 -122.94 66.16 -123.12Q59.27 -123.3 53.33 -121.15Q47.39 -119.01 43.72 -115.02Q40.04 -111.03 40.04 -105.62Q40.04 -100.53 43.12 -97.36Q46.19 -94.19 50.82 -92.29Q55.45 -90.38 60.2 -89.12L85.68 -82.1Q91.1 -80.64 97.77 -78.22Q104.44 -75.8 110.6 -71.49Q116.76 -67.17 120.76 -60.13Q124.76 -53.08 124.76 -42.28Q124.76 -30.91 120.05 -22.38Q115.33 -13.84 107.29 -8.23Q99.25 -2.61 89.02 0.2Q78.78 3 67.74 3ZM142.2 0V-147H167.52V0ZM239.58 3Q223.31 3 211.14 -4.3Q198.97 -11.6 192.24 -24.45Q185.5 -37.31 185.5 -54.02Q185.5 -70.93 192.38 -83.77Q199.26 -96.62 211.44 -103.81Q223.61 -111 239.58 -111Q255.86 -111 268.08 -103.7Q280.29 -96.41 287.07 -83.56Q293.84 -70.72 293.84 -54.02Q293.84 -37.19 287.02 -24.34Q280.19 -11.49 267.97 -4.25Q255.75 3 239.58 3ZM239.58 -20.7Q253.41 -20.7 260.21 -30.02Q267.02 -39.34 267.02 -54.02Q267.02 -69.19 260.12 -78.24Q253.22 -87.3 239.58 -87.3Q230.2 -87.3 224.18 -83.08Q218.15 -78.86 215.24 -71.38Q212.32 -63.9 212.32 -54.02Q212.32 -38.77 219.24 -29.74Q226.16 -20.7 239.58 -20.7ZM372.1 0Q361.21 2.07 350.75 1.8Q340.28 1.53 332.05 -2Q323.83 -5.53 319.56 -13.32Q315.72 -20.51 315.51 -27.94Q315.3 -35.37 315.3 -44.8V-138H340.62V-46.24Q340.62 -39.87 340.77 -34.9Q340.92 -29.92 342.82 -26.84Q346.42 -20.99 354.31 -20.38Q362.2 -19.76 372.1 -21.14ZM296.2 -88.26V-108H372.1V-88.26ZM463.56 0V-51.62Q463.56 -56.11 462.96 -62.13Q462.37 -68.15 460.02 -73.92Q457.67 -79.7 452.74 -83.48Q447.81 -87.26 439.14 -87.26Q435 -87.26 430.71 -85.92Q426.41 -84.59 422.83 -81.15Q419.25 -77.72 417.03 -71.45Q414.8 -65.18 414.8 -55.22L399.98 -61.86Q399.98 -75.23 405.27 -86.44Q410.56 -97.66 420.97 -104.39Q431.38 -111.12 446.88 -111.12Q459.13 -111.12 467.02 -107.02Q474.9 -102.92 479.44 -96.54Q483.98 -90.17 486.06 -83.1Q488.14 -76.04 488.69 -69.92Q489.24 -63.81 489.24 -60.42V0ZM389.12 0V-144H411.68V-68.9H414.8V0ZM553.52 3Q538.58 3 527.46 -4.5Q516.33 -12.01 510.17 -24.91Q504 -37.82 504 -54.02Q504 -70.46 510.25 -83.32Q516.49 -96.17 527.86 -103.59Q539.22 -111 554.62 -111Q569.99 -111 580.48 -103.51Q590.96 -96.03 596.35 -83.13Q601.74 -70.24 601.74 -54.02Q601.74 -37.83 596.31 -24.92Q590.88 -12.02 580.16 -4.51Q569.44 3 553.52 3ZM557.48 -19.62Q566.94 -19.62 572.7 -23.95Q578.46 -28.28 581.05 -36.05Q583.64 -43.81 583.64 -54.02Q583.64 -64.25 581.04 -72Q578.45 -79.76 572.87 -84.07Q567.29 -88.38 558.38 -88.38Q548.9 -88.38 542.79 -83.74Q536.68 -79.1 533.75 -71.3Q530.82 -63.5 530.82 -54.02Q530.82 -44.44 533.68 -36.63Q536.54 -28.82 542.43 -24.22Q548.31 -19.62 557.48 -19.62ZM583.64 0V-75.1H580.52V-144H606.02V0ZM676.08 3Q659.81 3 647.64 -4.3Q635.47 -11.6 628.74 -24.45Q622 -37.31 622 -54.02Q622 -70.93 628.88 -83.77Q635.76 -96.62 647.94 -103.81Q660.11 -111 676.08 -111Q692.36 -111 704.58 -103.7Q716.79 -96.41 723.57 -83.56Q730.34 -70.72 730.34 -54.02Q730.34 -37.19 723.52 -24.34Q716.69 -11.49 704.47 -4.25Q692.25 3 676.08 3ZM676.08 -20.7Q689.91 -20.7 696.71 -30.02Q703.52 -39.34 703.52 -54.02Q703.52 -69.19 696.62 -78.24Q689.72 -87.3 676.08 -87.3Q666.7 -87.3 660.68 -83.08Q654.65 -78.86 651.74 -71.38Q648.82 -63.9 648.82 -54.02Q648.82 -38.77 655.74 -29.74Q662.66 -20.7 676.08 -20.7ZM767.3 0 734.3 -108.18 759.12 -108 779.62 -40.68 800.39 -108H821.61L842.38 -40.68L862.9 -108H887.7L854.7 0H835.1L811 -72.74L786.9 0ZM972.76 0V-51.62Q972.76 -56.11 972.16 -62.13Q971.57 -68.15 969.22 -73.92Q966.87 -79.7 961.94 -83.48Q957.01 -87.26 948.34 -87.26Q944.2 -87.26 939.91 -85.92Q935.61 -84.59 932.03 -81.15Q928.45 -77.72 926.23 -71.45Q924 -65.18 924 -55.22L909.18 -61.86Q909.18 -75.23 914.47 -86.44Q919.76 -97.66 930.17 -104.39Q940.58 -111.12 956.08 -111.12Q968.33 -111.12 976.22 -107.02Q984.1 -102.92 988.64 -96.54Q993.18 -90.17 995.26 -83.1Q997.34 -76.04 997.89 -69.92Q998.44 -63.81 998.44 -60.42V0ZM898.32 0V-108H920.88V-73.58H924V0Z"/></svg>
-        <svg class="hl-ink" viewBox="0 0 285 64"><path d="M 6.2 53.8 C 26 63 62 63 104 57.5 C 150 51.5 190 51 228 56 C 256 59.6 272 59 284 54.5"/></svg>
+        <svg class="hl-mark" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M 4.4 5.4 C 8 4.9 12 4.7 15.7 4.6 C 15.9 3.5 16.8 2.8 17.9 2.8 C 19.0 2.8 19.8 3.6 19.8 4.8 C 21.6 6.0 22.5 8.6 22.6 11.6 C 22.7 14.6 22.6 18.2 22.5 21 L 11.4 21 C 11.4 19.4 11.6 17.8 11.9 16.5 C 9.6 16.2 7.4 15.4 5.8 14.4 C 5.3 14.1 4.9 13.8 4.6 13.4 C 4.3 13.8 3.8 13.9 3.3 13.8 C 2.1 13.6 1.5 12.6 1.5 11.0 L 1.5 8.2 C 1.5 6.6 2.5 5.6 4.4 5.4 Z M 11.0 7.7 L 14.6 7.7 C 14.6 9.1 13.8 9.9 12.8 9.9 C 11.8 9.9 11.0 9.1 11.0 7.7 Z M 2.75 7.53 A 0.8 1.4 20 1 0 4.25 8.07 A 0.8 1.4 20 1 0 2.75 7.53 Z"/></svg>
+        <svg class="hl-think" viewBox="0 0 232 88"><circle class="hl-dot hl-dot1" cx="48.5" cy="32" r="1.6"/><circle class="hl-dot hl-dot2" cx="53.5" cy="24.5" r="2.3"/><g class="hl-bubble"><circle cx="63" cy="12" r="10"/><path class="hl-hash" d="M 61.2 7.6 L 60.2 16.4 M 65.8 7.6 L 64.8 16.4 M 58.2 10.5 L 67.8 10.5 M 58 13.5 L 67.6 13.5"/></g></svg>
+        <svg class="hl-word" viewBox="0 0 979.84 203"><path fill="currentColor" transform="translate(-2 151)" d="M75.28 3Q53.69 3 38.17 -6.42Q22.65 -15.84 14.33 -32.74Q6 -49.64 6 -72Q6 -94.36 14.33 -111.26Q22.65 -128.16 38.17 -137.58Q53.69 -147 75.28 -147Q100.12 -147 116.83 -134.62Q133.53 -122.23 140.28 -101.14L114.74 -94.1Q110.66 -107.8 100.79 -115.46Q90.93 -123.12 75.28 -123.12Q61.1 -123.12 51.64 -116.78Q42.18 -110.44 37.42 -98.94Q32.66 -87.45 32.64 -72Q32.62 -56.55 37.38 -45.06Q42.14 -33.57 51.62 -27.23Q61.1 -20.88 75.28 -20.88Q90.93 -20.88 100.79 -28.59Q110.66 -36.3 114.74 -49.9L140.28 -42.86Q133.53 -21.77 116.83 -9.38Q100.12 3 75.28 3ZM186.44 3Q174.74 3 166.66 -1.45Q158.59 -5.89 154.45 -13.32Q150.3 -20.74 150.3 -29.68Q150.3 -37.38 152.78 -43.58Q155.27 -49.79 160.57 -54.43Q165.88 -59.06 174.48 -62.1Q180.82 -64.27 189.36 -65.95Q197.91 -67.62 208.27 -69.12Q218.63 -70.61 230.42 -72.38L221.3 -67.32Q221.35 -77.87 216.46 -82.85Q211.58 -87.84 199.98 -87.84Q193.22 -87.84 186.55 -84.62Q179.87 -81.41 177.2 -73.5L154.14 -80.76Q158.19 -94.32 169.48 -102.66Q180.76 -111 200.02 -111Q214.39 -111 225.38 -106.43Q236.37 -101.86 241.86 -91.1Q244.88 -85.3 245.48 -79.33Q246.08 -73.36 246.08 -66.16V0H223.88V-22.94L227.34 -18.78Q219.8 -7.43 210.28 -2.21Q200.77 3 186.44 3ZM191.62 -17.1Q199.54 -17.1 205.07 -19.91Q210.6 -22.71 213.9 -26.57Q217.2 -30.42 218.34 -33.6Q220.31 -38.12 220.62 -44.02Q220.94 -49.93 220.94 -53.72L228.58 -51.58Q217.16 -49.73 209.47 -48.43Q201.79 -47.13 196.61 -46Q191.43 -44.88 187.44 -43.5Q183.35 -41.94 180.63 -40.01Q177.9 -38.09 176.51 -35.64Q175.12 -33.19 175.12 -30.02Q175.12 -26.17 177.05 -23.26Q178.97 -20.34 182.65 -18.72Q186.32 -17.1 191.62 -17.1ZM318.82 3Q302.9 3 292.18 -4.51Q281.46 -12.02 276.03 -24.92Q270.6 -37.83 270.6 -54.02Q270.6 -70.24 275.99 -83.13Q281.38 -96.03 291.87 -103.51Q302.35 -111 317.72 -111Q333.12 -111 344.49 -103.59Q355.85 -96.17 362.1 -83.32Q368.34 -70.46 368.34 -54.02Q368.34 -37.82 362.18 -24.91Q356.01 -12.01 344.89 -4.5Q333.76 3 318.82 3ZM266.32 48V-108H288.7V-32.9H291.82V48ZM314.86 -19.62Q324.03 -19.62 329.91 -24.22Q335.8 -28.82 338.66 -36.63Q341.52 -44.44 341.52 -54.02Q341.52 -63.5 338.58 -71.3Q335.65 -79.1 329.54 -83.74Q323.44 -88.38 313.96 -88.38Q305.05 -88.38 299.47 -84.07Q293.89 -79.76 291.3 -72Q288.7 -64.25 288.7 -54.02Q288.7 -43.81 291.29 -36.05Q293.88 -28.28 299.64 -23.95Q305.4 -19.62 314.86 -19.62ZM397.14 48 417.96 -9.12 418.34 7.68 371.3 -108H397.6L430.28 -23.9H423.88L455.94 -108H481.32L420.76 48ZM532.92 3Q517.98 3 506.86 -4.5Q495.73 -12.01 489.57 -24.91Q483.4 -37.82 483.4 -54.02Q483.4 -70.46 489.65 -83.32Q495.89 -96.17 507.26 -103.59Q518.62 -111 534.02 -111Q549.39 -111 559.88 -103.51Q570.36 -96.03 575.75 -83.13Q581.14 -70.24 581.14 -54.02Q581.14 -37.83 575.71 -24.92Q570.28 -12.02 559.56 -4.51Q548.84 3 532.92 3ZM536.88 -19.62Q546.34 -19.62 552.1 -23.95Q557.86 -28.28 560.45 -36.05Q563.04 -43.81 563.04 -54.02Q563.04 -64.25 560.44 -72Q557.85 -79.76 552.27 -84.07Q546.69 -88.38 537.78 -88.38Q528.3 -88.38 522.19 -83.74Q516.08 -79.1 513.15 -71.3Q510.22 -63.5 510.22 -54.02Q510.22 -44.44 513.08 -36.63Q515.94 -28.82 521.83 -24.22Q527.71 -19.62 536.88 -19.62ZM563.04 0V-75.1H559.92V-144H585.42V0ZM655.48 3Q639.21 3 627.04 -4.3Q614.87 -11.6 608.14 -24.45Q601.4 -37.31 601.4 -54.02Q601.4 -70.93 608.28 -83.77Q615.16 -96.62 627.34 -103.81Q639.51 -111 655.48 -111Q671.76 -111 683.98 -103.7Q696.19 -96.41 702.97 -83.56Q709.74 -70.72 709.74 -54.02Q709.74 -37.19 702.92 -24.34Q696.09 -11.49 683.87 -4.25Q671.65 3 655.48 3ZM655.48 -20.7Q669.31 -20.7 676.11 -30.02Q682.92 -39.34 682.92 -54.02Q682.92 -69.19 676.02 -78.24Q669.12 -87.3 655.48 -87.3Q646.1 -87.3 640.08 -83.08Q634.05 -78.86 631.14 -71.38Q628.22 -63.9 628.22 -54.02Q628.22 -38.77 635.14 -29.74Q642.06 -20.7 655.48 -20.7ZM746.7 0 713.7 -108.18 738.52 -108 759.02 -40.68 779.79 -108H801.01L821.78 -40.68L842.3 -108H867.1L834.1 0H814.5L790.4 -72.74L766.3 0ZM952.16 0V-51.62Q952.16 -56.11 951.56 -62.13Q950.97 -68.15 948.62 -73.92Q946.27 -79.7 941.34 -83.48Q936.41 -87.26 927.74 -87.26Q923.6 -87.26 919.31 -85.92Q915.01 -84.59 911.43 -81.15Q907.85 -77.72 905.63 -71.45Q903.4 -65.18 903.4 -55.22L888.58 -61.86Q888.58 -75.23 893.87 -86.44Q899.16 -97.66 909.57 -104.39Q919.98 -111.12 935.48 -111.12Q947.73 -111.12 955.62 -107.02Q963.5 -102.92 968.04 -96.54Q972.58 -90.17 974.66 -83.1Q976.74 -76.04 977.29 -69.92Q977.84 -63.81 977.84 -60.42V0ZM877.72 0V-108H900.28V-73.58H903.4V0Z"/></svg>
       </div>
-      <p class="hero-slogan">Too lazy to format? Leave it to the sloth.</p>
+      <p class="hero-slogan">Stay calm and write. Capydown does the formatting.</p>
       <p class="hero-title"><span>Write with Typora-like calm.</span> <span>Publish to WeChat in one click.</span></p>
       <p class="hero-sub">A desktop Markdown editor for WeChat Official Account (公众号) writers. Formatted the moment you finish, proofread by AI before you publish.</p>
       <div class="hero-cta">
-        <a class="btn btn-solid" href="https://github.com/melonlee/slothdown/releases">
+        <a class="btn btn-solid" href="https://github.com/melonlee/capydown/releases">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 2v8.5M4.5 7 8 10.5 11.5 7M3 13.5h10" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Download
         </a>
-        <a class="btn btn-ghost" href="https://github.com/melonlee/slothdown">
+        <a class="btn btn-ghost" href="https://github.com/melonlee/capydown">
           <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
           GitHub
         </a>
       </div>
-      <p class="hero-note"><span>Free &amp; open source · macOS / Windows / Linux</span><span>Formerly LazyBox</span></p>
+      <p class="hero-note"><span>Free &amp; open source · macOS / Windows / Linux</span><span>Formerly LazyBox / Slothdown</span></p>
       <div class="hero-stage">
-        <img class="peek" src="../assets/sloth-pen.svg" alt="" width="700" height="790">
+        <img class="peek" src="../assets/capybara.svg" alt="" width="794" height="800">
         <div class="hero-shot win">
-          <img src="../assets/01-writing.webp" srcset="../assets/01-writing-1000.webp 1000w, ../assets/01-writing.webp 2000w" sizes="(max-width: 1168px) calc(100vw - 48px), 1120px" width="2000" height="1250" alt="Slothdown writing view with live preview and the file tree" fetchpriority="high">
+          <img src="../assets/01-writing.webp" srcset="../assets/01-writing-1000.webp 1000w, ../assets/01-writing.webp 2000w" sizes="(max-width: 1168px) calc(100vw - 48px), 1120px" width="2000" height="1250" alt="Capydown writing view with live preview and the file tree" fetchpriority="high">
         </div>
       </div>
     </div>
@@ -171,7 +171,7 @@
       <div class="features reveal">
         <div class="feature"><h3>What you see is what you post</h3><p>The panel renders exactly as WeChat will; styles are inlined on copy so nothing shifts on paste.</p></div>
         <div class="feature"><h3>Themes &amp; custom CSS</h3><p>Three article themes with adjustable font, size, accent colour and code style, plus your own CSS.</p></div>
-        <div class="feature"><h3>Image check</h3><p>WeChat can’t read local files, so Slothdown tells you which images to re-upload in the backend.</p></div>
+        <div class="feature"><h3>Image check</h3><p>WeChat can’t read local files, so Capydown tells you which images to re-upload in the backend.</p></div>
       </div>
     </div>
   </section>
@@ -182,7 +182,7 @@
       <div class="section-head reveal">
         <p class="eyebrow">Export &amp; Open With · v0.3.0</p>
         <h2>Not only for WeChat.</h2>
-        <p class="lede">The same draft exports to PDF for your editor or Word for whoever wants to mark it up. Right-click any <code>.md</code> file to open it with Slothdown.</p>
+        <p class="lede">The same draft exports to PDF for your editor or Word for whoever wants to mark it up. Right-click any <code>.md</code> file to open it with Capydown.</p>
       </div>
       <div class="duo section-body reveal">
         <figure style="margin:0">
@@ -197,7 +197,7 @@
       <div class="features reveal">
         <div class="feature"><h3>PDF</h3><p>Typeset with the editor theme: A4, page numbers, code highlighting, tables, local images and Mermaid; headings never strand at a page bottom.</p></div>
         <div class="feature"><h3>Word (.docx)</h3><p>Heading styles, lists, quotes, code blocks and tables survive; images are embedded and scaled to the page width.</p></div>
-        <div class="feature"><h3>Open with Slothdown</h3><p>Registered as an “Open With” app for <code>.md</code> without taking over the default. Files outside the workspace open with their folder.</p></div>
+        <div class="feature"><h3>Open with Capydown</h3><p>Registered as an “Open With” app for <code>.md</code> without taking over the default. Files outside the workspace open with their folder.</p></div>
       </div>
     </div>
   </section>
@@ -208,7 +208,7 @@
       <div class="section-head reveal">
         <p class="eyebrow">Two AI helpers</p>
         <h2>One more look before it ships.</h2>
-        <p class="lede">Once published, WeChat lets you change at most 20 characters of an article. So AI in Slothdown does exactly two things, both before you hit publish.</p>
+        <p class="lede">Once published, WeChat lets you change at most 20 characters of an article. So AI in Capydown does exactly two things, both before you hit publish.</p>
       </div>
       <div class="ai-grid">
         <article class="ai-card reveal">
@@ -238,7 +238,7 @@
       <div class="byok reveal">
         <h3>Your key.<br>Your text never touches us.</h3>
         <div>
-          <p>Bring your own API key. Requests go straight from your computer to the provider you choose. Slothdown has no server; your key stays on your machine.</p>
+          <p>Bring your own API key. Requests go straight from your computer to the provider you choose. Capydown has no server; your key stays on your machine.</p>
           <p>Text is sent only when you start a proofread or ask for titles.</p>
           <div class="providers"><span>Claude</span><span>DeepSeek</span><span>Kimi</span><span>Qwen</span><span>OpenAI</span><span>Any OpenAI-compatible gateway</span></div>
         </div>
@@ -273,7 +273,7 @@
         <div><span>Heading 1–6</span><span><kbd>⌘</kbd><kbd>1</kbd> … <kbd>6</kbd></span></div>
         <div><span>Bold / Italic</span><span><kbd>⌘</kbd><kbd>B</kbd> <kbd>⌘</kbd><kbd>I</kbd></span></div>
       </div>
-      <p class="keys-note">On Windows / Linux, ⌘ is Ctrl and ⌥ is Alt. <a href="https://github.com/melonlee/slothdown/blob/main/docs/usage.md#快捷键">Full shortcut list (zh)</a></p>
+      <p class="keys-note">On Windows / Linux, ⌘ is Ctrl and ⌥ is Alt. <a href="https://github.com/melonlee/capydown/blob/main/docs/usage.md#快捷键">Full shortcut list (zh)</a></p>
     </div>
   </section>
 
@@ -286,12 +286,12 @@
       </div>
       <div class="faq reveal">
         <details>
-          <summary>Why “Slothdown”? What happened to LazyBox?</summary>
-          <p>Slothdown is Markdown with a sloth — and “slow down”: calm, focused writing. Its Chinese slogan 懒得排版？交给树懒。 means “too lazy to format? leave it to the sloth”. Since v0.3.1 Slothdown is the only name. It is the same app as LazyBox, renamed in v0.3.0. Existing users just install the new version: preferences, AI settings and the workspace list are carried over on first launch, and the old data is left untouched.</p>
+          <summary>Why “Capydown”? What happened to Slothdown and LazyBox?</summary>
+          <p>Capydown is Capybara + Markdown. Capybaras are famous for staying calm about everything — the right mood for focused writing, hence the slogan “Stay calm and write. Capydown does the formatting.” It is the same app as LazyBox / Slothdown (renamed to Slothdown in v0.3.0 and to Capydown in v0.4.0). Existing users just install the new version: the preferences, AI settings and workspace list of the previous version are carried over on first launch, and the old data is left untouched.</p>
         </details>
         <details>
-          <summary>Is Slothdown related to Typora?</summary>
-          <p>No. Slothdown is an independent open-source project that takes Typora as its reference for the writing experience. What it adds is 公众号 formatting and pre-publish proofreading; if you don’t write for WeChat, Typora remains a great choice.</p>
+          <summary>Is Capydown related to Typora?</summary>
+          <p>No. Capydown is an independent open-source project that takes Typora as its reference for the writing experience. What it adds is 公众号 formatting and pre-publish proofreading; if you don’t write for WeChat, Typora remains a great choice.</p>
         </details>
         <details>
           <summary>Is it free? Do I need an account?</summary>
@@ -299,15 +299,15 @@
         </details>
         <details>
           <summary>Which platforms are supported?</summary>
-          <p>macOS (Apple silicon and Intel) is the primary development and test platform. Windows and Linux builds (<code>Slothdown-&lt;version&gt;-…</code>) are produced automatically with each release and are lightly tested — bug reports welcome.</p>
+          <p>macOS (Apple silicon and Intel) is the primary development and test platform. Windows and Linux builds (<code>Capydown-&lt;version&gt;-…</code>) are produced automatically with each release and are lightly tested — bug reports welcome.</p>
         </details>
         <details>
           <summary>macOS says the app is “damaged”?</summary>
-          <p>The build isn’t signed yet. Move it to Applications and run <code>xattr -cr /Applications/Slothdown.app</code> in Terminal.</p>
+          <p>The build isn’t signed yet. Move it to Applications and run <code>xattr -cr /Applications/Capydown.app</code> in Terminal.</p>
         </details>
         <details>
           <summary>Images disappear after pasting into WeChat?</summary>
-          <p>WeChat can’t read files on your computer. Slothdown warns you before copying; re-upload those images in the backend, or configure an image host (GitHub, Aliyun OSS, Tencent COS, Qiniu, Cloudflare R2 …) so new images upload on paste.</p>
+          <p>WeChat can’t read files on your computer. Capydown warns you before copying; re-upload those images in the backend, or configure an image host (GitHub, Aliyun OSS, Tencent COS, Qiniu, Cloudflare R2 …) so new images upload on paste.</p>
         </details>
         <details>
           <summary>What’s missing compared with Typora?</summary>
@@ -319,13 +319,13 @@
 
   <!-- ============================================================ closing -->
   <section class="closing">
-    <img class="closing-peek" src="../assets/sloth-pen.svg" alt="" width="700" height="790" loading="lazy">
+    <img class="closing-peek" src="../assets/capybara.svg" alt="" width="794" height="800" loading="lazy">
     <div class="wrap reveal">
       <h2 class="serif">Start writing.</h2>
-      <p>Leave the rest to the sloth.</p>
+      <p>Stay calm — Capydown does the formatting.</p>
       <div class="hero-cta">
-        <a class="btn btn-solid" href="https://github.com/melonlee/slothdown/releases">Download</a>
-        <a class="btn btn-ghost" href="https://github.com/melonlee/slothdown/blob/main/docs/usage.md">User guide (zh)</a>
+        <a class="btn btn-solid" href="https://github.com/melonlee/capydown/releases">Download</a>
+        <a class="btn btn-ghost" href="https://github.com/melonlee/capydown/blob/main/docs/usage.md">User guide (zh)</a>
       </div>
     </div>
   </section>
@@ -333,15 +333,15 @@
 
 <footer class="footer">
   <div class="wrap">
-    <a class="brand" href="./"><img src="../assets/favicon.svg" alt="" width="20" height="20"><span>Slothdown</span></a>
+    <a class="brand" href="./"><img src="../assets/favicon.svg" alt="" width="20" height="20"><span>Capydown</span></a>
     <nav aria-label="Footer">
-      <a href="https://github.com/melonlee/slothdown">GitHub</a>
-      <a href="https://github.com/melonlee/slothdown/releases">Download</a>
-      <a href="https://github.com/melonlee/slothdown/blob/main/CHANGELOG.md">Changelog</a>
-      <a href="https://github.com/melonlee/slothdown/blob/main/LICENSE">MIT License</a>
+      <a href="https://github.com/melonlee/capydown">GitHub</a>
+      <a href="https://github.com/melonlee/capydown/releases">Download</a>
+      <a href="https://github.com/melonlee/capydown/blob/main/CHANGELOG.md">Changelog</a>
+      <a href="https://github.com/melonlee/capydown/blob/main/LICENSE">MIT License</a>
       <a href="../" hreflang="zh-CN" lang="zh-CN">中文</a>
     </nav>
-    <p class="fine">Made by <a href="https://github.com/melonlee">Melon</a> · <a href="https://fantasyailab.com/">FantasyAI Lab</a>. 公众号 formatting comes from <a href="https://github.com/doocs/md">doocs/md</a>. Typora is a trademark of its owner; Slothdown is not affiliated with Typora.</p>
+    <p class="fine">Made by <a href="https://github.com/melonlee">Melon</a> · <a href="https://fantasyailab.com/">FantasyAI Lab</a>. 公众号 formatting comes from <a href="https://github.com/doocs/md">doocs/md</a>. Typora is a trademark of its owner; Capydown is not affiliated with Typora.</p>
   </div>
 </footer>
 

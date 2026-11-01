@@ -1,4 +1,4 @@
-// Slothdown landing page — progressive enhancement only; the page works without it.
+// Capydown landing page — progressive enhancement only; the page works without it.
 (function () {
   'use strict'
 
