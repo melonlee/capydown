@@ -295,7 +295,7 @@ const openInFinder = async (workspace: Workspace) => {
 .lb-welcome-lockup {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 7px; /* 正面头像左右各留约 1/8 的空白，标志和字标的墨迹间距约 13px */
   margin: 0;
   color: var(--lb-fg-strong);
   user-select: none;
