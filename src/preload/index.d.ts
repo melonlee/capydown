@@ -58,6 +58,7 @@ interface LazyBoxAPI {
   // 窗口管理 API
   setWindowTitle: (title: string) => Promise<void>
   updateMenuState: (state: Record<string, unknown>) => void
+  showEditorContextMenu: (ctx: { hasSelection: boolean, linkUrl: string | null, imageUrl: string | null }) => Promise<boolean>
   setBootTheme?: (theme: 'light' | 'paper' | 'dark') => void
 
   // 用 LazyBox 打开：取走启动前排队的文件；判断在哪个工作区打开

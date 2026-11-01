@@ -3,6 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { buildMenu, updateMenuState } from './menu'
+import { registerEditorContextMenu } from './context-menu'
 import { initDocumentDir, defaultDocumentPath, defaultDocumentName } from './local'
 import { initIpcMain } from './ipc'
 import { initAIIpcHandlers } from './ipc-ai'
@@ -133,6 +134,9 @@ app.whenReady().then(() => {
   }))
 
   // 菜单勾选状态（源代码模式、专注模式、主题…）由渲染进程推送
+  // 编辑区右键菜单（原生菜单）
+  registerEditorContextMenu()
+
   ipcMain.on('menu:update-state', (_, state) => {
     if (state && typeof state === 'object')
       updateMenuState(state)

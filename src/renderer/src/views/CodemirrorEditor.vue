@@ -15,6 +15,7 @@ import PublishDialog from '@renderer/components/PublishDialog.vue'
 import RunLoading from '@renderer/components/RunLoading.vue'
 import CommandPalette from '@renderer/components/workbench/CommandPalette.vue'
 import OutlinePanel from '@renderer/components/workbench/OutlinePanel.vue'
+import SelectionToolbar from '@renderer/components/workbench/SelectionToolbar.vue'
 import StatusBar from '@renderer/components/workbench/StatusBar.vue'
 import TitleBar from '@renderer/components/workbench/TitleBar.vue'
 import ProofreadPanel from '@renderer/components/workbench/ProofreadPanel.vue'
@@ -51,6 +52,9 @@ registerWeChatHtmlProvider()
 
 const isMac = /Mac/i.test(navigator.userAgent)
 const editorHost = ref<HTMLElement>()
+const mainEl = ref<HTMLElement>()
+/** 给浮动工具栏 / 插入菜单用的编辑器引用（editor 变量本身不是响应式的） */
+const editorRef = shallowRef<MarkdownEditor | null>(null)
 const wechatPanel = ref<InstanceType<typeof WeChatPanel>>()
 let editor: MarkdownEditor | null = null
 
@@ -496,6 +500,7 @@ function runCommand(id: string) {
     case 'theme.newsprint': wb.setTheme('newsprint'); break
     case 'theme.night': wb.setTheme('night'); break
     case 'theme.followSystem': wb.followSystem = !wb.followSystem; break
+    case 'theme.toggleDark': wb.toggleDark(); break
     case 'theme.articleStyle':
       wb.wechatOpen = true
       store.isOpenRightSlider = true
@@ -663,7 +668,9 @@ onMounted(() => {
     onPasteFiles,
     onDropFiles,
     openLink: url => window.open(url, '_blank'),
+    onContextMenu: ctx => window.$api.showEditorContextMenu?.(ctx),
   })
+  editorRef.value = markRaw(editor)
   store.editor = markRaw(editor) as any
   // 端到端测试钩子：只在开发模式或 LAZYBOX_E2E=1 启动时暴露
   if (import.meta.env.DEV || window.$api?.isE2E)
@@ -690,6 +697,7 @@ onBeforeUnmount(() => {
   emitter.off('publish:open-dialog')
   editor?.destroy()
   editor = null
+  editorRef.value = null
   delete (window as any).__lbEditor
   store.editor = null
 })
@@ -727,8 +735,9 @@ window.addEventListener('beforeunload', () => {
       />
 
       <div class="lb-body">
-        <main class="lb-main">
+        <main ref="mainEl" class="lb-main">
           <div v-show="isTextView" ref="editorHost" class="lb-editor" />
+          <SelectionToolbar v-if="isTextView" :editor="editorRef" :container="mainEl" @run="runCommand" />
 
           <div v-if="store.currentFileType === 'image'" class="lb-file-view">
             <img v-if="imageBase64" :src="imageBase64" :alt="wb.docName">

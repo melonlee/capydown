@@ -46,6 +46,23 @@ export const useWorkbenchStore = defineStore('workbench', () => {
     return editorTheme.value
   })
 
+  // ◐ 按钮回到浅色时用的主题：记住用户最后一次用的浅色主题（GitHub / Newsprint）
+  const lastLightTheme = useStorage<EditorThemeName>('lb-last-light-theme', 'github')
+  watch(editorTheme, (t) => {
+    if (t !== 'night')
+      lastLightTheme.value = t
+  }, { immediate: true })
+
+  /**
+   * 浅色 ↔ 深色切换（侧边栏底部 ◐）：以「当前看到的」主题为准切到另一边，
+   * 这是用户的明确选择，所以同时关闭「跟随系统深色模式」，否则系统深色时切不回浅色。
+   */
+  function toggleDark() {
+    const toDark = effectiveTheme.value !== 'night'
+    followSystem.value = false
+    editorTheme.value = toDark ? 'night' : (lastLightTheme.value === 'night' ? 'github' : lastLightTheme.value)
+  }
+
   function setTheme(theme: EditorThemeName) {
     editorTheme.value = theme
     // 系统处于深色时手动选浅色主题：视为不再跟随系统
@@ -91,6 +108,7 @@ export const useWorkbenchStore = defineStore('workbench', () => {
     followSystem,
     effectiveTheme,
     setTheme,
+    toggleDark,
     docPath,
     docName,
     dirty,

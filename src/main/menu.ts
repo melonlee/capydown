@@ -177,6 +177,7 @@ function template(): MenuItemConstructorOptions[] {
         cmd('theme.night', { type: 'radio', checked: state.theme === 'night' }),
         sep,
         cmd('theme.followSystem', { type: 'checkbox', checked: state.followSystem }),
+        cmd('theme.toggleDark'),
         sep,
         cmd('theme.articleStyle'),
         cmd('theme.customCss'),

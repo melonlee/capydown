@@ -81,6 +81,8 @@ export const APP_COMMANDS: AppCommand[] = [
   { id: 'theme.newsprint', label: 'Newsprint 报纸', category: '主题' },
   { id: 'theme.night', label: 'Night 夜间', category: '主题' },
   { id: 'theme.followSystem', label: '跟随系统深色模式', category: '主题' },
+  // 浅色 ↔ 深色：在当前浅色主题（GitHub / Newsprint）与 Night 之间切换，并关闭「跟随系统」
+  { id: 'theme.toggleDark', label: '切换浅色 / 深色', category: '主题' },
   { id: 'theme.articleStyle', label: '公众号排版样式…', category: '主题' },
   { id: 'theme.customCss', label: '公众号自定义 CSS…', category: '主题' },
 

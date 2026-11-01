@@ -11,11 +11,13 @@ import { markdown, markdownLanguage } from '@codemirror/lang-markdown'
 import { languages } from '@codemirror/language-data'
 import { openSearchPanel, search, searchKeymap } from '@codemirror/search'
 import { Annotation, Compartment, EditorSelection, EditorState, type Extension, Prec, Text, type TransactionSpec } from '@codemirror/state'
-import { drawSelection, dropCursor, EditorView, keymap, placeholder } from '@codemirror/view'
+import { drawSelection, dropCursor, EditorView, keymap, placeholder, type ViewPlugin, type ViewUpdate } from '@codemirror/view'
+import { type InsertKind, insertSnippet, linkContextAt } from './affordances'
 import { insertBlock, insertCodeBlock, insertLink, setHeading, toggleInline, toggleList, toggleQuote } from './format'
 import { markdownHighlighting } from './highlight'
 import { linkAt, livePreview, type LivePreviewConfig, livePreviewConfig } from './live-preview'
 import { detectLineSeparator } from './markdown-utils'
+import { insertButton, pinInsertButton } from './insert-button'
 import { focusMode, ghostField, setGhost, typewriterMode } from './modes'
 
 export { computeTextStats, extractOutline } from './markdown-utils'
@@ -39,7 +41,17 @@ export interface MarkdownEditorOptions {
   /** 拖入了文件 / 文件夹；返回 true 表示已处理 */
   onDropFiles?: (event: DragEvent) => boolean
   openLink?: (url: string) => void
+  /** 右键：上下文（选区 / 链接 / 图片），由外部弹出原生菜单 */
+  onContextMenu?: (ctx: EditorContextInfo) => void
+  /** 点击空行左侧的「+」 */
+  onInsertButton?: (anchor: DOMRect) => void
   placeholder?: string
+}
+
+export interface EditorContextInfo {
+  hasSelection: boolean
+  linkUrl: string | null
+  imageUrl: string | null
 }
 
 export type FormatCommand =
@@ -95,12 +107,16 @@ export class MarkdownEditor {
   private readonly sourceComp = new Compartment()
   private readonly focusComp = new Compartment()
   private readonly typewriterComp = new Compartment()
+  private readonly insertComp = new Compartment()
+  private readonly insertPlugin: ViewPlugin<any>
+  private readonly updateListeners = new Set<(u: ViewUpdate) => void>()
   private sourceMode = false
   private focus_ = false
   private typewriter = false
 
   constructor(opts: MarkdownEditorOptions) {
     this.opts = opts
+    this.insertPlugin = insertButton({ onOpen: anchor => opts.onInsertButton?.(anchor) })
     this.view = new EditorView({
       state: this.createState(''),
       parent: opts.parent,
@@ -159,7 +175,11 @@ export class MarkdownEditor {
         this.sourceComp.of(this.sourceMode ? EditorView.editorAttributes.of({ class: 'cm-source-mode' }) : livePreview()),
         this.focusComp.of(this.focus_ ? focusMode() : []),
         this.typewriterComp.of(this.typewriter ? typewriterMode() : []),
+        // 专注模式只留正文：空行「+」这种不请自来的入口隐藏（选区工具栏是用户主动触发的，保留）
+        this.insertComp.of(this.focus_ || !opts.onInsertButton ? [] : this.insertPlugin),
         EditorView.updateListener.of((u) => {
+          for (const fn of this.updateListeners)
+            fn(u)
           if (u.docChanged && !u.transactions.some(tr => tr.annotation(loadAnnotation)))
             opts.onDocChange?.()
           if (u.selectionSet || u.docChanged)
@@ -180,6 +200,25 @@ export class MarkdownEditor {
               return true
             }
             return false
+          },
+          contextmenu: (e, view) => {
+            if (!opts.onContextMenu)
+              return false
+            const pos = view.posAtCoords({ x: e.clientX, y: e.clientY })
+            // 与 Typora 一致：右键点在选区外时先把光标移过去
+            if (pos != null && !view.state.selection.ranges.some(r => r.from <= pos && r.to >= pos && !r.empty))
+              view.dispatch({ selection: EditorSelection.cursor(pos) })
+            const el = e.target as HTMLElement
+            const img = el.closest('.cm-lp-image')?.querySelector('img')
+            const href = el.closest('[data-href]')?.getAttribute('data-href') || null
+            const at = pos == null ? null : linkContextAt(view.state, pos)
+            e.preventDefault()
+            opts.onContextMenu({
+              hasSelection: view.state.selection.ranges.some(r => !r.empty),
+              linkUrl: href ?? (at?.kind === 'link' ? at.url : null),
+              imageUrl: at?.kind === 'image' ? at.url : (img ? img.getAttribute('src') : null),
+            })
+            return true
           },
           mousedown: (e, view) => {
             if (!(e.metaKey || e.ctrlKey) || e.button !== 0)
@@ -313,6 +352,22 @@ export class MarkdownEditor {
     this.view.focus()
   }
 
+  /** 插入菜单里没有对应菜单命令的块（表格模板、Mermaid） */
+  insertSnippet(kind: Extract<InsertKind, 'table' | 'mermaid'>) {
+    this.view.dispatch({ ...insertSnippet(this.view.state, kind), userEvent: 'input.format', scrollIntoView: true })
+    this.view.focus()
+  }
+
+  /** 订阅视图更新（浮动工具栏等界面元素用） */
+  onUpdate(fn: (u: ViewUpdate) => void): () => void {
+    this.updateListeners.add(fn)
+    return () => this.updateListeners.delete(fn)
+  }
+
+  pinInsertButton(pinned: boolean) {
+    pinInsertButton(this.view, this.insertPlugin, pinned)
+  }
+
   undo() {
     undo(this.view)
   }
@@ -340,7 +395,12 @@ export class MarkdownEditor {
 
   setFocusMode(on: boolean) {
     this.focus_ = on
-    this.view.dispatch({ effects: this.focusComp.reconfigure(on ? focusMode() : []) })
+    this.view.dispatch({
+      effects: [
+        this.focusComp.reconfigure(on ? focusMode() : []),
+        this.insertComp.reconfigure(on || !this.opts.onInsertButton ? [] : this.insertPlugin),
+      ],
+    })
   }
 
   setTypewriterMode(on: boolean) {

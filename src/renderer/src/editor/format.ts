@@ -101,7 +101,8 @@ export function toggleList(state: EditorState, kind: ListKind): TransactionSpec 
 
 export function toggleQuote(state: EditorState): TransactionSpec {
   const lines = selectedLines(state)
-  const allQuoted = lines.every(l => QUOTE_RE.test(l.text) || l.text.trim() === '')
+  // 全是空行（例如在空行上插入引用）时视为「未引用」，插入 "> "
+  const allQuoted = lines.some(l => QUOTE_RE.test(l.text)) && lines.every(l => QUOTE_RE.test(l.text) || l.text.trim() === '')
   const changes = lines.map((line) => {
     if (allQuoted) {
       const m = QUOTE_RE.exec(line.text)

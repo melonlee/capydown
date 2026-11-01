@@ -69,6 +69,13 @@ const api = {
     ipcRenderer.invoke('set-window-title', { title }),
   updateMenuState: (state: Record<string, unknown>) =>
     ipcRenderer.send('menu:update-state', state),
+  /** 编辑区右键菜单：只上报上下文，菜单由主进程用共享命令表生成 */
+  showEditorContextMenu: (ctx: { hasSelection: boolean, linkUrl: string | null, imageUrl: string | null }) =>
+    ipcRenderer.invoke('editor:context-menu', {
+      hasSelection: ctx.hasSelection === true,
+      linkUrl: typeof ctx.linkUrl === 'string' ? ctx.linkUrl : null,
+      imageUrl: typeof ctx.imageUrl === 'string' ? ctx.imageUrl : null,
+    }),
   /** 记录当前主题的窗口底色（下次启动的 BrowserWindow.backgroundColor） */
   setBootTheme: (theme: 'light' | 'paper' | 'dark') =>
     ipcRenderer.send('app:set-boot-theme', theme),
