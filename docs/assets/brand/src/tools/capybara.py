@@ -1,176 +1,91 @@
 #!/usr/bin/env python3
-"""Capydown 吉祥物母版：托腮思考的卡皮巴拉（暖褐毛 + 头顶的 # 思考泡泡）。
+"""Capydown 吉祥物母版：从底边探出头的正面卡皮巴拉（和 喵想 · FantasyAI Lab 的猫同一个吉祥物家族）。
 
-和 喵想 · FantasyAI Lab 的猫同一个吉祥物家族：viewBox 100..924（圆角方形主体）、深炭灰底板、左上主光、
-`sculpt` 轮廓滤镜、带高光的内嵌眼睛。几何全部是参数化的（头 / 身体 / 手臂 / 爪子），改这里而不是改 SVG。
+构图和 喵想 的猫完全一致：viewBox 100..924（圆角方形主体）、深炭灰底板、左上主光、`sculpt` 轮廓滤镜、
+`cast` 投影、带白色高光的内嵌椭圆眼睛、两只搭在底边上的爪子（趾缝线）。只改让它成为卡皮巴拉的部分：
+平顶的方头、方方的腮、头顶两角的小圆耳、占据下半张脸的宽大圆口鼻（柔和的深色鼻垫 + 两道斜鼻孔 + 人字唇线）、
+短趾和深色小指甲、暖褐毛色，头顶放一颗柚子（卡皮巴拉泡柚子汤的梗）。几何全部是参数化的，改这里而不是改 SVG。
 
 生成（仓库根目录）：python3 docs/assets/brand/src/tools/capybara.py
-  docs/assets/brand/src/capybara.svg        完整图标（≥64px）：托腮的卡皮巴拉 + 头顶的 # 泡泡
-  docs/assets/brand/src/capybara-small.svg  小尺寸版（16–32px）：只留头 + 托腮的爪，五官放大，无泡泡
+  docs/assets/brand/src/capybara.svg        完整图标（≥64px）：头顶一颗柚子
+  docs/assets/brand/src/capybara-small.svg  小尺寸版（16–32px）：只留头（平顶 + 耳 + 长口鼻），五官放大，无柚子 / 爪子
   docs/assets/brand/src/capybara-flat.svg   两色平面版（无渐变、无滤镜）
-  docs/assets/brand/src/capy-glyph.svg      单色侧面头像（currentColor，24 网格），应用内 16–20px 标志的来源
-然后 build_icon.py → export_icons.py → build_brand.py。概念稿（多方案比较）在仓库外的 _concepts/capybara/。
+  docs/assets/brand/src/capy-glyph.svg      单色正面头像（currentColor，24 网格；耳 / 平顶 / 口鼻轮廓，眼睛和鼻孔镂空），应用内 16–20px 标志
+然后 build_icon.py → export_icons.py → build_brand.py。
+概念稿（白 / 暖两种毛色、口鼻深浅、头顶柚子）：python3 capybara.py --concepts <dir>，比较图在仓库外的 _concepts/capybara-meow/。
 """
 from __future__ import annotations
 
-import math
 from pathlib import Path
 
 TOOLS = Path(__file__).resolve().parent
 OUT = TOOLS.parent
 SQUIRCLE = (TOOLS / 'squircle.txt').read_text(encoding='utf-8').strip()
 
-# ------------------------------------------------------------------ coats
-# The tile is always the 喵想 charcoal; only the creature changes.
-TILE = ('#3a3c42', '#232429', '#141519')
-WHITE = dict(
+# ------------------------------------------------------------------ palettes
+TILE = ('#3a3c42', '#232429', '#141519')   # 喵想 charcoal tile, never changes
+FLAT_BG = '#26292f'
+WARM = dict(  # warm taupe / cream-brown capybara
+    body=('#f2dcbf', '#d8b48b', '#b88f67', '#8c6849', '#5e4533'),
+    muzzle=('#e3c29c', '#c09670', '#8d6a4b'),
+    cream=('#fbf1e3', '#ead6bb', '#c4a481'),
+    shade='#3b2f26', shine='#fff4e6', shine_op=0.85,
+    ear_in=('#7d604b', '#a8876a'), pad=('#7f604a', '#5f4636'), nostril='#1a120c', lip='#6d5240',
+    toe='#8a6c53', nail='#4a382c',
+    flat_body='#d8bc99', flat_muzzle='#c4a37e', flat_feat='#17181c', flat_pad='#4a382c', flat_paw='#e3caa9',
+    flat_toe='#9c7c5e', flat_ear='#9c7c5e',
+)
+WHITE = dict(  # the 喵想 cat's own white, for comparison
     body=('#ffffff', '#f3f3f5', '#d9dadf', '#b4b6bc', '#8a8c93'),
-    shade='#3e4047', shine='#ffffff', shine_op=0.9, rim='#ffffff',
-    fold='#8d9097', fur_d='#9fa2a9', fur_l='#ffffff',
-    pad=('#a9acb3', '#868991'), nostril='#24252a', lip='#8e9097',
-    ear_in=('#b7b9c0', '#d6d8dd'), nail='#7d8088',
-    flat_body='#eceef1', flat_shadow='#c6c9cf', flat_feat='#1d1f23', flat_pad='#b9bcc3',
+    muzzle=('#ffffff', '#e9eaee', '#c3c5cb'),
+    cream=('#ffffff', '#f1f2f4', '#cfd1d6'),
+    shade='#3e4047', shine='#ffffff', shine_op=0.9,
+    ear_in=('#a9abb2', '#c9cad0'), pad=('#55575e', '#2f3035'), nostril='#111214', lip='#8d9097',
+    toe='#9c9ea5', nail='#6b6d74',
+    flat_body='#f1f2f4', flat_muzzle='#dcdee2', flat_feat='#17181c', flat_pad='#3a3c42', flat_paw='#f1f2f4',
+    flat_toe='#a9abb2', flat_ear='#b4b6bc',
 )
-WARM = dict(
-    body=('#f3e3cd', '#dec2a2', '#c1a07e', '#98775b', '#6a5240'),
-    shade='#3b2f26', shine='#fff5ea', shine_op=0.8, rim='#ffe9d2',
-    fold='#7a5f4a', fur_d='#8f735c', fur_l='#fbf0e2',
-    pad=('#7b6252', '#5b4639'), nostril='#21170f', lip='#6d5444',
-    ear_in=('#8c705b', '#b39377'), nail='#5a4537',
-    flat_body='#d9bf9f', flat_shadow='#b39373', flat_feat='#1d1f23', flat_pad='#7b6252',
-)
-COATS = {'white': WHITE, 'warm': WARM}
-INK = '#2a2b30'
+COATS = {'warm': WARM, 'white': WHITE}
 
-# ------------------------------------------------------------------ geometry (head-local coords, facing left)
-# Long boxy head: flat top, tall blunt snout, recessed little chin, heavy jowl at the back.
-HEAD = ('M -250 -140 C -206 -180 -110 -186 0 -186 C 110 -186 190 -172 226 -124 C 258 -82 264 0 244 60 '
-        'C 226 116 176 150 100 152 C 30 154 -80 136 -150 112 C -180 102 -200 93 -222 82 '
-        'C -250 69 -276 50 -284 10 C -292 -30 -288 -104 -250 -140 Z')
-EAR_NEAR = (178, -166, 30, 35, 24)     # cx, cy, rx, ry, rot
-EAR_FAR = (122, -178, 21, 26, 6)
-EYE = (40, -106)
-HEAD_TF = 'translate(500 500) rotate(6) scale(0.9)'
-
-# v2 body: a heavy, relaxed barrel — the back line flows out of the neck behind the head, soft
-# sloping shoulder on the right, broad chest under the chin; closed below the tile edge.
-BODY_PTS = [(236, 1010), (252, 870), (286, 752), (338, 664), (420, 606), (560, 556), (676, 520), (762, 516),
-            (842, 552), (900, 626), (936, 730), (952, 860), (958, 1010), (600, 1070)]
-# v2 arms: (x, y, r) spines, splined radius profile (wrist thin -> forearm swell -> round elbow -> fat upper arm)
-ARM_A_SP = [(394, 632, 34), (406, 684, 37), (428, 746, 53), (456, 802, 60), (486, 846, 60), (508, 868, 55)]
-ARM_B_SP = [(716, 1010, 58), (686, 948, 54), (644, 904, 45), (606, 884, 38)]
-PAW_A = (392, 626, -22, 0.96)               # x, y, rot, scale — pressed up into the jaw
-PAW_B = (562, 866, -56, 0.84)               # hand cupping A's elbow from below, toes curling up-left
-BUBBLE = (752, 208, 70)
-TRAIL = ((634, 304, 9), (670, 268, 14))
-
-
-def capsule(p, q) -> str:
-    """Smooth tangent hull of two circles (x, y, r) — a tapered limb with round ends."""
-    (x1, y1, r1), (x2, y2, r2) = p, q
-    dx, dy = x2 - x1, y2 - y1
-    d = math.hypot(dx, dy)
-    a = math.atan2(dy, dx)
-    t = math.acos((r1 - r2) / d)
-    p1 = (x1 + r1 * math.cos(a + t), y1 + r1 * math.sin(a + t))
-    p2 = (x2 + r2 * math.cos(a + t), y2 + r2 * math.sin(a + t))
-    p3 = (x2 + r2 * math.cos(a - t), y2 + r2 * math.sin(a - t))
-    p4 = (x1 + r1 * math.cos(a - t), y1 + r1 * math.sin(a - t))
-    f = lambda pt: f'{pt[0]:.1f} {pt[1]:.1f}'
-    return (f'M {f(p1)} L {f(p2)} A {r2} {r2} 0 0 0 {f(p3)} L {f(p4)} A {r1} {r1} 0 1 0 {f(p1)} Z')
-
-
-def taper(p0, p1, p2, p3, w=(1.0, 6.0, 1.0), fill='#000', extra='', n=28) -> str:
-    """A cubic Bézier drawn as a filled, tapered brush stroke (width profile start/mid/end)."""
-    def pt(t):
-        u = 1 - t
-        return tuple(u**3 * a + 3 * u * u * t * b + 3 * u * t * t * c + t**3 * d for a, b, c, d in zip(p0, p1, p2, p3))
-    def tan(t):
-        u = 1 - t
-        return tuple(3 * u * u * (b - a) + 6 * u * t * (c - b) + 3 * t * t * (d - c) for a, b, c, d in zip(p0, p1, p2, p3))
-    L, R = [], []
-    for i in range(n + 1):
-        t = i / n
-        ww = (w[0] * (1 - t) ** 2 + 2 * w[1] * t * (1 - t) + w[2] * t * t) / 2  # quadratic width profile
-        x, y = pt(t); dx, dy = tan(t); m = math.hypot(dx, dy) or 1
-        nx, ny = -dy / m, dx / m
-        L.append((x + nx * ww, y + ny * ww)); R.append((x - nx * ww, y - ny * ww))
-    pts = L + R[::-1]
-    d = 'M ' + ' L '.join(f'{x:.1f} {y:.1f}' for x, y in pts) + ' Z'
-    return f'<path d="{d}" fill="{fill}"{extra}/>'
-
-
-def _cr(p0, p1, p2, p3, t):
-    t2, t3 = t * t, t * t * t
-    return tuple(0.5 * ((2 * b) + (-a + c) * t + (2 * a - 5 * b + 4 * c - d) * t2 + (-a + 3 * b - 3 * c + d) * t3)
-                 for a, b, c, d in zip(p0, p1, p2, p3))
-
-
-def cr_sample(pts, n=10):
-    """Dense samples along an open Catmull-Rom spline through `pts` (tuples of any dimension)."""
-    P = [tuple(2 * a - b for a, b in zip(pts[0], pts[1]))] + list(pts) + [tuple(2 * a - b for a, b in zip(pts[-1], pts[-2]))]
-    out = []
-    for i in range(1, len(P) - 2):
-        for k in range(n):
-            out.append(_cr(P[i - 1], P[i], P[i + 1], P[i + 2], k / n))
-    out.append(tuple(pts[-1]))
-    return out
-
-
-def smooth_d(pts, closed=True, tension=1.0) -> str:
-    """Catmull-Rom -> cubic Bézier path through 2-D points (gives perfectly smooth organic outlines)."""
-    n = len(pts)
-    f = lambda p: f'{p[0]:.1f} {p[1]:.1f}'
-    d = f'M {f(pts[0])}'
-    rng = range(n) if closed else range(n - 1)
-    for i in rng:
-        p0 = pts[(i - 1) % n] if (closed or i > 0) else pts[0]
-        p1, p2 = pts[i], pts[(i + 1) % n]
-        p3 = pts[(i + 2) % n] if (closed or i + 2 < n) else pts[-1]
-        c1 = (p1[0] + (p2[0] - p0[0]) * tension / 6, p1[1] + (p2[1] - p0[1]) * tension / 6)
-        c2 = (p2[0] - (p3[0] - p1[0]) * tension / 6, p2[1] - (p3[1] - p1[1]) * tension / 6)
-        d += f' C {f(c1)} {f(c2)} {f(p2)}'
-    return d + (' Z' if closed else '')
-
-
-def limb(spine, n=6, cap=(1.0, 1.0)) -> str:
-    """Soft organic limb: spine = [(x, y, r), ...]; the radius profile is splined too, ends are rounded caps
-    (cap = squash factor of each end cap: 1 = half-circle, <1 = blunter)."""
-    S = cr_sample(spine, n)
-    L, R = [], []
-    for i, (x, y, r) in enumerate(S):
-        a, b = S[max(i - 1, 0)], S[min(i + 1, len(S) - 1)]
-        dx, dy = b[0] - a[0], b[1] - a[1]; m = math.hypot(dx, dy) or 1
-        nx, ny = -dy / m, dx / m
-        L.append((x + nx * r, y + ny * r)); R.append((x - nx * r, y - ny * r))
-
-    def endcap(i, sgn, k):
-        x, y, r = S[i]
-        a, b = S[max(i - 1, 0)], S[min(i + 1, len(S) - 1)]
-        dx, dy = (b[0] - a[0]) * sgn, (b[1] - a[1]) * sgn; m = math.hypot(dx, dy) or 1
-        tx, ty, nx, ny = dx / m, dy / m, -dy / m, dx / m
-        return [(x + (nx * math.cos(t) + tx * math.sin(t) * k) * r,
-                 y + (ny * math.cos(t) + ty * math.sin(t) * k) * r) for t in (math.pi * j / 6 for j in range(1, 6))]
-    pts = L + endcap(len(S) - 1, 1, cap[1]) + R[::-1] + endcap(0, -1, cap[0])
-    area = sum(a[0] * b[1] - b[0] * a[1] for a, b in zip(pts, pts[1:] + pts[:1]))
-    return smooth_d(pts if area > 0 else pts[::-1])  # always clockwise on screen (same winding as PAW)
-
-
-def blob(pts) -> str:
-    return smooth_d(pts)
-
-
-BODY = smooth_d(BODY_PTS)
+# ------------------------------------------------------------------ geometry (喵想 frame: 100..924, tilt about 512,760)
+TILT = -5
+# Broad box head with a flat top and squared cheeks that flow into stocky shoulders; closed below the tile.
+HEAD = ('M 104 1110 C 104 930 150 838 232 800 '
+        'C 220 690 222 520 232 390 '
+        'C 238 306 280 266 362 260 '
+        'C 444 254 580 254 662 260 '
+        'C 744 266 786 306 792 390 '
+        'C 802 520 804 690 792 800 '
+        'C 874 838 920 930 920 1110 Z')
+EARS = ((270, 282, 36, 27, -36), (754, 282, 36, 27, 36))       # cx, cy, rx, ry, rot — on the top corners
+EAR_IN = ((264, 276, 19, 11, -36), (760, 276, 19, 11, 36))
+EYES = ((356, 410), (668, 410))
+EYE_W, EYE_H = 64, 94
+# Deep, blunt snout: the whole lower face, a rounded block nearly as wide as the head.
+MUZZLE = ('M 512 492 C 616 492 684 522 698 604 C 712 690 694 770 640 812 '
+          'C 600 842 424 842 384 812 C 330 770 312 690 326 604 C 340 522 408 492 512 492 Z')
+# Broad, flat rhinarium (not a round bear button): a wide soft band with two slanted nostril slits at its ends.
+NOSE = ('M 418 560 C 420 538 460 532 512 532 C 564 532 604 538 606 560 '
+        'C 608 584 572 604 540 608 C 528 610 520 616 512 616 C 504 616 496 610 484 608 '
+        'C 452 604 416 584 418 560 Z')
+NOSTRILS = ((468, 570, 27, 11, 36), (556, 570, 27, 11, -36))
+LIP = 'M 512 616 L 512 684 M 466 698 Q 494 712 512 684 Q 530 712 558 698'
+PAWS = ((292, 934), (738, 934))
+PAW_R = (100, 92)
+TOES = (264, 318, 712, 766)
+NAILS = (238, 291, 344, 686, 739, 792)   # toe centres; each gets a short dark nail cap on the paw's top edge
+YUZU = (512, 268, 54)
 
 
 def ell(e, extra=''):
     cx, cy, rx, ry, rot = e
-    return f'<ellipse cx="{cx}" cy="{cy}" rx="{rx}" ry="{ry}" transform="rotate({rot} {cx} {cy})"{extra}/>'
+    return f'<ellipse cx="{cx:g}" cy="{cy:g}" rx="{rx:g}" ry="{ry:g}" transform="rotate({rot} {cx:g} {cy:g})"{extra}/>'
 
 
-# ------------------------------------------------------------------ defs
-def defs(c: dict, extra: str = '') -> str:
+# ------------------------------------------------------------------ defs (喵想 filters, coat-tinted)
+def defs(c: dict, muzzle_kind='tone') -> str:
     b = c['body']
+    m = c['muzzle'] if muzzle_kind == 'tone' else c['cream']
     return f'''<defs>
   <path id="squircle" d="{SQUIRCLE}"/>
   <clipPath id="clip"><use href="#squircle"/></clipPath>
@@ -183,15 +98,21 @@ def defs(c: dict, extra: str = '') -> str:
   <radialGradient id="body" cx="0.30" cy="0.18" r="0.95">
     <stop offset="0" stop-color="{b[0]}"/><stop offset="0.38" stop-color="{b[1]}"/><stop offset="0.62" stop-color="{b[2]}"/><stop offset="0.86" stop-color="{b[3]}"/><stop offset="1" stop-color="{b[4]}"/>
   </radialGradient>
+  <radialGradient id="muzzle" cx="0.34" cy="0.22" r="0.9">
+    <stop offset="0" stop-color="{m[0]}"/><stop offset="0.55" stop-color="{m[1]}"/><stop offset="1" stop-color="{m[2]}"/>
+  </radialGradient>
   <linearGradient id="eye" x1="0" y1="0" x2="0" y2="1">
     <stop offset="0" stop-color="#050506"/><stop offset="1" stop-color="#26272c"/>
   </linearGradient>
-  <linearGradient id="pad" x1="0" y1="0" x2="0.4" y2="1">
+  <linearGradient id="pad" x1="0" y1="0" x2="0.3" y2="1">
     <stop offset="0" stop-color="{c['pad'][0]}"/><stop offset="1" stop-color="{c['pad'][1]}"/>
   </linearGradient>
-  <linearGradient id="earIn" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="{c['ear_in'][0]}"/><stop offset="1" stop-color="{c['ear_in'][1]}" stop-opacity="0.4"/>
-  </linearGradient>
+  <radialGradient id="earIn" cx="0.5" cy="0.4" r="0.6">
+    <stop offset="0" stop-color="{c['ear_in'][0]}"/><stop offset="1" stop-color="{c['ear_in'][1]}" stop-opacity="0.2"/>
+  </radialGradient>
+  <radialGradient id="yuzu" cx="0.36" cy="0.3" r="0.8">
+    <stop offset="0" stop-color="#ffe08a"/><stop offset="0.55" stop-color="#f6a93a"/><stop offset="1" stop-color="#d97a16"/>
+  </radialGradient>
   <filter id="sculpt" x="-20%" y="-20%" width="140%" height="140%">
     <feGaussianBlur in="SourceAlpha" stdDeviation="30" result="b1"/>
     <feOffset in="b1" dx="-34" dy="-26" result="o1"/>
@@ -206,416 +127,246 @@ def defs(c: dict, extra: str = '') -> str:
     <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="shade"/><feMergeNode in="shine"/></feMerge>
   </filter>
   <filter id="sculptSoft" x="-20%" y="-20%" width="140%" height="140%">
-    <feGaussianBlur in="SourceAlpha" stdDeviation="26" result="b1"/>
-    <feOffset in="b1" dx="-28" dy="-20" result="o1"/>
+    <feGaussianBlur in="SourceAlpha" stdDeviation="20" result="b1"/>
+    <feOffset in="b1" dx="-20" dy="-16" result="o1"/>
     <feComposite in="SourceAlpha" in2="o1" operator="out" result="edge1"/>
-    <feFlood flood-color="{c['shade']}" flood-opacity="0.5"/>
+    <feFlood flood-color="{c['shade']}" flood-opacity="0.4"/>
     <feComposite in2="edge1" operator="in" result="shade"/>
-    <feGaussianBlur in="SourceAlpha" stdDeviation="10" result="b2"/>
-    <feOffset in="b2" dx="10" dy="12" result="o2"/>
+    <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="b2"/>
+    <feOffset in="b2" dx="7" dy="9" result="o2"/>
     <feComposite in="SourceAlpha" in2="o2" operator="out" result="edge2"/>
-    <feFlood flood-color="{c['shine']}" flood-opacity="{c['shine_op'] * 0.55:.2f}"/>
+    <feFlood flood-color="{c['shine']}" flood-opacity="{c['shine_op'] * 0.7:.2f}"/>
     <feComposite in2="edge2" operator="in" result="shine"/>
     <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="shade"/><feMergeNode in="shine"/></feMerge>
   </filter>
-  <filter id="rimR" x="-20%" y="-20%" width="140%" height="140%">
-    <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="b"/>
-    <feOffset in="b" dx="-9" dy="5" result="o"/>
-    <feComposite in="SourceAlpha" in2="o" operator="out" result="e"/>
-    <feFlood flood-color="{c['rim']}" flood-opacity="0.55"/>
-    <feComposite in2="e" operator="in"/>
-  </filter>
-  <linearGradient id="rimFade" x1="0" y1="0" x2="1" y2="0.3">
-    <stop offset="0.55" stop-color="#fff" stop-opacity="0"/><stop offset="0.9" stop-color="#fff" stop-opacity="1"/>
-  </linearGradient>
-  <mask id="rimMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1100"><rect x="0" y="0" width="1024" height="1100" fill="url(#rimFade)"/></mask>
-  <filter id="cast" x="-80%" y="-80%" width="260%" height="260%">
+  <filter id="cast" x="-20%" y="-20%" width="140%" height="140%">
     <feGaussianBlur in="SourceAlpha" stdDeviation="22"/><feOffset dx="10" dy="6"/>
     <feComponentTransfer><feFuncA type="linear" slope="0.7"/></feComponentTransfer>
   </filter>
+  <filter id="muzzleDrop" x="-20%" y="-20%" width="140%" height="150%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="12"/><feOffset dx="4" dy="12"/>
+    <feComponentTransfer><feFuncA type="linear" slope="0.2"/></feComponentTransfer>
+  </filter>
+  <linearGradient id="muzzleFade" gradientUnits="userSpaceOnUse" x1="0" y1="500" x2="0" y2="640">
+    <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff"/>
+  </linearGradient>
+  <mask id="muzzleMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1100"><rect width="1024" height="1100" fill="url(#muzzleFade)"/></mask>
+  <filter id="yuzuShadow" x="-60%" y="-200%" width="220%" height="500%"><feGaussianBlur stdDeviation="9"/></filter>
+  <filter id="padBlur" x="-30%" y="-50%" width="160%" height="200%"><feGaussianBlur stdDeviation="4"/></filter>
   <filter id="eyeInset" x="-30%" y="-30%" width="160%" height="160%">
-    <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="b"/><feOffset in="b" dx="3" dy="5" result="o"/>
+    <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="b"/><feOffset in="b" dx="4" dy="7" result="o"/>
     <feComposite in="SourceAlpha" in2="o" operator="out" result="e"/>
     <feFlood flood-color="#000" flood-opacity="0.9"/><feComposite in2="e" operator="in" result="s"/>
     <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="s"/></feMerge>
   </filter>
-  <filter id="b3" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>
-  <filter id="b4" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4"/></filter>
-  <filter id="b5" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter>
-  <filter id="b8" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="8"/></filter>
-  <filter id="b14" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter>
-  <filter id="b24" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="24"/></filter>
-  <linearGradient id="bub" x1="0" y1="0" x2="0.3" y2="1">
-    <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#dfe1e6"/>
-  </linearGradient>
-  <filter id="bubShadow" x="-50%" y="-50%" width="200%" height="200%">
-    <feGaussianBlur in="SourceAlpha" stdDeviation="10"/><feOffset dx="6" dy="10"/>
-    <feComponentTransfer><feFuncA type="linear" slope="0.55"/></feComponentTransfer>
-    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
-  </filter>
-  <linearGradient id="aoBottom" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.28"/>
-  </linearGradient>
-  <clipPath id="headClip"><path d="{HEAD}"/></clipPath>
-  <radialGradient id="furU" gradientUnits="userSpaceOnUse" cx="400" cy="560" r="640">
-    <stop offset="0" stop-color="{b[0]}"/><stop offset="0.38" stop-color="{b[1]}"/><stop offset="0.62" stop-color="{b[2]}"/><stop offset="0.86" stop-color="{b[3]}"/><stop offset="1" stop-color="{b[4]}"/>
-  </radialGradient>
-  <radialGradient id="toeHi" cx="0.4" cy="0.4" r="0.6">
-    <stop offset="0" stop-color="{c['fur_l']}" stop-opacity="0.75"/><stop offset="1" stop-color="{c['fur_l']}" stop-opacity="0"/>
-  </radialGradient>
-  <linearGradient id="tuck" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="{c['shade']}" stop-opacity="0.42"/><stop offset="1" stop-color="{c['shade']}" stop-opacity="0"/>
-  </linearGradient>
-{extra}
 </defs>
 '''
 
 
-def svg_open(c, extra=''):
+def svg_open(c, muzzle_kind='tone'):
     return ('<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="100 100 824 824">\n'
-            + defs(c, extra) + '<use href="#squircle" fill="url(#bg)"/>\n<g clip-path="url(#clip)">\n')
+            + defs(c, muzzle_kind) + '<use href="#squircle" fill="url(#bg)"/>\n<g clip-path="url(#clip)">\n')
 
 
 def svg_close():
     return '</g>\n<use href="#squircle" fill="none" stroke="url(#rim)" stroke-width="3"/>\n</svg>\n'
 
 
-def lit(shapes: str, cast=True, rim=False, filt='sculpt', fill='body') -> str:
-    """A sculpted soft-body part: cast shadow + radial body fill + family rim filter (+ far-edge rim light)."""
+def lit(shapes: str, cast=True, filt='sculpt', fill='body') -> str:
     s = f'<g fill="#000" filter="url(#cast)">{shapes}</g>' if cast else ''
-    s += f'<g filter="url(#{filt})"><g fill="url(#{fill})">{shapes}</g></g>'
-    if rim:
-        s += f'<g mask="url(#rimMask)"><g filter="url(#rimR)">{shapes}</g></g>'
-    return s
+    return s + f'<g filter="url(#{filt})"><g fill="url(#{fill})">{shapes}</g></g>'
 
 
 # ------------------------------------------------------------------ parts
-def head(c, tf=HEAD_TF, small=False) -> str:
-    s = f'<g transform="{tf}">'
-    # small-size variant: the near ear is enlarged and lifted so the bump survives at 16 px; the far ear is dropped
-    ear = (182, -178, 38, 42, 24) if small else EAR_NEAR
-    if not small:
-        s += lit(ell(EAR_FAR), cast=False)
-        s += f'<g opacity="0.3">{ell(EAR_FAR, f' fill="{c["fur_d"]}"')}</g>'
-    s += lit(ell(ear) + f'<path d="{HEAD}"/>', rim=True)
-    # inner ear
-    cx, cy, rx, ry, rot = ear
-    s += f'<ellipse cx="{cx-6}" cy="{cy+2}" rx="{rx*0.5:.0f}" ry="{ry*0.62:.0f}" transform="rotate({rot} {cx} {cy})" fill="url(#earIn)"/>'
-    # form: bridge glint, cheek bulge, muzzle fold
-    s += '<g clip-path="url(#headClip)">'
-    s += f'<path d="M -236 -128 C -190 -160 -110 -168 -20 -168" stroke="{c["fur_l"]}" stroke-width="18" stroke-linecap="round" fill="none" opacity="0.7" filter="url(#b8)"/>'
-    s += f'<path d="M -70 -70 C -96 -10 -104 50 -118 124" stroke="{c["fold"]}" stroke-width="22" stroke-linecap="round" fill="none" opacity="0.22" filter="url(#b14)"/>'
-    # fur hint: a few soft value strokes following the form (no texture)
-    for (p0, p1, p2, p3), col, op in () if small else (
-            (((60, -160), (90, -166), (120, -164), (150, -150)), c['fur_l'], 0.55),
-            (((-150, -168), (-100, -176), (-60, -178), (-20, -176)), c['fur_l'], 0.45),
-            (((110, -70), (130, -40), (140, -10), (138, 24)), c['fur_d'], 0.16),
-            (((150, -96), (176, -60), (190, -20), (188, 20)), c['fur_d'], 0.14),
-            (((20, -30), (50, 0), (70, 40), (72, 90)), c['fur_d'], 0.10),
-            (((-150, 40), (-120, 70), (-80, 90), (-30, 104)), c['fur_d'], 0.12)):
-        s += taper(p0, p1, p2, p3, (1, 9, 1), col, f' opacity="{op}" filter="url(#b3)"')
-    s += taper((-232, 30), (-210, 52), (-190, 70), (-160, 86), (2, 12, 2), c['shade'], ' opacity="0.22" filter="url(#b4)"')
-    s += '</g>'
-    if not small:
-        s += ''.join(f'<circle cx="{wx}" cy="{wy}" r="2.6" fill="{c["fur_d"]}" opacity="0.35"/>'
-                     for wx, wy in ((-214, -36), (-196, -28), (-206, -14)))
-    # eye (enlarged ~1.35x in the small-size variant so it survives 16–32 px)
-    ex, ey = EYE
-    if small:
-        s += f'<g transform="translate({ex} {ey}) scale(1.35) translate({-ex} {-ey})">'
-    eye = (f'M {ex-34} {ey-2} C {ex-20} {ey-16} {ex+16} {ey-18} {ex+34} {ey-6} C {ex+32} {ey+14} {ex+16} {ey+22} {ex} {ey+22} '
-           f'C {ex-18} {ey+22} {ex-32} {ey+12} {ex-34} {ey-2} Z')
-    s += taper((ex-40, ey-12), (ex-20, ey-30), (ex+20, ey-32), (ex+44, ey-14), (0.5, 7, 1.0), c['fold'], ' opacity="0.5"')
-    s += f'<g filter="url(#eyeInset)"><path d="{eye}" fill="url(#eye)"/></g>'
-    s += f'<ellipse cx="{ex-13}" cy="{ey-1}" rx="7" ry="5.5" fill="#fff"/><circle cx="{ex+14}" cy="{ey+10}" r="2.6" fill="#fff" opacity="0.55"/>'
-    if small:
-        s += '</g>'
-    # nose: darker muzzle tip (clipped, soft), two slit nostrils, split upper lip
-    pad = ('M -262 -160 C -226 -160 -196 -140 -192 -112 C -188 -86 -204 -64 -236 -60 '
-           'C -264 -56 -296 -64 -304 -92 C -312 -124 -298 -160 -262 -160 Z')
-    s += (f'<g clip-path="url(#headClip)"><path d="{pad}" fill="url(#pad)" filter="url(#b3)" opacity="{1 if small else 0.88}"/>'
-          f'<path d="M -262 -136 C -246 -140 -228 -136 -218 -128" stroke="{c["fur_l"]}" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.35" filter="url(#b3)"/></g>')
-    k = 1.5 if small else 1.0
-    s += taper((-238, -116), (-228, -112), (-220, -100), (-222, -84), (5 * k, 11 * k, 3 * k), c['nostril'])
-    s += taper((-279, -119), (-273, -117), (-270, -109), (-272, -101), (3, 6.5, 2), c['nostril'], ' opacity="0.85"')
-    s += taper((-258, -74), (-260, -54), (-263, -28), (-266, -8), (4.5 * k, 4 * k, 2.5 * k), c['lip'], ' opacity="0.8"')
-    s += taper((-266, -8), (-258, 8), (-244, 16), (-226, 18), (2.5 * k, 4.5 * k, 0.5), c['lip'], ' opacity="0.8"')
+def eyes(w=EYE_W, h=EYE_H, pos=EYES, hl=(12, 15), flat=False, feat='#17181c', hl_col='#fff') -> str:
+    r = w / 2
+    rects = ''.join(f'<rect x="{x - r:g}" y="{y - h / 2:g}" width="{w}" height="{h}" rx="{r:g}" fill="{feat if flat else "url(#eye)"}"/>'
+                    for x, y in pos)
+    dots = ''.join(f'<ellipse cx="{x + r * 0.36:.0f}" cy="{y - h * 0.24:.0f}" rx="{hl[0]}" ry="{hl[1]}" fill="{hl_col}" opacity="{1 if flat else 0.9}"/>'
+                   for x, y in pos)
+    return (rects if flat else f'<g filter="url(#eyeInset)">{rects}</g>') + dots
+
+
+def muzzle(c) -> str:
+    s = f'<g mask="url(#muzzleMask)"><path d="{MUZZLE}" fill="#000" filter="url(#muzzleDrop)"/>'
+    s += f'<g filter="url(#sculptSoft)"><path d="{MUZZLE}" fill="url(#muzzle)"/></g></g>'
+    s += f'<path d="{NOSE}" fill="url(#pad)" opacity="0.62" filter="url(#padBlur)"/>'
+    s += ''.join(ell(n, f' fill="{c["nostril"]}"') for n in NOSTRILS)
+    s += '<path d="M 452 543 Q 512 535 572 543" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.16"/>'
+    s += f'<path d="{LIP}" stroke="{c["lip"]}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>'
+    return s
+
+
+def paws(c) -> str:
+    rx, ry = PAW_R
+    shapes = ''.join(f'<ellipse cx="{x}" cy="{y}" rx="{rx}" ry="{ry}"/>' for x, y in PAWS)
+    s = lit(shapes)
+    s += (f'<g stroke="{c["toe"]}" stroke-width="9" stroke-linecap="round" fill="none" opacity="0.8">'
+          + ''.join(f'<path d="M {x} 862 L {x} 888"/>' for x in TOES) + '</g>')
+    s += nails(c['nail'])
+    return s
+
+
+def paw_top(x):
+    """y of the paw ellipse's upper edge at x."""
+    px = min(PAWS, key=lambda p: abs(p[0] - x))[0]
+    rx, ry = PAW_R
+    return PAWS[0][1] - ry * (1 - ((x - px) / rx) ** 2) ** 0.5
+
+
+def nails(col, w=10, op=0.55) -> str:
+    out = []
+    for x in NAILS:
+        y0, y1 = paw_top(x - 7), paw_top(x + 7)
+        out.append(f'<path d="M {x - 7} {y0 + 10:.1f} L {x + 7} {y1 + 10:.1f}"/>')
+    return f'<g stroke="{col}" stroke-width="{w}" stroke-linecap="round" opacity="{op}">' + ''.join(out) + '</g>'
+
+
+def yuzu(flat=False) -> str:
+    x, y, r = YUZU
+    leaf = (f'M {x + 6} {y - r + 4} C {x + 20} {y - r - 26} {x + 52} {y - r - 26} {x + 62} {y - r - 12} '
+            f'C {x + 44} {y - r + 2} {x + 22} {y - r + 6} {x + 6} {y - r + 4} Z')
+    if flat:
+        return f'<circle cx="{x}" cy="{y}" r="{r}" fill="#f2a23a"/><path d="{leaf}" fill="#7fa04a"/>'
+    return (f'<ellipse cx="{x + 10}" cy="{y + r - 4}" rx="{r * 0.9:.0f}" ry="{r * 0.3:.0f}" fill="#000" opacity="0.45" filter="url(#yuzuShadow)"/>'
+            f'<g filter="url(#sculptSoft)"><circle cx="{x}" cy="{y}" r="{r}" fill="url(#yuzu)"/></g>'
+            f'<ellipse cx="{x - 18}" cy="{y - 20}" rx="14" ry="9" fill="#fff" opacity="0.55" transform="rotate(-30 {x - 18} {y - 20})"/>'
+            f'<path d="{leaf}" fill="#7fa04a"/>'
+            f'<path d="M {x} {y - r + 2} L {x + 2} {y - r - 8}" stroke="#5c4a2e" stroke-width="5" stroke-linecap="round"/>')
+
+
+def head_group(c) -> str:
+    ears = ''.join(ell(e) for e in EARS)
+    s = f'<g transform="rotate({TILT} 512 760)">\n'
+    s += f'<g fill="#000" filter="url(#cast)">{ears}<path d="{HEAD}"/></g>\n'
+    s += f'<g filter="url(#sculpt)"><g fill="url(#body)">{ears}</g></g>'
+    s += ''.join(ell(e, ' fill="url(#earIn)"') for e in EAR_IN)
+    s += f'<g filter="url(#sculpt)"><path d="{HEAD}" fill="url(#body)"/></g>\n'
+    s += muzzle(c) + '\n' + eyes() + '\n'
     return s + '</g>\n'
 
 
-def body(c) -> str:
-    s = lit(f'<path d="{BODY}"/>', rim=True)
-    # ambient occlusion where the barrel sinks into the bottom edge of the tile
-    s += f'<clipPath id="bodyClip"><path d="{BODY}"/></clipPath>'
-    s += '<rect x="200" y="840" width="780" height="100" fill="url(#aoBottom)" clip-path="url(#bodyClip)"/>'
-    # very subtle fur value: a lit roll along the shoulder line, a faint darker sweep down the flank
-    s += '<g clip-path="url(#bodyClip)">'
-    s += taper((700, 548), (770, 540), (840, 572), (884, 640), (2, 18, 2), c['fur_l'], ' opacity="0.45" filter="url(#b8)"')
-    s += taper((300, 760), (290, 820), (284, 880), (284, 940), (2, 14, 2), c['fur_l'], ' opacity="0.35" filter="url(#b8)"')
-    s += taper((760, 680), (800, 740), (820, 820), (822, 920), (2, 26, 4), c['fur_d'], ' opacity="0.14" filter="url(#b14)"')
-    s += '</g>'
-    return s
+def icon(coat='warm', muzzle_kind='tone', with_yuzu=False) -> str:
+    c = COATS[coat]
+    s = svg_open(c, muzzle_kind) + head_group(c)
+    if with_yuzu:
+        s += f'<g transform="rotate({TILT} 512 760)">{yuzu()}</g>\n'
+    return s + paws(c) + svg_close()
 
 
-# v2 paw: knuckles a touch wider than the wrist, three short toe lobes, tapering straight into the forearm
-PAW = ('M -27 46 C -36 26 -48 2 -47 -24 C -46 -44 -40 -58 -28 -60 C -22 -61 -17 -58 -15 -54 '
-       'C -10 -62 10 -62 15 -54 C 17 -58 22 -61 28 -60 C 40 -58 46 -44 47 -24 C 48 2 36 26 27 46 C 18 58 -18 58 -27 46 Z')
+# ------------------------------------------------------------------ small (16–32 px)
+SMALL_TF = 'translate(512 1040) scale(1.1) translate(-512 -1000)'
 
 
-def paw_detail(c, x, y, rot, k) -> str:
-    """Capybara forefoot seen from the back: three short rounded toes, blunt dark hoof-like nails. Crisp, no blur."""
-    s = f'<g transform="{paw_tf(x, y, rot, k)}">'
-    for tx, ty in ((-29, -46), (0, -50), (29, -46)):   # a soft sheen on top of each toe knuckle
-        s += f'<ellipse cx="{tx - 3}" cy="{ty}" rx="13" ry="10" fill="url(#toeHi)"/>'
-    for sx in (-1, 1):                                  # short toe clefts, fading downwards
-        s += taper((15 * sx, -56), (16 * sx, -50), (16.5 * sx, -44), (16 * sx, -36), (4.5, 3.5, 0.4), c['fold'], ' opacity="0.55"')
-    for nx, ny, a in ((-30, -55, -16), (0, -59, 0), (30, -55, 16)):
-        s += (f'<g transform="translate({nx} {ny}) rotate({a})"><path d="M -9 1 C -9 -7 9 -7 9 1 C 6 5 -6 5 -9 1 Z" fill="{c["nail"]}"/>'
-              f'<path d="M -4.5 -2.5 C -2 -4 2 -4 4 -3" stroke="#fff" stroke-opacity="0.45" stroke-width="1.8" stroke-linecap="round" fill="none"/></g>')
-    return s + '</g>'
-
-
-def side_line(spine, off, t0=0.0, t1=1.0, light=(-0.75, -0.66)) -> list:
-    """Points running along a limb at `off` x radius toward (off>0) or away from (off<0) the key light."""
-    S = cr_sample(spine, 8)
-    i0, i1 = int(t0 * (len(S) - 1)), int(t1 * (len(S) - 1))
-    out = []
-    for i in range(i0, i1 + 1):
-        x, y, r = S[i]
-        a, b = S[max(i - 1, 0)], S[min(i + 1, len(S) - 1)]
-        dx, dy = b[0] - a[0], b[1] - a[1]; m = math.hypot(dx, dy) or 1
-        nx, ny = -dy / m, dx / m
-        if nx * light[0] + ny * light[1] < 0:
-            nx, ny = -nx, -ny
-        out.append((x + nx * r * off, y + ny * r * off))
-    return out
-
-
-def poly(pts, w, col, op, blur) -> str:
-    d = 'M ' + ' L '.join(f'{x:.1f} {y:.1f}' for x, y in pts)
-    return (f'<path d="{d}" stroke="{col}" stroke-width="{w}" stroke-linecap="round" stroke-linejoin="round" fill="none" '
-            f'opacity="{op}" filter="url(#{blur})"/>')
-
-
-def xform_d(d, x, y, rot, k) -> str:
-    """Bake translate/rotate/scale into an absolute M/C/L/Z path so several parts can share one bbox/gradient."""
-    import re
-    ca, sa = math.cos(math.radians(rot)), math.sin(math.radians(rot))
-    toks = re.findall(r'[MCLZ]|-?[\d.]+', d)
-    out, nums = [], []
-    for t in toks:
-        if t in 'MCLZ':
-            out.append(t)
-        else:
-            nums.append(float(t))
-            if len(nums) == 2:
-                u, v = nums[0] * k, nums[1] * k
-                out.append(f'{x + u * ca - v * sa:.1f} {y + u * sa + v * ca:.1f}')
-                nums = []
-    return ' '.join(out)
-
-
-def paw_tf(x, y, rot, k):
-    return f'translate({x} {y}) rotate({rot}) scale({k})'
-
-
-def arm(c, spine, pw, cid, clip='', rim=False, tuck=False) -> str:
-    """Forearm + paw as ONE soft form (single silhouette, single sculpt pass), then modelling on top."""
-    shape = f'<path d="{limb(spine)} {xform_d(PAW, *pw)}"/>'
-    s = f'<clipPath id="{cid}">{shape}</clipPath>'
-    g = f'<g fill="#000" opacity="0.3" filter="url(#b5)">{shape}</g>'  # tight AO where the limb sits on the body
-    g += lit(shape, rim=rim, filt='sculptSoft', fill='furU')
-    # modelling clipped to the limb: lit ridge toward the key light, core shadow on the far side
-    g += f'<g clip-path="url(#{cid})">'
-    g += poly(side_line(spine, 0.62), 14, c['fur_l'], 0.55, 'b8')
-    g += poly(side_line(spine, -0.7), 22, c['fold'], 0.22, 'b14')
-    if tuck:  # the toes sit in the shadow under the jaw
-        g += f'<g transform="{paw_tf(*pw)}"><rect x="-60" y="-66" width="120" height="44" fill="url(#tuck)"/></g>'
-    g += '</g>'
-    s += f'<g clip-path="url(#{clip})">{g}</g>' if clip else g
-    return s + paw_detail(c, *pw)
-
-
-def to_head(x, y):
-    """Group coords -> head-local coords (inverse of HEAD_TF)."""
-    u, v = (x - 500) / 0.9, (y - 500) / 0.9
-    ca, sa = math.cos(math.radians(-6)), math.sin(math.radians(-6))
-    return u * ca - v * sa, u * sa + v * ca
-
-
-def paw_pt(pw, u, v):
-    x, y, rot, k = pw
-    ca, sa = math.cos(math.radians(rot)), math.sin(math.radians(rot))
-    return x + (u * ca - v * sa) * k, y + (u * sa + v * ca) * k
-
-
-def chin_contact(c) -> str:
-    """Where the toes press into the jaw: tight occlusion under the toes + the jaw fur squished up a little."""
-    t = paw_tf(*PAW_A)
-    s = (f'<g transform="{t}"><path d="{PAW}" fill="#000" opacity="0.42" filter="url(#b8)" transform="translate(2 -12)"/>'
-         f'<path d="{PAW}" fill="{c["shade"]}" opacity="0.5" filter="url(#b4)" transform="translate(0 -6) scale(0.94)"/></g>')
-    # squish: the jaw fur pushed up into a soft lit roll just above the toes (strong on the lit side, fading right)
-    q = [to_head(*paw_pt(PAW_A, u, v)) for u, v in ((-54, -54), (-30, -76), (16, -80), (50, -60))]
-    s += (f'<g transform="{HEAD_TF}"><g clip-path="url(#headClip)">'
-          + taper(*q, w=(3, 13, 1), fill=c['fur_l'], extra=' opacity="0.55" filter="url(#b3)"') + '</g></g>')
-    return s
-
-
-def arms(c) -> str:
-    s = chin_contact(c)
-    s += arm(c, ARM_A_SP, PAW_A, 'armA', tuck=True)
-    # B's toes press into A's forearm: tight contact shadow on A first
-    s += (f'<g clip-path="url(#armA)"><g transform="{paw_tf(*PAW_B)}"><path d="{PAW}" fill="#000" opacity="0.38" '
-          f'filter="url(#b5)" transform="translate(-2 -9)"/></g></g>')
-    s += arm(c, ARM_B_SP, PAW_B, 'armB', clip='bodyClip')
-    return s
-
-
-def rest_paw(c) -> str:
-    return ''
-
-
-def hash_glyph(x, y, k=1.0, color=INK, w=9) -> str:
-    h, o, sl = 26 * k, 11 * k, 6 * k
-    d = (f'M {x-o+sl:.1f} {y-h:.1f} L {x-o-sl:.1f} {y+h:.1f} M {x+o+sl:.1f} {y-h:.1f} L {x+o-sl:.1f} {y+h:.1f} '
-         f'M {x-24*k:.1f} {y-9*k:.1f} L {x+26*k:.1f} {y-9*k:.1f} M {x-26*k:.1f} {y+9*k:.1f} L {x+24*k:.1f} {y+9*k:.1f}')
-    return f'<path d="{d}" stroke="{color}" stroke-width="{w*k:.1f}" stroke-linecap="round" fill="none"/>'
-
-
-def bubble(kind) -> str:
-    if kind == 'plain':
-        return ''
-    x, y, r = BUBBLE
-    s = ''
-    for cx, cy, rr in ((x, y, r),) + TRAIL:
-        s += f'<circle cx="{cx}" cy="{cy}" r="{rr}" fill="url(#bub)" fill-opacity="0.93" filter="url(#bubShadow)"/>'
-    s += (f'<path d="M {x - r*0.72:.1f} {y - r*0.18:.1f} A {r*0.76:.1f} {r*0.76:.1f} 0 0 1 {x - r*0.2:.1f} {y - r*0.72:.1f}" '
-          f'stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.9"/>')
-    if kind == 'hash':
-        s += hash_glyph(x, y)
-    else:
-        s += ''.join(f'<circle cx="{x+dx}" cy="{y}" r="8" fill="{INK}"/>' for dx in (-26, 0, 26))
-    return s
-
-
-PLACE = {'hash': 'translate(-12 0)', 'dots': 'translate(-12 0)', 'plain': 'translate(-8 -34) scale(1.05)'}
-
-
-def icon(kind='hash', coat='white') -> str:
+def small(coat='warm', with_yuzu=False) -> str:
+    """16–32 px: head only (flat top, corner ears, long snout), a touch larger; eyes, ears and nostrils enlarged,
+    the snout one clear value step darker; no lip, paws, nails or soft pad."""
     c = COATS[coat]
     s = svg_open(c)
-    s += f'<g transform="{PLACE[kind]}">' + body(c) + head(c) + arms(c) + bubble(kind) + '</g>'
+    ears = ''.join(ell((x, y + 6, rx * 1.3, ry * 1.3, rot)) for x, y, rx, ry, rot in EARS)
+    s += f'<g transform="{SMALL_TF} rotate({TILT} 512 760)">'
+    s += f'<g fill="#000" filter="url(#cast)">{ears}<path d="{HEAD}"/></g>'
+    s += f'<g filter="url(#sculpt)"><g fill="url(#body)">{ears}</g></g>'
+    s += ''.join(ell((x, y + 6, rx * 1.35, ry * 1.4, rot), f' fill="{c["ear_in"][0]}"') for x, y, rx, ry, rot in EAR_IN)
+    s += f'<g filter="url(#sculpt)"><path d="{HEAD}" fill="url(#body)"/></g>'
+    s += f'<path d="{MUZZLE}" fill="#000" filter="url(#muzzleDrop)"/>'
+    s += f'<g filter="url(#sculptSoft)"><path d="{MUZZLE}" fill="url(#muzzle)"/></g>'
+    s += eyes(w=84, h=112, pos=((362, 400), (662, 400)), hl=(15, 18))
+    s += ''.join(ell((x, y + 8, 40, 20, rot), f' fill="{c["nostril"]}"') for x, y, _, _, rot in NOSTRILS)
+    s += f'<path d="M 512 600 L 512 680 M 458 700 Q 492 716 512 680 Q 532 716 566 700" stroke="{c["nostril"]}" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.7"/>'
+    if with_yuzu:
+        s += yuzu()
+    s += '</g>\n'
     return s + svg_close()
 
 
-ICONS = {f'capy-think-{k}-{coat}': (lambda k=k, coat=coat: icon(k, coat))
-         for k in ('hash', 'dots', 'plain') for coat in ('white', 'warm')}
-
-
-# ------------------------------------------------------------------ small-size variant (16–32 px)
-SMALL_HEAD_TF = 'translate(540 478) rotate(6) scale(1.22)'
-SMALL_BODY_PTS = [(300, 1010), (330, 860), (420, 720), (560, 640), (700, 600), (820, 630), (900, 720), (950, 860),
-                  (960, 1010), (620, 1070)]
-
-
-def small(coat='white') -> str:
-    """16–32 px: head + raised paw only. Bigger head, enlarged eye / nostril / ear, no fur, no bubble, no second arm;
-    the body is pushed back a value step so the light head silhouette (box + snout + ear) separates cleanly."""
+# ------------------------------------------------------------------ flat two-tone
+def flat(coat='warm', with_yuzu=False) -> str:
     c = COATS[coat]
-    s = svg_open(c)
-    sb = smooth_d(SMALL_BODY_PTS)
-    s += lit(f'<path d="{sb}"/>', rim=True)
-    s += f'<path d="{sb}" fill="{c["shade"]}" opacity="0.55"/>'
-    s += head(c, SMALL_HEAD_TF, small=True)
-    # map the main-icon paw/arm (relative to the head) into the small layout
-    k = 1.22 / 0.9
-    m = lambda x, y: (540 + (x - 500) * k, 478 + (y - 500) * k)
-    pw = (*m(PAW_A[0], PAW_A[1]), PAW_A[2], PAW_A[3] * k)
-    spine = [(*m(x, y), r * k) for x, y, r in ARM_A_SP[:4]] + [(*m(500, 930), 60 * k)]
-    shape = f'<path d="{limb(spine)} {xform_d(PAW, *pw)}"/>'
-    s += f'<g transform="{paw_tf(*pw)}"><path d="{PAW}" fill="#000" opacity="0.45" filter="url(#b8)" transform="translate(2 -12)"/></g>'
-    s += lit(shape, filt='sculptSoft', fill='furU')
-    s += paw_detail(c, *pw)
-    return s + svg_close()
-
-
-# ------------------------------------------------------------------ flat 2-tone
-FLAT_BG = '#26292f'
-
-
-def flat(kind='hash', coat='white') -> str:
-    c = COATS[coat]
-    L, D = c['flat_body'], FLAT_BG
-    gap = f'fill="{L}" stroke="{D}" stroke-width="16" paint-order="stroke" stroke-linejoin="round"'
+    D = FLAT_BG
     s = ('<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="100 100 824 824">\n'
-         f'<defs><path id="tile" d="{SQUIRCLE}"/><clipPath id="clip"><use href="#tile"/></clipPath>'
-         f'<clipPath id="bodyClipF"><path d="{BODY}"/></clipPath></defs>\n'
-         f'<use href="#tile" fill="{D}"/>\n<g clip-path="url(#clip)">\n<g transform="{PLACE[kind]}">')
-    s += f'<path d="{BODY}" fill="{L}"/>'
-    # head
-    s += f'<g transform="{HEAD_TF}">'
-    s += ell(EAR_FAR, f' {gap}') + ell(EAR_NEAR, f' {gap}') + f'<path d="{HEAD}" {gap}/>'
-    ex, ey = EYE
-    s += (f'<path d="M {ex-34} {ey-2} C {ex-20} {ey-16} {ex+16} {ey-18} {ex+34} {ey-6} C {ex+32} {ey+14} {ex+16} {ey+22} {ex} {ey+22} '
-          f'C {ex-18} {ey+22} {ex-32} {ey+12} {ex-34} {ey-2} Z" fill="{D}"/><ellipse cx="{ex-13}" cy="{ey-1}" rx="7" ry="5.5" fill="{L}"/>')
-    s += taper((-238, -116), (-228, -112), (-220, -100), (-222, -84), (6, 13, 4), D)
-    s += taper((-258, -74), (-260, -54), (-263, -28), (-266, -8), (6, 6, 4), D)
-    s += taper((-266, -8), (-258, 8), (-244, 16), (-226, 18), (4, 6, 1), D)
+         f'<defs><path id="tile" d="{SQUIRCLE}"/><clipPath id="clip"><use href="#tile"/></clipPath></defs>\n'
+         f'<use href="#tile" fill="{D}"/>\n<g clip-path="url(#clip)">\n<g transform="rotate({TILT} 512 760)">')
+    s += f'<g fill="{c["flat_body"]}">' + ''.join(ell(e) for e in EARS) + f'<path d="{HEAD}"/></g>'
+    s += ''.join(ell(e, f' fill="{c["flat_ear"]}"') for e in EAR_IN)
+    s += f'<path d="{MUZZLE}" fill="{c["flat_muzzle"]}"/><path d="{NOSE}" fill="{c["flat_pad"]}"/>'
+    s += ''.join(ell(n, f' fill="{D}"') for n in NOSTRILS)
+    s += f'<path d="{LIP}" stroke="{c["flat_pad"]}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>'
+    s += eyes(flat=True, feat=c['flat_feat'], hl_col='#fff')
+    if with_yuzu:
+        s += yuzu(flat=True)
     s += '</g>'
-    # arms + paws — same soft forms as the shaded icon; one path per arm so the gap only rings the outside
-    for sp, pw in ((ARM_A_SP, PAW_A), (ARM_B_SP, PAW_B)):
-        s += f'<path d="{limb(sp)} {xform_d(PAW, *pw)}" {gap.replace("16", "12")}/>'
-        s += f'<g transform="{paw_tf(*pw)}">'
-        for sx in (-1, 1):
-            s += taper((15 * sx, -58), (16 * sx, -50), (16.5 * sx, -44), (16 * sx, -34), (6, 5, 1), D)
-        s += '</g>'
-    # bubble
-    if kind != 'plain':
-        x, y, r = BUBBLE
-        s += ''.join(f'<circle cx="{cx}" cy="{cy}" r="{rr}" fill="{L}"/>' for cx, cy, rr in ((x, y, r),) + TRAIL)
-        s += hash_glyph(x, y, color=D, w=10) if kind == 'hash' else ''.join(
-            f'<circle cx="{x+dx}" cy="{y}" r="8.5" fill="{D}"/>' for dx in (-26, 0, 26))
-    return s + '</g>\n</g>\n</svg>\n'
+    s += ''.join(f'<ellipse cx="{x}" cy="{y}" rx="{PAW_R[0]}" ry="{PAW_R[1]}" fill="{c["flat_paw"]}"/>' for x, y in PAWS)
+    s += (f'<g stroke="{c["flat_toe"]}" stroke-width="12" stroke-linecap="round">'
+          + ''.join(f'<path d="M {x} 862 L {x} 888"/>' for x in TOES) + '</g>')
+    s += nails(c['flat_pad'], w=12, op=1)
+    return s + '</g>\n</svg>\n'
 
 
 # ------------------------------------------------------------------ single-colour glyph (currentColor, 16–24 px)
 def _ellp(cx, cy, rx, ry, rot=0.0) -> str:
-    a = math.radians(rot)
-    x1, y1, x2, y2 = cx - rx * math.cos(a), cy - rx * math.sin(a), cx + rx * math.cos(a), cy + rx * math.sin(a)
-    return (f'M {x1:.2f} {y1:.2f} A {rx} {ry} {rot} 1 0 {x2:.2f} {y2:.2f} '
-            f'A {rx} {ry} {rot} 1 0 {x1:.2f} {y1:.2f} Z')
+    import math
+    t = math.radians(rot)
+    x1, y1 = cx - rx * math.cos(t), cy - rx * math.sin(t)
+    x2, y2 = cx + rx * math.cos(t), cy + rx * math.sin(t)
+    return f'M {x1:.2f} {y1:.2f} A {rx} {ry} {rot} 1 0 {x2:.2f} {y2:.2f} A {rx} {ry} {rot} 1 0 {x1:.2f} {y1:.2f} Z'
 
 
-# v2 glyph: capybara profile bust (facing left) drawn directly on the 24-unit grid, one even-odd path.
-# Long flat top, small ear set far back, tall blunt snout with a nostril cut and a lip notch, deep jaw,
-# sleepy half-lidded eye cut-out, rounded back flowing into the shoulder (not a vertical horse neck).
-GLYPH_BODY = ('M 4.4 5.4 C 8 4.9 12 4.7 15.7 4.6 '
-              'C 15.9 3.5 16.8 2.8 17.9 2.8 C 19.0 2.8 19.8 3.6 19.8 4.8 '
-              'C 21.6 6.0 22.5 8.6 22.6 11.6 C 22.7 14.6 22.6 18.2 22.5 21 L 11.4 21 '
-              'C 11.4 19.4 11.6 17.8 11.9 16.5 C 9.6 16.2 7.4 15.4 5.8 14.4 '
-              'C 5.3 14.1 4.9 13.8 4.6 13.4 C 4.3 13.8 3.8 13.9 3.3 13.8 '
-              'C 2.1 13.6 1.5 12.6 1.5 11.0 L 1.5 8.2 C 1.5 6.6 2.5 5.6 4.4 5.4 Z')
-GLYPH_EYE = 'M 11.0 7.7 L 14.6 7.7 C 14.6 9.1 13.8 9.9 12.8 9.9 C 11.8 9.9 11.0 9.1 11.0 7.7 Z'
+# Front-facing head on the 24 grid, one even-odd path. Tall flat-topped box head with small ear bumps on the
+# top corners, squared cheeks that step in to a deep blunt snout; eye cut-outs set high, two slanted nostril
+# cut-outs low on the snout (no round nose button, no mouth arc — those read as a bear).
+GLYPH_HEAD = ('M 12 3.2 C 14.2 3.2 15.8 3.25 16.9 3.35 '
+              'C 17.3 2.5 18.2 2.0 19.1 2.2 C 20.2 2.4 20.7 3.4 20.4 4.4 C 20.35 4.75 20.3 5.0 20.1 5.2 '
+              'C 20.6 6.0 20.8 7.0 20.85 8.2 C 20.95 10.5 20.9 12.6 20.4 14.2 C 20.0 15.4 19.4 16.0 19.0 16.6 '
+              'C 18.8 19.6 16.6 21.4 12 21.4 C 7.4 21.4 5.2 19.6 5.0 16.6 '
+              'C 4.6 16.0 4.0 15.4 3.6 14.2 C 3.1 12.6 3.05 10.5 3.15 8.2 C 3.2 7.0 3.4 6.0 3.9 5.2 '
+              'C 3.7 5.0 3.65 4.75 3.6 4.4 C 3.3 3.4 3.8 2.4 4.9 2.2 C 5.8 2.0 6.7 2.5 7.1 3.35 '
+              'C 8.2 3.25 9.8 3.2 12 3.2 Z')
+GLYPH_EYES = ('M 6.9 8.1 C 6.9 7.4 7.4 6.9 8.05 6.9 C 8.7 6.9 9.2 7.4 9.2 8.1 L 9.2 9.3 C 9.2 10.0 8.7 10.5 8.05 10.5 '
+              'C 7.4 10.5 6.9 10.0 6.9 9.3 Z '
+              'M 14.8 8.1 C 14.8 7.4 15.3 6.9 15.95 6.9 C 16.6 6.9 17.1 7.4 17.1 8.1 L 17.1 9.3 C 17.1 10.0 16.6 10.5 15.95 10.5 '
+              'C 15.3 10.5 14.8 10.0 14.8 9.3 Z')
+GLYPH_NOSTRILS = (9.7, 15.6, 1.7, 0.95, 16), (14.3, 15.6, 1.7, 0.95, -16)
 
 
 def glyph() -> str:
-    d = f'{GLYPH_BODY} {GLYPH_EYE} {_ellp(3.5, 7.8, 0.8, 1.4, 20)}'
+    d = f'{GLYPH_HEAD} {GLYPH_EYES} ' + ' '.join(_ellp(*n) for n in GLYPH_NOSTRILS)
     return ('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">\n'
             f'  <path fill-rule="evenodd" d="{d}"/>\n</svg>\n')
 
 
-SMALLS = {f'capy-think-small-{coat}': (lambda coat=coat: small(coat)) for coat in COATS}
-FLATS = {f'capy-think-{k}-{coat}-flat': (lambda k=k, coat=coat: flat(k, coat))
-         for k in ('hash', 'dots', 'plain') for coat in COATS}
+# ------------------------------------------------------------------ concept variants (for _concepts/capybara-meow)
+VARIANTS = {
+    'capy-warm': lambda: icon('warm'),
+    'capy-warm-cream': lambda: icon('warm', 'cream'),
+    'capy-white': lambda: icon('white'),
+    'capy-warm-yuzu': lambda: icon('warm', with_yuzu=True),
+    'capy-warm-small': lambda: small('warm'),
+    'capy-warm-yuzu-small': lambda: small('warm', with_yuzu=True),
+    'capy-white-small': lambda: small('white'),
+    'capy-warm-flat': lambda: flat('warm'),
+    'capy-warm-yuzu-flat': lambda: flat('warm', with_yuzu=True),
+    'capy-glyph': glyph,
+}
 
+# Chosen: warm coat + yuzu (B). The yuzu is the capybara fans' tell (capybaras soaking with yuzu) and the family's
+# one accent per member (rabbit's moon, beaver's node); the small sizes drop it.
 MASTERS = {
-    'capybara.svg': lambda: icon('hash', 'warm'),
+    'capybara.svg': lambda: icon('warm', with_yuzu=True),
     'capybara-small.svg': lambda: small('warm'),
-    'capybara-flat.svg': lambda: flat('hash', 'warm'),
+    'capybara-flat.svg': lambda: flat('warm', with_yuzu=True),
     'capy-glyph.svg': glyph,
 }
 
 if __name__ == '__main__':
-    for name, fn in MASTERS.items():
-        (OUT / name).write_text(fn(), encoding='utf-8')
-        print('wrote', (OUT / name).relative_to(OUT.parents[3]))
+    import sys
+    if '--concepts' in sys.argv:
+        dest = Path(sys.argv[sys.argv.index('--concepts') + 1])
+        dest.mkdir(parents=True, exist_ok=True)
+        for name, fn in VARIANTS.items():
+            (dest / f'{name}.svg').write_text(fn(), encoding='utf-8')
+        print('wrote', len(VARIANTS), 'concepts to', dest)
+    else:
+        for name, fn in MASTERS.items():
+            (OUT / name).write_text(fn(), encoding='utf-8')
+            print('wrote', (OUT / name).relative_to(OUT.parents[3]))

@@ -4,7 +4,7 @@
 #
 #   logo-wordmark-{light,dark}.svg      Capydown（Manrope Bold，转曲）
 #   logo-lockup-{light,dark}.svg        单色标志（卡皮巴拉侧面头像）+ Capydown —— 小尺寸、导航栏、横幅
-#   logo-lockup-icon-{light,dark}.svg   应用图标（托腮思考的卡皮巴拉）+ Capydown —— 只在图标能显示到 64px 以上时使用
+#   logo-lockup-icon-{light,dark}.svg   应用图标（从底边探出头的卡皮巴拉）+ Capydown —— 只在图标能显示到 64px 以上时使用
 #   以及上面每个 SVG 的 2 倍 PNG
 #
 # 依赖：pip install fonttools；PNG 用 render-batch.mjs（需要能 import playwright-core 的 node 环境）
@@ -70,7 +70,30 @@ LATIN_KERN = {'Ca': -6, 'ap': -4, 'py': -12, 'yd': -8, 'do': -6, 'ow': -16, 'wn'
 
 
 def latin(size, baseline=0.0, x0=0.0):
+    if not os.path.exists(FONT_LATIN):  # 没有字体文件时复用已转曲的字标（logo-wordmark-light.svg，字号 200），几何完全相同
+        return latin_from_wordmark(size, baseline, x0)
     return text_paths(FONT_LATIN, LATIN, size, -0.024, wght=740, kern=LATIN_KERN, baseline=baseline, x0=x0)
+
+
+def latin_from_wordmark(size, baseline=0.0, x0=0.0):
+    text = open(os.path.join(BRAND, 'logo-wordmark-light.svg'), encoding='utf-8').read()
+    m = re.search(r'viewBox="0 0 ([\d.]+) ([\d.]+)".*?transform="translate\(([-\d.]+) ([-\d.]+)\)" d="([^"]+)"', text, re.S)
+    vw, vh, tx, ty, d = float(m.group(1)), float(m.group(2)), float(m.group(3)), float(m.group(4)), m.group(5)
+    k = size / 200
+    fx = lambda v: num(x0 + v * k)
+    fy = lambda v: num(baseline + v * k)
+    out = []
+    for cmd, args in re.findall(r'([MLQHVZ])([^MLQHVZ]*)', d):
+        vals = [float(v) for v in re.findall(r'-?[\d.]+', args)]
+        if cmd == 'H':
+            out.append('H' + ' '.join(fx(v) for v in vals))
+        elif cmd == 'V':
+            out.append('V' + ' '.join(fy(v) for v in vals))
+        else:
+            out.append(cmd + ' '.join(fx(v) if i % 2 == 0 else fy(v) for i, v in enumerate(vals)))
+    bx0, by0 = 4 - tx, 4 - ty  # fitted(): translate(pad - x0, pad - y0), pad 4
+    bounds = (x0 + bx0 * k, baseline + by0 * k, x0 + (bx0 + vw - 8) * k, baseline + (by0 + vh - 8) * k)
+    return ''.join(out), bounds
 
 
 
@@ -78,7 +101,7 @@ def latin(size, baseline=0.0, x0=0.0):
 # ---------- 图形 ----------
 
 def mark_c(size, x, y, color):
-    """标志（卡皮巴拉侧面头像，单色）：取 build_icon.py 生成的应用内标志（24 网格，只用 currentColor），换成指定颜色。"""
+    """标志（卡皮巴拉正面头像，单色）：取 build_icon.py 生成的应用内标志（24 网格，只用 currentColor），换成指定颜色。"""
     text = open(os.path.join(ROOT, 'src/renderer/src/assets/images/logo-mark.svg'), encoding='utf-8').read()
     g = ''.join(re.findall(r'<path fill="currentColor".*?/>', text, re.S)).replace('currentColor', color)
     return f'  <g transform="translate({num(x)} {num(y)}) scale({num(size / 24)})">{g}</g>'
@@ -123,14 +146,14 @@ def fitted(d_bounds, d, color, pad):
 def lockup(kind, color):
     """[标志]  Capydown —— 字标的大写高度区间以标志的垂直中线居中。kind: 'mark'（单色标志）或 'icon'（应用图标）。"""
     M = 128  # 标志高度
-    gap = M * (-0.06 if kind == 'mark' else 0.24)  # 头像字形的墨迹只占 24 网格的 1.5..22.6，右侧有留白，组合时往回收
+    gap = M * (0.0 if kind == 'mark' else 0.24)  # 正面头像的墨迹占 24 网格的 3.05..20.95，两侧各留约 3 个单位
     cap = 1440 / 2000  # Manrope 大写高度 / em
     lat_size = M * 0.40 / cap
     lat_d, lb = latin(lat_size, baseline=0, x0=M + gap)
     lat_dy = M / 2 + cap * lat_size / 2  # p / y 有降部：按「基线到大写字母顶」的中线对齐，不按墨迹中心
     W = lb[2] + 2
     pad = 12 if kind == 'icon' else 0  # 应用图标的落地投影
-    head = mark_c(M * 0.86, -M * 0.05, M / 2 - 11.9 / 24 * M * 0.86, color) if kind == 'mark' else icon_a(M, pad, pad)
+    head = mark_c(M * 0.86, -M * 0.05, M / 2 - 11.5 / 24 * M * 0.86, color) if kind == 'mark' else icon_a(M, pad, pad)
     body = '\n'.join([
         head,
         f'  <g transform="translate({pad} {pad})">',

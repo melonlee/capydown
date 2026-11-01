@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Capydown 图标：托腮思考的卡皮巴拉（吉祥物家族，和 喵想 · FantasyAI Lab 的猫同一家族；头顶的思考泡泡里是 Markdown 的 #）。
+"""Capydown 图标：从底边探出头的正面卡皮巴拉（和 喵想 · FantasyAI Lab 的猫同一吉祥物家族、同一构图），头顶一颗柚子。
 
 母版由 capybara.py 生成（参数化几何，别手改 SVG）：
   docs/assets/brand/src/capybara.svg        完整图标，viewBox 100..924（圆角方形主体，无留白）
-  docs/assets/brand/src/capybara-small.svg  小尺寸版：头 + 托腮的爪，五官放大（16–32px）
+  docs/assets/brand/src/capybara-small.svg  小尺寸版：只留头，五官放大（16–32px）
   docs/assets/brand/src/capybara-flat.svg   两色平面版（无渐变、无滤镜）
-  docs/assets/brand/src/capy-glyph.svg      单色侧面头像（currentColor，24 网格）
+  docs/assets/brand/src/capy-glyph.svg      单色正面头像（currentColor，24 网格）
 
 本脚本生成：
   docs/assets/brand/src/app-icon.svg / app-icon-small.svg  macOS 1024 网格（主体 100..924，带落地投影 class="tile-shadow"），
@@ -52,30 +52,26 @@ def mac_grid(src, comment):
 
 
 # ---------------------------------------------------------------- 无底板的吉祥物
-ART_FADE = ('<linearGradient id="artFadeB" gradientUnits="userSpaceOnUse" x1="0" y1="640" x2="0" y2="900">'
+ART_FADE = ('<linearGradient id="artFadeB" gradientUnits="userSpaceOnUse" x1="0" y1="800" x2="0" y2="924">'
             '<stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient>'
-            '<linearGradient id="artFadeR" gradientUnits="userSpaceOnUse" x1="760" y1="0" x2="924" y2="0">'
-            '<stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient>'
-            '<mask id="artMaskB" maskUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1024"><rect width="1024" height="1024" fill="url(#artFadeB)"/></mask>'
-            '<mask id="artMaskR" maskUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1024"><rect width="1024" height="1024" fill="url(#artFadeR)"/></mask>')
+            '<mask id="artMaskB" maskUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1024"><rect width="1024" height="924" fill="url(#artFadeB)"/></mask>')
 
 
 def art(dark):
-    """去掉底板和外框，只留卡皮巴拉和 # 泡泡；身体在底边 / 右边（原本被底板裁掉的地方）柔和淡出。
-    浅色背景版：投影变淡，身体和泡泡加一圈很淡的墨色轮廓（白泡泡在白底上才看得见）。"""
+    """去掉底板和外框，只留卡皮巴拉（连同柚子和爪子）；肩膀在底边（原本被底板裁掉的地方）柔和淡出。
+    浅色背景版：投影变淡。"""
     s = strip_comments(read('capybara.svg'))
-    s = s.replace('width="1024" height="1024" viewBox="100 100 824 824"', 'viewBox="130 110 794 800" width="794" height="800"', 1)
+    s = s.replace('width="1024" height="1024" viewBox="100 100 824 824"', 'viewBox="90 150 844 790" width="844" height="790"', 1)
     s = s.replace('<defs>', '<defs>\n' + ART_FADE, 1)
     s = s.replace('<use href="#squircle" fill="url(#bg)"/>\n', '', 1)
-    s = s.replace('<g clip-path="url(#clip)">', '<g mask="url(#artMaskR)"><g mask="url(#artMaskB)">', 1)
-    s = s.replace('</g>\n<use href="#squircle" fill="none" stroke="url(#rim)" stroke-width="3"/>\n', '</g></g>\n', 1)
+    s = s.replace('<g clip-path="url(#clip)">', '<g mask="url(#artMaskB)">', 1)
+    s = s.replace('</g>\n<use href="#squircle" fill="none" stroke="url(#rim)" stroke-width="3"/>\n', '</g>\n', 1)
     if not dark:
-        s = s.replace('fill="url(#bub)" fill-opacity="0.93"', 'fill="url(#bub)" fill-opacity="0.93" stroke="#111111" stroke-opacity="0.14" stroke-width="3"')
         s = s.replace('<feComponentTransfer><feFuncA type="linear" slope="0.7"/></feComponentTransfer>',
                       '<feComponentTransfer><feFuncA type="linear" slope="0.16"/></feComponentTransfer>', 1)  # 投影：白底上只留一点点
     label = '深色' if dark else '浅色'
     assert 'artMaskB' in s and 'url(#bg)' not in s.split('</defs>')[1]
-    return s.replace('<defs>', f'<!-- Capydown 吉祥物：托腮思考的卡皮巴拉，无底板（{label}背景）。{GEN} -->\n<defs>', 1)
+    return s.replace('<defs>', f'<!-- Capydown 吉祥物：从底边探出头的正面卡皮巴拉，无底板（{label}背景）。{GEN} -->\n<defs>', 1)
 
 
 # ---------------------------------------------------------------- 应用内标志（24 网格，单色）
@@ -86,21 +82,21 @@ def glyph_d():
 
 def mark_inline(d):
     return ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">\n'
-            f'  <!-- Capydown 应用内标志：卡皮巴拉侧面头像（耳朵 / 眼睛 / 鼻孔镂空），只用 currentColor（夜间主题自动反白）。{GEN} -->\n'
+            f'  <!-- Capydown 应用内标志：卡皮巴拉正面头像（平顶方头 + 耳朵，眼睛 / 鼻孔镂空），只用 currentColor（夜间主题自动反白）。{GEN} -->\n'
             f'  <path fill="currentColor" fill-rule="evenodd" d="{d}"/>\n</svg>\n')
 
 
 def mark_colored(d, color, label):
     return ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="240" height="240">\n'
-            f'  <!-- Capydown 标志（{label}）：卡皮巴拉侧面头像，单色。{GEN} -->\n'
+            f'  <!-- Capydown 标志（{label}）：卡皮巴拉正面头像，单色。{GEN} -->\n'
             f'  <path fill="{color}" fill-rule="evenodd" d="{d}"/>\n</svg>\n')
 
 
 if __name__ == '__main__':
     d = glyph_d()
     out = {
-        os.path.join(SRC, 'app-icon.svg'): mac_grid(read('capybara.svg'), 'Capydown 应用图标：托腮思考的卡皮巴拉 + # 泡泡（≥64px）'),
-        os.path.join(SRC, 'app-icon-small.svg'): mac_grid(read('capybara-small.svg'), 'Capydown 应用图标小尺寸版：头 + 托腮的爪（16–32px）'),
+        os.path.join(SRC, 'app-icon.svg'): mac_grid(read('capybara.svg'), 'Capydown 应用图标：从底边探出头的卡皮巴拉，头顶一颗柚子（≥64px）'),
+        os.path.join(SRC, 'app-icon-small.svg'): mac_grid(read('capybara-small.svg'), 'Capydown 应用图标小尺寸版：只留头，五官放大（16–32px）'),
         os.path.join(SRC, 'app-icon-flat.svg'): strip_comments(read('capybara-flat.svg')).replace('<defs>', f'<!-- Capydown 两色平面版。{GEN} -->\n<defs>', 1),
         os.path.join(ROOT, 'src/renderer/src/assets/images/logo-mark.svg'): mark_inline(d),
         os.path.join(BRAND, 'logo-mark.svg'): mark_colored(d, '#111111', '墨色'),

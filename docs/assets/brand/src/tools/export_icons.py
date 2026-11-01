@@ -1,5 +1,5 @@
-# 把 build_icon.py 生成的「托腮思考的卡皮巴拉」图标（吉祥物家族）导出为全部应用图标，以及品牌 PNG：
-#   build/icon.icns                    macOS（iconutil）：16 / 16@2x / 32 用小图标（头 + 托腮的爪），32@2x(64) 及以上用完整图标
+# 把 build_icon.py 生成的「从底边探出头的卡皮巴拉」图标（吉祥物家族）导出为全部应用图标，以及品牌 PNG：
+#   build/icon.icns                    macOS（iconutil）：16 / 16@2x / 32 用小图标（只留头），32@2x(64) 及以上用完整图标
 #   build/icon.ico                     Windows：16 24 32 48 用小图标，64 128 256 用完整图标
 #   build/icons/NxN.png                Linux 图标组（electron-builder linux.icon）：≤48 用小图标，其余用完整图标
 #   build/icon.png, resources/icon.png 完整图标（1024，窗口图标 / 兜底）
@@ -25,8 +25,8 @@ SRC = os.path.join(BRAND, 'src')
 RENDER = os.environ.get('LB_RENDER', os.path.join(SRC, 'tools/render-batch.mjs'))
 TMP = tempfile.mkdtemp(prefix='capy-icons-')
 
-LARGE = os.path.join(SRC, 'app-icon.svg')  # 完整图标：托腮思考的卡皮巴拉 + 头顶的 # 泡泡
-SMALL = os.path.join(SRC, 'app-icon-small.svg')  # 头 + 托腮的爪，五官放大（16–48px）
+LARGE = os.path.join(SRC, 'app-icon.svg')  # 完整图标：从底边探出头的卡皮巴拉，头顶一颗柚子
+SMALL = os.path.join(SRC, 'app-icon-small.svg')  # 只留头，五官放大（16–48px）
 SMALL_MAX = 48  # Windows / Linux 不大于这个像素的图标用小图标（macOS iconset 里最大的小图标是 32px：64px 起完整图标已经读得清）
 
 
@@ -60,7 +60,7 @@ for name in ('logo-wordmark-light', 'logo-wordmark-dark', 'logo-lockup-light', '
         job(f'{BRAND}/{name}.svg', f'{BRAND}/{name}.png', w * 2, h * 2)
 job(LARGE, f'{BRAND}/app-icon-1024.png', 1024)
 for name in ('capybara-art', 'capybara-art-dark'):  # 无底板的吉祥物（透明 PNG，2 倍）
-    job(f'{BRAND}/{name}.svg', f'{BRAND}/{name}.png', 1588, 1600)
+    job(f'{BRAND}/{name}.svg', f'{BRAND}/{name}.png', 1688, 1580)
 
 # macOS iconset：每个尺寸都直接从矢量渲染（比缩小 1024 更清晰）
 iconset = os.path.join(TMP, 'icon.iconset')
