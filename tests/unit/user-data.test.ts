@@ -133,8 +133,8 @@ describe('pickDefaultAppDir', () => {
   const docs = '/Users/me/Documents'
   const has = (...dirs: string[]) => (p: string) => dirs.includes(p)
   it('keeps an existing Slothdown or LazyBox workspace, otherwise uses ~/Documents/Capydown', () => {
-    expect(pickDefaultAppDir(docs, has(`${docs}/Slothdown`, `${docs}/codes/LazyBox`))).toBe(join(docs, 'Slothdown'))
-    expect(pickDefaultAppDir(docs, has(`${docs}/codes/LazyBox`))).toBe(join(docs, 'codes', 'LazyBox'))
+    expect(pickDefaultAppDir(docs, has(join(docs, 'Slothdown'), join(docs, 'codes', 'LazyBox')))).toBe(join(docs, 'Slothdown'))
+    expect(pickDefaultAppDir(docs, has(join(docs, 'codes', 'LazyBox')))).toBe(join(docs, 'codes', 'LazyBox'))
     expect(pickDefaultAppDir(docs, has())).toBe(join(docs, 'Capydown'))
   })
 })

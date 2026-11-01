@@ -88,11 +88,14 @@ export function migrateUserData({ appData, target, customUserDataDir, profiles, 
   const tmp = `${target}.migrating-${process.pid}`
   try {
     fs.rmSync(tmp, { recursive: true, force: true })
-    fs.cpSync(source, tmp, {
-      recursive: true,
-      verbatimSymlinks: true,
-      filter: src => !(path.dirname(src) === source && SKIP.has(path.basename(src))),
-    })
+    fs.mkdirSync(tmp, { recursive: true })
+    // Skip by top-level entry name rather than comparing paths: on Windows the same directory
+    // can be spelled differently (8.3 short names, case), which made the old dirname check miss locks.
+    for (const name of fs.readdirSync(source)) {
+      if (SKIP.has(name))
+        continue
+      fs.cpSync(path.join(source, name), path.join(tmp, name), { recursive: true, verbatimSymlinks: true })
+    }
     fs.writeFileSync(path.join(tmp, marker), JSON.stringify({ from: source, at: new Date().toISOString() }, null, 2))
     if (!fs.existsSync(target)) {
       fs.renameSync(tmp, target)
