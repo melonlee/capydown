@@ -14,7 +14,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run build:linux` - Build Linux executable
 - `pnpm test` - Run Vitest unit tests (`tests/unit/`)
 
-Docs: user guide `docs/usage.md`, roadmap `docs/ROADMAP.md`, changelog `CHANGELOG.md`, archived planning docs in `docs/dev/`. Brand assets and their sources live in `docs/assets/brand/`.
+Docs: user guide `docs/usage.md`, roadmap `docs/ROADMAP.md`, changelog `CHANGELOG.md`, archived planning docs in `docs/dev/` (editor redesign: `docs/dev/typora-redesign.md`). Brand assets and their sources live in `docs/assets/brand/`, app screenshots in `docs/assets/screenshots/`. The landing page is a build-free static site in `website/` (see `website/README.md`).
+
+The main editor is CodeMirror 6 with Typora-style live preview (`src/renderer/src/editor/`); the file on disk must round-trip byte-for-byte (`tests/unit/editor.test.ts`). Menus, shortcuts and the command palette share one command table (`src/shared/commands.ts`). The UI is strictly monochrome (`src/renderer/src/assets/workbench.css`); only 公众号 article themes carry colour.
 
 AI is limited to two features — pre-publish proofreading and title/summary generation (see `docs/dev/ai.md`; mock server `scripts/dev/mock-openai.mjs`, live smoke test `scripts/dev/ai-smoke.mjs`). The old writing helpers (continue, polish, outline…) keep their source but are only registered with the experimental flag.
 
@@ -72,7 +74,7 @@ Theme customization flows through:
 ### File Structure Notes
 
 - UI components in `src/renderer/src/components/ui/` are auto-imported Radix Vue wrappers
-- `CodemirrorEditor` directory contains the main editor interface with sub-panels (FileTreePanel, PostSlider, RightSlider, CssEditor)
+- `CodemirrorEditor` directory contains editor sub-panels (FileTreePanel, RightSlider, CssEditor, UploadImgDialog); workbench chrome (title bar, status bar, outline, command palette, WeChat panel, proofread panel) lives in `components/workbench/`
 - The app uses `path-browserify` for path operations in renderer (original Node `path` is polyfilled)
 - Assets are imported through Vite's `?asset` and `?raw` suffixes
 
