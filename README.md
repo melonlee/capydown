@@ -278,7 +278,7 @@ pnpm build:mac    # 打安装包；另有 build:win / build:linux
 <div align="center">
   <img src="docs/assets/brand/logo-mark.png" width="36" alt="">
   <br>
-  <sub>图标是一只托腮思考的卡皮巴拉，头顶的泡泡里是 Markdown 的 #；和 喵想 · FantasyAI Lab 同一吉祥物家族</sub>
+  <sub>图标是和 喵想 · FantasyAI Lab 同一家族的卡皮巴拉，从底边探出头，头顶顶着一颗柚子</sub>
   <br>
   <sub>Capydown · Made by <a href="https://github.com/melonlee">Melon</a> · <a href="https://fantasyailab.com/">FantasyAI Lab</a></sub>
 </div>
