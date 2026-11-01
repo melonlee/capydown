@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Capydown 图标：从底边探出头的正面卡皮巴拉（和 喵想 · FantasyAI Lab 的猫同一吉祥物家族、同一构图），头顶一颗柚子。
+"""Capydown 图标：从底边探出头的正面卡皮巴拉（和 喵想 · FantasyAI Lab 的猫同一吉祥物家族、同一构图），头顶趴着一只小卡皮巴拉。
 
 母版由 capybara.py 生成（参数化几何，别手改 SVG）：
   docs/assets/brand/src/capybara.svg        完整图标，viewBox 100..924（圆角方形主体，无留白）
-  docs/assets/brand/src/capybara-small.svg  小尺寸版：只留头，五官放大（16–32px）
+  docs/assets/brand/src/capybara-small.svg  小尺寸版：只留大头，五官放大，不带小卡皮巴拉（16–32px）
   docs/assets/brand/src/capybara-flat.svg   两色平面版（无渐变、无滤镜）
   docs/assets/brand/src/capy-glyph.svg      单色正面头像（currentColor，24 网格）
 
@@ -58,7 +58,7 @@ ART_FADE = ('<linearGradient id="artFadeB" gradientUnits="userSpaceOnUse" x1="0"
 
 
 def art(dark):
-    """去掉底板和外框，只留卡皮巴拉（连同柚子和爪子）；肩膀在底边（原本被底板裁掉的地方）柔和淡出。
+    """去掉底板和外框，只留卡皮巴拉（连同头顶的小卡皮巴拉和爪子）；肩膀在底边（原本被底板裁掉的地方）柔和淡出。
     浅色背景版：投影变淡。"""
     s = strip_comments(read('capybara.svg'))
     s = s.replace('width="1024" height="1024" viewBox="100 100 824 824"', 'viewBox="90 150 844 790" width="844" height="790"', 1)
@@ -82,7 +82,7 @@ def glyph_d():
 
 def mark_inline(d):
     return ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">\n'
-            f'  <!-- Capydown 应用内标志：卡皮巴拉正面头像（平顶方头 + 耳朵，眼睛 / 鼻孔镂空），只用 currentColor（夜间主题自动反白）。{GEN} -->\n'
+            f'  <!-- Capydown 应用内标志：卡皮巴拉正面头像（下宽上窄的圆头 + 两角小耳朵，困困的眼睛 / 鼻孔镂空），只用 currentColor（夜间主题自动反白）。{GEN} -->\n'
             f'  <path fill="currentColor" fill-rule="evenodd" d="{d}"/>\n</svg>\n')
 
 
@@ -95,8 +95,8 @@ def mark_colored(d, color, label):
 if __name__ == '__main__':
     d = glyph_d()
     out = {
-        os.path.join(SRC, 'app-icon.svg'): mac_grid(read('capybara.svg'), 'Capydown 应用图标：从底边探出头的卡皮巴拉，头顶一颗柚子（≥64px）'),
-        os.path.join(SRC, 'app-icon-small.svg'): mac_grid(read('capybara-small.svg'), 'Capydown 应用图标小尺寸版：只留头，五官放大（16–32px）'),
+        os.path.join(SRC, 'app-icon.svg'): mac_grid(read('capybara.svg'), 'Capydown 应用图标：从底边探出头的卡皮巴拉，头顶趴着一只小卡皮巴拉（≥64px）'),
+        os.path.join(SRC, 'app-icon-small.svg'): mac_grid(read('capybara-small.svg'), 'Capydown 应用图标小尺寸版：只留大头，五官放大，不带小卡皮巴拉（16–32px）'),
         os.path.join(SRC, 'app-icon-flat.svg'): strip_comments(read('capybara-flat.svg')).replace('<defs>', f'<!-- Capydown 两色平面版。{GEN} -->\n<defs>', 1),
         os.path.join(ROOT, 'src/renderer/src/assets/images/logo-mark.svg'): mark_inline(d),
         os.path.join(BRAND, 'logo-mark.svg'): mark_colored(d, '#111111', '墨色'),

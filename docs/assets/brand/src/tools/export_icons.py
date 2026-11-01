@@ -25,7 +25,7 @@ SRC = os.path.join(BRAND, 'src')
 RENDER = os.environ.get('LB_RENDER', os.path.join(SRC, 'tools/render-batch.mjs'))
 TMP = tempfile.mkdtemp(prefix='capy-icons-')
 
-LARGE = os.path.join(SRC, 'app-icon.svg')  # 完整图标：从底边探出头的卡皮巴拉，头顶一颗柚子
+LARGE = os.path.join(SRC, 'app-icon.svg')  # 完整图标：从底边探出头的卡皮巴拉，头顶趴着一只小卡皮巴拉
 SMALL = os.path.join(SRC, 'app-icon-small.svg')  # 只留头，五官放大（16–48px）
 SMALL_MAX = 48  # Windows / Linux 不大于这个像素的图标用小图标（macOS iconset 里最大的小图标是 32px：64px 起完整图标已经读得清）
 

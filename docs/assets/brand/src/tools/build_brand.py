@@ -3,7 +3,7 @@
 # 产品只有一个名字 Capydown（Capybara + Markdown；原名 LazyBox / Slothdown）。
 #
 #   logo-wordmark-{light,dark}.svg      Capydown（Manrope Bold，转曲）
-#   logo-lockup-{light,dark}.svg        单色标志（卡皮巴拉侧面头像）+ Capydown —— 小尺寸、导航栏、横幅
+#   logo-lockup-{light,dark}.svg        单色标志（卡皮巴拉正面头像）+ Capydown —— 小尺寸、导航栏、横幅
 #   logo-lockup-icon-{light,dark}.svg   应用图标（从底边探出头的卡皮巴拉）+ Capydown —— 只在图标能显示到 64px 以上时使用
 #   以及上面每个 SVG 的 2 倍 PNG
 #
@@ -146,7 +146,7 @@ def fitted(d_bounds, d, color, pad):
 def lockup(kind, color):
     """[标志]  Capydown —— 字标的大写高度区间以标志的垂直中线居中。kind: 'mark'（单色标志）或 'icon'（应用图标）。"""
     M = 128  # 标志高度
-    gap = M * (0.0 if kind == 'mark' else 0.24)  # 正面头像的墨迹占 24 网格的 3.05..20.95，两侧各留约 3 个单位
+    gap = M * (0.0 if kind == 'mark' else 0.24)  # 正面头像的墨迹占 24 网格的 3.55..20.45（墨迹中心 y = 11.8），两侧各留约 3.5 个单位
     cap = 1440 / 2000  # Manrope 大写高度 / em
     lat_size = M * 0.40 / cap
     lat_d, lb = latin(lat_size, baseline=0, x0=M + gap)
