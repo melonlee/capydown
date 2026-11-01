@@ -3,27 +3,27 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>LazyBox · 懒排 — 像 Typora 一样专心写，一键排成公众号</title>
-  <meta name="description" content="懒排是给公众号作者的 Markdown 桌面编辑器：Typora 式实时预览，一键复制到公众号，发布前让 AI 校对错别字。免费开源，文章就是你硬盘上的 .md 文件。">
+  <title>懒得排 · Slothdown — 像 Typora 一样专心写，一键排成公众号</title>
+  <meta name="description" content="懒得排 · Slothdown（原名 LazyBox）是给公众号作者的 Markdown 桌面编辑器：Typora 式实时预览，一键复制到公众号，导出 PDF / Word，发布前让 AI 校对错别字。免费开源，文章就是你硬盘上的 .md 文件。">
   <meta name="theme-color" content="#ffffff">
-  <link rel="alternate" hreflang="zh-CN" href="https://melonlee.github.io/LazyBox/">
-  <link rel="alternate" hreflang="en" href="https://melonlee.github.io/LazyBox/en/">
+  <link rel="alternate" hreflang="zh-CN" href="https://melonlee.github.io/slothdown/">
+  <link rel="alternate" hreflang="en" href="https://melonlee.github.io/slothdown/en/">
 
   <!-- Open Graph / Twitter（绝对地址指向 GitHub Pages；换自定义域名时一并修改） -->
-  <link rel="canonical" href="https://melonlee.github.io/LazyBox/">
+  <link rel="canonical" href="https://melonlee.github.io/slothdown/">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://melonlee.github.io/LazyBox/">
-  <meta property="og:site_name" content="LazyBox · 懒排">
-  <meta property="og:title" content="LazyBox · 懒排 — 像 Typora 一样专心写，一键排成公众号">
-  <meta property="og:description" content="给公众号作者的 Markdown 桌面编辑器。实时预览、一键排版、发布前 AI 校对。免费开源。">
-  <meta property="og:image" content="https://melonlee.github.io/LazyBox/assets/social-preview.png">
-  <meta property="og:image:width" content="1280">
-  <meta property="og:image:height" content="640">
+  <meta property="og:url" content="https://melonlee.github.io/slothdown/">
+  <meta property="og:site_name" content="懒得排 · Slothdown">
+  <meta property="og:title" content="懒得排 · Slothdown — 像 Typora 一样专心写，一键排成公众号">
+  <meta property="og:description" content="懒得排版？交给树懒。给公众号作者的 Markdown 桌面编辑器：实时预览、一键排版、导出 PDF / Word、发布前 AI 校对。免费开源。">
+  <meta property="og:image" content="https://melonlee.github.io/slothdown/assets/social-preview.png">
+  <meta property="og:image:width" content="2560">
+  <meta property="og:image:height" content="1280">
   <meta property="og:locale" content="zh_CN">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="LazyBox · 懒排 — 像 Typora 一样专心写，一键排成公众号">
-  <meta name="twitter:description" content="给公众号作者的 Markdown 桌面编辑器。实时预览、一键排版、发布前 AI 校对。免费开源。">
-  <meta name="twitter:image" content="https://melonlee.github.io/LazyBox/assets/social-preview.png">
+  <meta name="twitter:title" content="懒得排 · Slothdown — 像 Typora 一样专心写，一键排成公众号">
+  <meta name="twitter:description" content="懒得排版？交给树懒。给公众号作者的 Markdown 桌面编辑器：实时预览、一键排版、导出 PDF / Word、发布前 AI 校对。免费开源。">
+  <meta name="twitter:image" content="https://melonlee.github.io/slothdown/assets/social-preview.png">
 
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
@@ -35,17 +35,18 @@
 
 <header class="nav">
   <div class="wrap">
-    <a class="brand" href="./" aria-label="LazyBox · 懒排 首页">
+    <a class="brand" href="./" aria-label="懒得排 · Slothdown 首页">
       <img src="assets/favicon.svg" alt="" width="24" height="24">
-      <span>LazyBox <span class="dot">·</span> 懒排</span>
+      <span>懒得排 <span class="dot">·</span> Slothdown</span>
     </a>
     <nav class="nav-links" aria-label="页面导航">
       <a href="#writing">写作</a>
       <a href="#wechat">公众号</a>
+      <a href="#export">导出</a>
       <a href="#ai">AI</a>
       <a href="#shortcuts">快捷键</a>
       <a href="#faq">常见问题</a>
-      <a class="keep" href="https://github.com/melonlee/LazyBox">GitHub</a>
+      <a class="keep" href="https://github.com/melonlee/slothdown">GitHub</a>
     </nav>
     <a class="lang" href="en/" hreflang="en" lang="en">EN</a>
   </div>
@@ -55,27 +56,31 @@
   <!-- ============================================================ hero -->
   <section class="hero anim">
     <div class="wrap">
-      <h1 class="sr-only">LazyBox · 懒排</h1>
+      <h1 class="sr-only">懒得排 · Slothdown</h1>
       <div class="mark-line" aria-hidden="true">
-        <span class="mark-src"><span class="mk">#</span><span class="txt">懒排</span><span class="caret"></span></span>
-        <span class="mark-h">懒排</span>
+        <span class="mark-src"><span class="mk">#</span><span class="txt">懒得排</span><span class="caret"></span></span>
+        <span class="mark-h">懒得排</span>
       </div>
       <div class="mark-rule" aria-hidden="true"></div>
+      <p class="hero-word" aria-hidden="true">Slothdown</p>
       <p class="hero-title"><span>像 Typora 一样专心写，</span><span>一键排成公众号。</span></p>
       <p class="hero-sub">给公众号作者的 Markdown 桌面编辑器。<br>写完就排好，发布前让 AI 再校对一遍。</p>
       <div class="hero-cta">
-        <a class="btn btn-solid" href="https://github.com/melonlee/LazyBox/releases">
+        <a class="btn btn-solid" href="https://github.com/melonlee/slothdown/releases">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 2v8.5M4.5 7 8 10.5 11.5 7M3 13.5h10" stroke-linecap="round" stroke-linejoin="round"/></svg>
           免费下载
         </a>
-        <a class="btn btn-ghost" href="https://github.com/melonlee/LazyBox">
+        <a class="btn btn-ghost" href="https://github.com/melonlee/slothdown">
           <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
           GitHub
         </a>
       </div>
-      <p class="hero-note"><span>免费开源 · macOS</span><span>Windows / Linux 安装包随版本发布</span></p>
-      <div class="hero-shot win">
-        <img src="assets/01-writing.webp" srcset="assets/01-writing-1000.webp 1000w, assets/01-writing.webp 2000w" sizes="(max-width: 1168px) calc(100vw - 48px), 1120px" width="2000" height="1250" alt="懒排的写作界面：单栏实时预览，左侧是文件树" fetchpriority="high">
+      <p class="hero-note"><span>免费开源 · macOS / Windows / Linux</span><span>原名 LazyBox</span></p>
+      <div class="hero-stage">
+        <img class="peek" src="assets/sloth-peek.svg" alt="" width="1100" height="640">
+        <div class="hero-shot win">
+          <img src="assets/01-writing.webp" srcset="assets/01-writing-1000.webp 1000w, assets/01-writing.webp 2000w" sizes="(max-width: 1168px) calc(100vw - 48px), 1120px" width="2000" height="1250" alt="懒得排的写作界面：单栏实时预览，左侧是文件树" fetchpriority="high">
+        </div>
       </div>
     </div>
   </section>
@@ -125,6 +130,32 @@
     </div>
   </section>
 
+  <!-- ============================================================ editing (0.3.0) -->
+  <section class="section" id="editing">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">编辑区 · v0.3.0</p>
+        <h2>要用的，都在手边。</h2>
+        <p class="lede">没有常驻工具栏。选中文字，浮动格式条出现；停在空行，左边有个「+」；右键是熟悉的原生菜单。它们执行的都是菜单里的同一条命令，都能撤销。</p>
+      </div>
+      <div class="duo section-body reveal">
+        <figure style="margin:0">
+          <div class="win"><img src="assets/15-floating-toolbar.webp" srcset="assets/15-floating-toolbar-1000.webp 1000w, assets/15-floating-toolbar.webp 2000w" sizes="(max-width: 720px) calc(100vw - 48px), 544px" width="2000" height="1250" alt="选中文字后出现的浮动格式条" loading="lazy"></div>
+          <figcaption class="cap">选区浮动格式条</figcaption>
+        </figure>
+        <figure style="margin:0">
+          <div class="win"><img src="assets/16-insert-menu.webp" srcset="assets/16-insert-menu-1000.webp 1000w, assets/16-insert-menu.webp 2000w" sizes="(max-width: 720px) calc(100vw - 48px), 544px" width="2000" height="1250" alt="空行左侧「+」打开的插入菜单" loading="lazy"></div>
+          <figcaption class="cap">空行「+」插入菜单</figcaption>
+        </figure>
+      </div>
+      <div class="features reveal">
+        <div class="feature"><h3>浮动格式条</h3><p>加粗、斜体、删除线、行内代码、链接、标题 1–3、引用。已有的格式会高亮，悬停显示快捷键。</p></div>
+        <div class="feature"><h3>空行「+」</h3><p>插入标题、列表、引用、代码块、表格、图片、分割线、Mermaid 图，方向键加回车就行。</p></div>
+        <div class="feature"><h3>右键菜单与左下角</h3><p>右键有段落、格式、插入和发布前校对；设置、浅色 / 深色、公众号预览放在侧边栏左下角。</p></div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============================================================ wechat -->
   <section class="section" id="wechat">
     <div class="wrap">
@@ -139,7 +170,33 @@
       <div class="features reveal">
         <div class="feature"><h3>所见即所发</h3><p>预览面板按公众号的实际效果渲染，复制时样式已内联，粘贴后不走样。</p></div>
         <div class="feature"><h3>主题与自定义 CSS</h3><p>经典、优雅、简洁三套文章主题，可调字体、字号、主题色和代码块样式。</p></div>
-        <div class="feature"><h3>图片提醒</h3><p>公众号读不到本地图片。复制前懒排会告诉你哪些图片需要在后台重新上传。</p></div>
+        <div class="feature"><h3>图片提醒</h3><p>公众号读不到本地图片。复制前懒得排会告诉你哪些图片需要在后台重新上传。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ export & open with (0.3.0) -->
+  <section class="section" id="export">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">导出与打开方式 · v0.3.0</p>
+        <h2>不止公众号。</h2>
+        <p class="lede">同一篇稿子，导出 PDF 发给编辑，导出 Word 交给要改稿的人。在访达里右键 <code>.md</code>，就能用 Slothdown 打开。</p>
+      </div>
+      <div class="duo section-body reveal">
+        <figure style="margin:0">
+          <div class="win"><img src="assets/12-export-menu.webp" srcset="assets/12-export-menu-1000.webp 1000w, assets/12-export-menu.webp 2000w" sizes="(max-width: 720px) calc(100vw - 48px), 544px" width="2000" height="1250" alt="命令面板里搜「导出」：PDF、Word、Markdown、HTML" loading="lazy"></div>
+          <figcaption class="cap">命令面板搜「导出」</figcaption>
+        </figure>
+        <figure style="margin:0">
+          <div class="win doc"><img src="assets/13-export-pdf.webp" srcset="assets/13-export-pdf-1000.webp 1000w, assets/13-export-pdf.webp 2000w" sizes="(max-width: 720px) calc(100vw - 48px), 544px" width="2000" height="1250" alt="导出的 PDF：A4、页码、代码高亮与图片" loading="lazy"></div>
+          <figcaption class="cap">导出的 PDF</figcaption>
+        </figure>
+      </div>
+      <div class="features reveal">
+        <div class="feature"><h3>导出 PDF</h3><p>按编辑器主题排版，A4、页脚页码；代码高亮、表格、本地图片、Mermaid 都在，标题不落在页尾。</p></div>
+        <div class="feature"><h3>导出 Word</h3><p>标题样式、列表、引用、代码块、表格原样保留，图片嵌入并按页宽缩放，中文用宋体 / 黑体。</p></div>
+        <div class="feature"><h3>右键用 Slothdown 打开</h3><p>登记为 <code>.md</code> 的「打开方式」，不抢默认应用。不在工作区里的文件，会连同所在文件夹一起打开。</p></div>
       </div>
     </div>
   </section>
@@ -150,7 +207,7 @@
       <div class="section-head reveal">
         <p class="eyebrow">两个 AI 帮手</p>
         <h2>发出去之前，再看一遍。</h2>
-        <p class="lede">公众号文章发布后，正文最多只能改 20 个字。所以懒排的 AI 只做两件事，都在你点「发布」之前。</p>
+        <p class="lede">公众号文章发布后，正文最多只能改 20 个字。所以懒得排的 AI 只做两件事，都在你点「发布」之前。</p>
       </div>
       <div class="ai-grid">
         <article class="ai-card reveal">
@@ -180,7 +237,7 @@
       <div class="byok reveal">
         <h3>自带 Key，<br>文章不经过我们。</h3>
         <div>
-          <p>在偏好设置里填入你自己的 API Key，请求从你的电脑直接发到你选择的服务商。懒排没有服务器，Key 只保存在本机。</p>
+          <p>在偏好设置里填入你自己的 API Key，请求从你的电脑直接发到你选择的服务商。懒得排没有服务器，Key 只保存在本机。</p>
           <p>只有你点击「校对」或「拟标题」时，文章才会被发送。</p>
           <div class="providers"><span>Claude</span><span>DeepSeek</span><span>Kimi</span><span>通义千问</span><span>OpenAI</span><span>任意 OpenAI 兼容网关</span></div>
         </div>
@@ -215,7 +272,7 @@
         <div><span>标题 1～6</span><span><kbd>⌘</kbd><kbd>1</kbd> … <kbd>6</kbd></span></div>
         <div><span>加粗 / 斜体</span><span><kbd>⌘</kbd><kbd>B</kbd> <kbd>⌘</kbd><kbd>I</kbd></span></div>
       </div>
-      <p class="keys-note">Windows / Linux 上 ⌘ 是 Ctrl，⌥ 是 Alt。<a href="https://github.com/melonlee/LazyBox/blob/main/docs/usage.md#快捷键">完整快捷键列表</a></p>
+      <p class="keys-note">Windows / Linux 上 ⌘ 是 Ctrl，⌥ 是 Alt。<a href="https://github.com/melonlee/slothdown/blob/main/docs/usage.md#快捷键">完整快捷键列表</a></p>
     </div>
   </section>
 
@@ -228,8 +285,12 @@
       </div>
       <div class="faq reveal">
         <details>
-          <summary>懒排和 Typora 有什么关系？</summary>
-          <p>没有关系。懒排是独立的开源项目，只是写作体验以 Typora 为参照。它多做的是公众号排版和发布前校对；如果你不写公众号，Typora 依然是很好的选择。</p>
+          <summary>为什么叫「懒得排 · Slothdown」？LazyBox 呢？</summary>
+          <p>Slothdown 是 Markdown 加一只树懒，也是 slow down——慢下来，专心写；懒得排是「懒得排版？交给它」。它就是原来的 LazyBox · 懒排，v0.3.0 起改名。老用户直接安装新版：第一次启动时偏好设置、AI 配置和工作区列表会自动带过来，旧数据原样保留。</p>
+        </details>
+        <details>
+          <summary>懒得排和 Typora 有什么关系？</summary>
+          <p>没有关系。懒得排是独立的开源项目，只是写作体验以 Typora 为参照。它多做的是公众号排版和发布前校对；如果你不写公众号，Typora 依然是很好的选择。</p>
         </details>
         <details>
           <summary>免费吗？需要注册吗？</summary>
@@ -237,15 +298,15 @@
         </details>
         <details>
           <summary>支持哪些系统？</summary>
-          <p>macOS（Apple 芯片与 Intel）是主要开发和测试平台。Windows 与 Linux 安装包从 v0.2.0 起随版本自动构建，实机测试较少，欢迎反馈问题。</p>
+          <p>macOS（Apple 芯片与 Intel）是主要开发和测试平台。Windows 与 Linux 安装包随版本自动构建（<code>Slothdown-&lt;版本&gt;-…</code>），实机测试较少，欢迎反馈问题。</p>
         </details>
         <details>
           <summary>macOS 提示「已损坏，无法打开」？</summary>
-          <p>安装包暂未签名。把应用拖进「应用程序」后，在终端执行 <code>xattr -cr /Applications/LazyBox.app</code> 即可。</p>
+          <p>安装包暂未签名。把应用拖进「应用程序」后，在终端执行 <code>xattr -cr /Applications/Slothdown.app</code> 即可。</p>
         </details>
         <details>
           <summary>复制到公众号后图片不见了？</summary>
-          <p>公众号后台读不到你电脑上的图片。懒排会在复制前提醒你，到后台重新上传这些图片即可；也可以在设置里配置图床（GitHub、阿里云 OSS、腾讯云 COS、七牛云、Cloudflare R2 等），之后粘贴的图片会直接上传。</p>
+          <p>公众号后台读不到你电脑上的图片。懒得排会在复制前提醒你，到后台重新上传这些图片即可；也可以在设置里配置图床（GitHub、阿里云 OSS、腾讯云 COS、七牛云、Cloudflare R2 等），之后粘贴的图片会直接上传。</p>
         </details>
         <details>
           <summary>和 Typora 相比还缺什么？</summary>
@@ -257,12 +318,13 @@
 
   <!-- ============================================================ closing -->
   <section class="closing">
+    <img class="closing-peek" src="assets/sloth-peek.svg" alt="" width="1100" height="640" loading="lazy">
     <div class="wrap reveal">
       <h2 class="serif">开始写吧。</h2>
-      <p>剩下的，交给懒排。</p>
+      <p>剩下的，交给树懒。</p>
       <div class="hero-cta">
-        <a class="btn btn-solid" href="https://github.com/melonlee/LazyBox/releases">免费下载</a>
-        <a class="btn btn-ghost" href="https://github.com/melonlee/LazyBox/blob/main/docs/usage.md">使用指南</a>
+        <a class="btn btn-solid" href="https://github.com/melonlee/slothdown/releases">免费下载</a>
+        <a class="btn btn-ghost" href="https://github.com/melonlee/slothdown/blob/main/docs/usage.md">使用指南</a>
       </div>
     </div>
   </section>
@@ -270,15 +332,15 @@
 
 <footer class="footer">
   <div class="wrap">
-    <a class="brand" href="./"><img src="assets/favicon.svg" alt="" width="20" height="20"><span>LazyBox <span class="dot">·</span> 懒排</span></a>
+    <a class="brand" href="./"><img src="assets/favicon.svg" alt="" width="20" height="20"><span>懒得排 <span class="dot">·</span> Slothdown</span></a>
     <nav aria-label="页脚">
-      <a href="https://github.com/melonlee/LazyBox">GitHub</a>
-      <a href="https://github.com/melonlee/LazyBox/releases">下载</a>
-      <a href="https://github.com/melonlee/LazyBox/blob/main/CHANGELOG.md">更新日志</a>
-      <a href="https://github.com/melonlee/LazyBox/blob/main/LICENSE">MIT 许可</a>
+      <a href="https://github.com/melonlee/slothdown">GitHub</a>
+      <a href="https://github.com/melonlee/slothdown/releases">下载</a>
+      <a href="https://github.com/melonlee/slothdown/blob/main/CHANGELOG.md">更新日志</a>
+      <a href="https://github.com/melonlee/slothdown/blob/main/LICENSE">MIT 许可</a>
       <a href="en/" hreflang="en" lang="en">English</a>
     </nav>
-    <p class="fine">由 <a href="https://github.com/melonlee">Melon</a> · <a href="https://fantasyailab.com/">FantasyAI Lab</a> 制作。公众号排版能力来自 <a href="https://github.com/doocs/md">doocs/md</a>。Typora 是其所有者的商标，懒排与 Typora 没有关联。</p>
+    <p class="fine">由 <a href="https://github.com/melonlee">Melon</a> · <a href="https://fantasyailab.com/">FantasyAI Lab</a> 制作。公众号排版能力来自 <a href="https://github.com/doocs/md">doocs/md</a>。Typora 是其所有者的商标，懒得排与 Typora 没有关联。</p>
   </div>
 </footer>
 

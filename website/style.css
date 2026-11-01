@@ -1,5 +1,5 @@
 /*
- * LazyBox · 懒排 — landing page
+ * 懒得排 · Slothdown — landing page
  * Strict monochrome, typography-led. No web fonts: system serif for headlines,
  * system sans for text. The only colour on the page comes from real screenshots.
  */
@@ -88,23 +88,29 @@ h1, h2, h3 { margin: 0; font-weight: 700; }
 .mark-src .caret { position: absolute; left: 100%; top: -0.1em; bottom: -0.1em; width: 2px; margin-left: 3px; background: var(--ink); opacity: 0; }
 .mark-h { font: 700 112px/1 var(--serif); letter-spacing: 0.06em; text-indent: 0.06em; }
 .mark-rule { width: 48px; height: 1px; margin: 30px auto 0; background: #bdbdb9; }
-.hero-title { margin-top: 34px; font: 700 34px/1.45 var(--serif); letter-spacing: 0.02em; }
+.hero-word { margin-top: 18px; font-size: 12px; letter-spacing: 0.42em; text-indent: 0.42em; text-transform: uppercase; color: var(--faint); }
+.hero-title { margin-top: 30px; font: 700 34px/1.45 var(--serif); letter-spacing: 0.02em; }
 .hero-sub { margin: 14px auto 0; max-width: 560px; color: var(--muted); font-size: 17px; }
 .hero-cta { display: flex; justify-content: center; gap: 12px; margin-top: 38px; flex-wrap: wrap; }
 .hero-note { margin-top: 18px; font-size: 13px; color: var(--faint); letter-spacing: 0.02em; }
 .hero-note span + span::before { content: " · "; }
-.hero-shot { margin-top: 80px; }
+/* the app window, with the sloth peeking over its top edge */
+.hero-stage { position: relative; margin-top: 96px; }
+.hero-stage .peek { position: absolute; right: 7%; bottom: 100%; width: 210px; height: auto; margin-bottom: -26px; z-index: 0; pointer-events: none; }
+.hero-shot { position: relative; z-index: 1; }
 
-/* splash-like intro: # 懒排 (source) is "typeset" into the serif heading */
+/* splash-like intro: # 懒得排 (source) is "typeset" into the serif heading, then the SLOTHDOWN word */
 .anim .mark-src { animation: src-in 0.25s ease-out 0.15s both; }
 .anim .mark-src .caret { animation: blink 0.7s steps(1, end) 0.15s both; }
 .anim .mark-src .mk { animation: mk-out 0.35s cubic-bezier(0.4, 0, 1, 1) 0.75s both; }
 .anim .mark-src .txt { animation: src-out 0.5s cubic-bezier(0.4, 0, 0.7, 1) 0.85s both; }
 .anim .mark-h { animation: h-in 0.8s var(--ease) 0.9s both; }
 .anim .mark-rule { animation: rule 0.6s var(--ease) 1.35s both; }
+.anim .hero-word { animation: rise 0.7s var(--ease) 1.4s both; }
 .anim .hero-title { animation: rise 0.7s var(--ease) 1.45s both; }
 .anim .hero-sub, .anim .hero-cta, .anim .hero-note { animation: rise 0.7s var(--ease) 1.6s both; }
 .anim .hero-shot { animation: rise-lg 1s var(--ease) 1.75s both; }
+.anim .hero-stage .peek { animation: peek 1.4s var(--ease) 2.2s both; } /* slowly, like a sloth */
 
 @keyframes src-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes blink { 0% { opacity: 1; } 45% { opacity: 0; } 75% { opacity: 1; } 100% { opacity: 0; } }
@@ -113,6 +119,7 @@ h1, h2, h3 { margin: 0; font-weight: 700; }
 @keyframes h-in { from { opacity: 0; transform: scale(0.32); filter: blur(4px); } 45% { opacity: 1; } to { opacity: 1; transform: none; filter: blur(0); } }
 @keyframes rule { from { opacity: 0; transform: scaleX(0); } to { opacity: 1; transform: none; } }
 @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes peek { from { transform: translateY(70%); } to { transform: none; } }
 @keyframes rise-lg { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 .mark-src { opacity: 0; } /* the source line only exists as part of the animation */
 
@@ -122,6 +129,7 @@ h1, h2, h3 { margin: 0; font-weight: 700; }
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04), 0 24px 60px -12px rgba(0, 0, 0, 0.18);
 }
 .win img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+.win.doc img { object-position: top; }
 .cap { margin-top: 16px; font-size: 13px; color: var(--faint); text-align: center; }
 
 /* ------------------------------------------------------------------ sections */
@@ -204,7 +212,8 @@ code { font: 0.9em var(--mono); background: var(--paper-2); padding: 0.1em 0.35e
 .faq details p { padding: 0 48px 26px 0; color: var(--muted); font-size: 15.5px; }
 
 /* closing */
-.closing { padding: 200px 0 168px; text-align: center; }
+.closing { position: relative; overflow: hidden; padding: 200px 0 196px; text-align: center; }
+.closing-peek { position: absolute; left: 50%; bottom: 0; width: 280px; height: auto; transform: translateX(-50%); pointer-events: none; }
 .closing h2 { font: 700 56px/1.3 var(--serif); letter-spacing: 0.04em; }
 .closing p { margin-top: 18px; color: var(--muted); }
 .closing .hero-cta { margin-top: 36px; }
@@ -241,7 +250,9 @@ code { font: 0.9em var(--mono); background: var(--paper-2); padding: 0.1em 0.35e
   .hero-title span { display: block; }
   .hero-note span { display: block; }
   .hero-note span + span::before { content: none; }
-  .hero-shot { margin-top: 56px; }
+  .hero-stage { margin-top: 64px; }
+  .hero-stage .peek { width: 120px; margin-bottom: -15px; }
+  .closing-peek { width: 200px; }
   .win { border-radius: 8px; }
   .section { padding-top: 112px; }
   .section-head h2 { font-size: 32px; }
@@ -256,7 +267,7 @@ code { font: 0.9em var(--mono); background: var(--paper-2); padding: 0.1em 0.35e
   .keys { grid-template-columns: 1fr; margin-top: 48px; }
   .switcher button { padding: 8px 12px; }
   .faq details p { padding-right: 0; }
-  .closing { padding: 140px 0 112px; }
+  .closing { padding: 140px 0 150px; }
   .closing h2 { font-size: 38px; }
   .footer nav { margin-left: 0; }
 }
@@ -264,7 +275,7 @@ code { font: 0.9em var(--mono); background: var(--paper-2); padding: 0.1em 0.35e
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .anim .mark-src, .anim .mark-src * { animation: none !important; opacity: 0 !important; }
-  .anim .mark-h, .anim .mark-rule, .anim .hero-title, .anim .hero-sub, .anim .hero-cta, .anim .hero-note, .anim .hero-shot {
+  .anim .mark-h, .anim .mark-rule, .anim .hero-word, .anim .hero-stage .peek, .anim .hero-title, .anim .hero-sub, .anim .hero-cta, .anim .hero-note, .anim .hero-shot {
     animation: src-in 0.4s ease-out both !important;
   }
   .js .reveal { transform: none; transition: opacity 0.4s ease-out; }

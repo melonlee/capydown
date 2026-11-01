@@ -1,4 +1,4 @@
-# LazyBox · 懒排 官网
+# 懒得排 · Slothdown 官网
 
 无需构建的纯静态页面：HTML + CSS + 少量原生 JS，没有 CDN、Web 字体和统计脚本，全部使用相对路径。
 
@@ -32,17 +32,14 @@ python3 -m http.server 8080      # 或 npx serve .
 | Cloudflare Pages | Build output directory：`website`；Build command 留空 |
 | GitHub Pages | 用 Actions 把 `website/` 作为 artifact 发布（`actions/upload-pages-artifact` 的 `path: website`），或复制到 `gh-pages` 分支根目录 |
 
-## 有了正式域名之后
+## 地址与分享图
 
-Open Graph / Twitter 卡片要求图片是**绝对地址**。目前 `og:image`、`twitter:image` 写的是相对路径 `assets/social-preview.png`（英文页是 `../assets/…`），绑定域名后请在两个页面里改成：
+页面部署在 <https://melonlee.github.io/slothdown/>。`og:image`、`twitter:image`、`og:url`、`canonical` 和 `hreflang` 都写的是这个绝对地址；换自定义域名时在两个页面里一并修改。分享图 `assets/social-preview.png` 复制自 `docs/assets/brand/social-preview.png`（2560×1280）。
 
-```html
-<meta property="og:image" content="https://你的域名/assets/social-preview.png">
-<meta name="twitter:image" content="https://你的域名/assets/social-preview.png">
-```
+## 品牌素材
 
-同时可以补上 `<meta property="og:url">` 和 `<link rel="canonical">`。
+`assets/favicon.svg` / `favicon-32.png` 是正脸树懒 C（小尺寸），`apple-touch-icon.png` / `icon-512.png` 是探头树懒 A，`sloth-peek.svg` 是首屏和结尾处探头的树懒（来自 `docs/assets/brand/`，由 `build_sloth.py` 生成）。
 
 ## 更新截图
 
-截图源文件在 `docs/assets/screenshots/`（2880×1800 PNG）。替换后重新导出 WebP：每张图导出 `NN-name.webp`（宽 2000，质量约 0.82）和 `NN-name-1000.webp`（宽 1000），文件名保持不变即可。任何能输出 WebP 的工具都可以（`cwebp -q 82 -resize 2000 0`、Squoosh 等）。
+截图源文件在 `docs/assets/screenshots/`（2880×1800 PNG）。替换后重新导出 WebP（目前用到 01–13、15、16）：每张图导出 `NN-name.webp`（宽 2000，质量约 0.82）和 `NN-name-1000.webp`（宽 1000），文件名保持不变即可。任何能输出 WebP 的工具都可以（`cwebp -q 82 -resize 2000 0`、Squoosh 等）。

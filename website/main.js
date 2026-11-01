@@ -1,4 +1,4 @@
-// LazyBox · 懒排 landing page — progressive enhancement only; the page works without it.
+// 懒得排 · Slothdown landing page — progressive enhancement only; the page works without it.
 (function () {
   'use strict'
 
