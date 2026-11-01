@@ -164,6 +164,8 @@ LazyBox · 懒排 改名为 **懒得排 · Slothdown**，换上一只黑白树�
 - 图床上传：GitHub、阿里云 OSS、腾讯云 COS、七牛云、MinIO、Cloudflare R2 等
 - 一键复制为公众号格式或 HTML，导出 Markdown / HTML
 
-[0.3.0]: https://github.com/melonlee/slothdown/compare/v0.2.0...HEAD
-[0.2.0]: https://github.com/melonlee/slothdown/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/melonlee/slothdown/releases/tag/v0.1.0
+[0.4.0]: https://github.com/melonlee/capydown/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/melonlee/capydown/compare/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/melonlee/capydown/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/melonlee/capydown/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/melonlee/capydown/releases/tag/v0.1.0
