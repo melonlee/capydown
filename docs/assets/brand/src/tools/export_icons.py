@@ -1,11 +1,11 @@
-# 把 build_sloth.py 生成的树懒图标导出为全部应用图标，以及品牌 PNG：
-#   build/icon.icns                    macOS（iconutil）：16 / 16@2x / 32 用小图标 C，32@2x(64) 及以上用大图标 A
-#   build/icon.ico                     Windows：16 24 32 48 用 C，64 128 256 用 A
-#   build/icons/NxN.png                Linux 图标组（electron-builder linux.icon）：≤48 用 C，其余用 A
-#   build/icon.png, resources/icon.png 大图标 A（1024，窗口图标 / 兜底）
-#   src/renderer/src/assets/images/favicon.png  启动中提示的小标志（C）
+# 把 build_sloth.py 生成的树懒图标（吉祥物家族版）导出为全部应用图标，以及品牌 PNG：
+#   build/icon.icns                    macOS（iconutil）：16 / 16@2x / 32 用只有头部的小图标，32@2x(64) 及以上用完整图标
+#   build/icon.ico                     Windows：16 24 32 48 用小图标，64 128 256 用完整图标
+#   build/icons/NxN.png                Linux 图标组（electron-builder linux.icon）：≤48 用小图标，其余用完整图标
+#   build/icon.png, resources/icon.png 完整图标（1024，窗口图标 / 兜底）
+#   src/renderer/src/assets/images/favicon.png  启动中提示的小标志（小图标）
 #   docs/assets/brand/app-icon-1024.png, logo-mark*.png 以及字标 / 组合标志 PNG
-# Windows / Linux 用「无系统留白」的版本：把 viewBox 裁到圆角方形主体（100..924），图标铺满。
+# Windows / Linux 用「无系统留白」的版本：把 viewBox 裁到圆角方形主体（100..924），去掉 macOS 的落地投影，图标铺满。
 # 依赖：Pillow；macOS 的 iconutil；以及 render-batch.mjs（需要能解析到 playwright-core 与本机 Chrome）。
 # 用法（仓库根目录）：python3 docs/assets/brand/src/tools/build_sloth.py
 #                    LB_RENDER=/path/to/render-batch.mjs python3 docs/assets/brand/src/tools/export_icons.py
@@ -24,14 +24,15 @@ SRC = os.path.join(BRAND, 'src')
 RENDER = os.environ.get('LB_RENDER', os.path.join(SRC, 'tools/render-batch.mjs'))
 TMP = tempfile.mkdtemp(prefix='sd-icons-')
 
-LARGE = os.path.join(SRC, 'app-icon-large.svg')  # A 探头树懒
-SMALL = os.path.join(SRC, 'app-icon-small.svg')  # C 正脸树懒（小尺寸简化版）
-SMALL_MAX = 48  # Windows / Linux 不大于这个像素的图标用 C（macOS iconset 里最大的 C 是 32px）
+LARGE = os.path.join(SRC, 'app-icon.svg')  # 完整图标：树懒从底边升起，爪子搭在边上
+SMALL = os.path.join(SRC, 'app-icon-small.svg')  # 只有头部的放大简化版（16–48px）
+SMALL_MAX = 48  # Windows / Linux 不大于这个像素的图标用小图标（macOS iconset 里最大的小图标是 32px：64px 起完整图标已经读得清）
 
 
 def flat(src):
-    """无留白版本：viewBox 裁到圆角方形主体。"""
+    """无留白版本：viewBox 裁到圆角方形主体，并去掉 macOS 网格里的落地投影（class="tile-shadow"）。"""
     text = open(src, encoding='utf-8').read().replace('viewBox="0 0 1024 1024"', 'viewBox="100 100 824 824"', 1)
+    text = re.sub(r'<use class="tile-shadow"[^>]*/>\n?', '', text)
     out = os.path.join(TMP, os.path.basename(src).replace('.svg', '-flat.svg'))
     open(out, 'w', encoding='utf-8').write(text)
     return out

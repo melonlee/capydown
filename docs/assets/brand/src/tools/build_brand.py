@@ -3,8 +3,8 @@
 #
 #   logo-wordmark-{light,dark}.svg      Slothdown（Manrope，转曲）
 #   logo-wordmark-zh-{light,dark}.svg   懒得排（思源宋体 / Noto Serif SC Bold，转曲；和启动画面的宋体标题呼应）
-#   logo-lockup-{light,dark}.svg        标志 C（正脸树懒，单色）+ Slothdown │ 懒得排 —— 小尺寸、导航栏、横幅
-#   logo-lockup-icon-{light,dark}.svg   应用图标 A（探头树懒）+ 同样的字 —— 只在图标能显示到 64px 以上时使用
+#   logo-lockup-{light,dark}.svg        单色标志（树懒头）+ Slothdown │ 懒得排 —— 小尺寸、导航栏、横幅
+#   logo-lockup-icon-{light,dark}.svg   应用图标（从底边升起的树懒）+ 同样的字 —— 只在图标能显示到 64px 以上时使用
 #   以及上面每个 SVG 的 2 倍 PNG，和吉祥物 sloth-peek*.svg 的 PNG
 #
 # 依赖：pip install fonttools；PNG 用 render-batch.mjs（需要能 import playwright-core 的 node 环境）
@@ -83,15 +83,15 @@ def cjk(size, baseline=0.0, x0=0.0):
 # ---------- 图形 ----------
 
 def mark_c(size, x, y, color):
-    """标志 C：取 build_sloth.py 生成的应用内标志（200 网格，只用 currentColor），换成指定颜色。"""
+    """标志（树懒头，单色）：取 build_sloth.py 生成的应用内标志（200 网格，只用 currentColor），换成指定颜色。"""
     text = open(os.path.join(ROOT, 'src/renderer/src/assets/images/logo-mark.svg'), encoding='utf-8').read()
-    g = re.search(r'<g fill="currentColor">.*</g>', text, re.S).group(0).replace('currentColor', color)
+    g = re.search(r'<path fill="currentColor".*?/>', text, re.S).group(0).replace('currentColor', color)
     return f'  <g transform="translate({num(x)} {num(y)}) scale({num(size / 200)})">{g}</g>'
 
 
 def icon_a(size, x, y):
-    """应用图标 A：内嵌 app-icon-large.svg（1024 网格，主体 100..924，四周留了阴影空间）。裁掉留白后正好 size。"""
-    text = open(os.path.join(SRC, 'app-icon-large.svg'), encoding='utf-8').read()
+    """应用图标：内嵌 app-icon.svg（1024 网格，主体 100..924，四周留了阴影空间）。裁掉留白后正好 size。"""
+    text = open(os.path.join(SRC, 'app-icon.svg'), encoding='utf-8').read()
     inner = text[text.index('>', text.index('<svg')) + 1:text.rindex('</svg>')]
     inner = re.sub(r'<!--.*?-->', '', inner, flags=re.S).strip()
     pad = 100 * size / 824
@@ -126,7 +126,7 @@ def fitted(d_bounds, d, color, pad):
 
 
 def lockup(kind, color):
-    """[标志]  Slothdown │ 懒得排 —— 文字以标志的垂直中线居中。kind: 'mark'（C）或 'icon'（A）。"""
+    """[标志]  Slothdown │ 懒得排 —— 文字以标志的垂直中线居中。kind: 'mark'（单色标志）或 'icon'（应用图标）。"""
     M = 128  # 标志高度
     gap = M * (0.30 if kind == 'mark' else 0.26)
     cap = 1440 / 2000  # Manrope 大写高度 / em
@@ -139,7 +139,7 @@ def lockup(kind, color):
     zh_dy = M / 2 - (zb[1] + zb[3]) / 2
     rule_h = M * 0.42
     W = zb[2] + 2
-    pad = 12 if kind == 'icon' else 0  # A 的阴影
+    pad = 12 if kind == 'icon' else 0  # 应用图标的落地投影
     head = mark_c(M * 1.04, -M * 0.02, -M * 0.02, color) if kind == 'mark' else icon_a(M, pad, pad)
     body = '\n'.join([
         head,
@@ -161,9 +161,9 @@ def main():
         w, h, body = fitted(b, d, color, 4)
         write(os.path.join(BRAND, f'logo-wordmark-zh-{suffix}.svg'), svg(w, h, body, '懒得排 字标（思源宋体 Bold，已转曲）。由 build_brand.py 生成'))
         w, h, body = lockup('mark', color)
-        write(os.path.join(BRAND, f'logo-lockup-{suffix}.svg'), svg(w, h, body, '懒得排 · Slothdown 组合标志（标志 C + 字标，已转曲）。由 build_brand.py 生成'))
+        write(os.path.join(BRAND, f'logo-lockup-{suffix}.svg'), svg(w, h, body, '懒得排 · Slothdown 组合标志（单色标志 + 字标，已转曲）。由 build_brand.py 生成'))
         w, h, body = lockup('icon', color)
-        write(os.path.join(BRAND, f'logo-lockup-icon-{suffix}.svg'), svg(w, h, body, '懒得排 · Slothdown 组合标志（应用图标 A + 字标，已转曲）。由 build_brand.py 生成'))
+        write(os.path.join(BRAND, f'logo-lockup-icon-{suffix}.svg'), svg(w, h, body, '懒得排 · Slothdown 组合标志（应用图标 + 字标，已转曲）。由 build_brand.py 生成'))
 
     # PNG：字标 / 组合标志按 viewBox 的 2 倍；吉祥物（build_sloth.py 生成）按原尺寸
     jobs = []
