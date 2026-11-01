@@ -1,5 +1,5 @@
 /**
- * 「用 Slothdown 打开」：接收系统交给我们的 Markdown 文件并转交渲染进程。
+ * 「用 Capydown 打开」：接收系统交给我们的 Markdown 文件并转交渲染进程。
  *
  * - macOS：Finder「打开方式」/ 双击 / `open -a` → app 'open-file' 事件（可能早于 ready，先排队）
  * - Windows / Linux：首次启动看 process.argv；应用已在运行时，第二个实例把 argv 通过

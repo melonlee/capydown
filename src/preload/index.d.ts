@@ -12,9 +12,9 @@ interface FileNodeData {
   }
 }
 
-interface SlothdownAPI {
+interface CapydownAPI {
   onMessage: (callback: (...args: any[]) => void) => void
-  /** 端到端测试模式（SLOTHDOWN_E2E=1） */
+  /** 端到端测试模式（CAPYDOWN_E2E=1） */
   isE2E?: boolean
 
   // 应用信息 / 设置
@@ -61,7 +61,7 @@ interface SlothdownAPI {
   showEditorContextMenu: (ctx: { hasSelection: boolean, linkUrl: string | null, imageUrl: string | null }) => Promise<boolean>
   setBootTheme?: (theme: 'light' | 'paper' | 'dark') => void
 
-  // 用 Slothdown 打开：取走启动前排队的文件；判断在哪个工作区打开
+  // 用 Capydown 打开：取走启动前排队的文件；判断在哪个工作区打开
   takePendingOpenFiles: () => Promise<string[]>
   resolveOpenTarget: (file: string, workspace?: string | null) => Promise<{ switchWorkspace: boolean; workspace: string; file: string } | null>
 
@@ -573,6 +573,6 @@ interface SlothdownAPI {
 
 declare global {
   interface Window {
-    $api: SlothdownAPI
+    $api: CapydownAPI
   }
 }

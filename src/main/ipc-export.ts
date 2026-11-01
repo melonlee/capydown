@@ -44,7 +44,7 @@ async function askSavePath(sender: Electron.WebContents, format: ExportFormat, d
 
 /**
  * 导出流程：先问保存位置，再生成内容并写盘。
- * 端到端测试可以设置 SLOTHDOWN_E2E_EXPORT_DIR 跳过对话框，直接写到该目录。
+ * 端到端测试可以设置 CAPYDOWN_E2E_EXPORT_DIR 跳过对话框，直接写到该目录。
  */
 async function runExport(
   sender: Electron.WebContents,
@@ -53,7 +53,7 @@ async function runExport(
   produce: () => Promise<Buffer>,
 ): Promise<ExportResult> {
   try {
-    const e2eDir = process.env.SLOTHDOWN_E2E === '1' ? process.env.SLOTHDOWN_E2E_EXPORT_DIR : undefined
+    const e2eDir = process.env.CAPYDOWN_E2E === '1' ? process.env.CAPYDOWN_E2E_EXPORT_DIR : undefined
     const target = e2eDir
       ? join(e2eDir, basename(defaultExportPath(opts.docPath, format, e2eDir, opts.title)))
       : await askSavePath(sender, format, opts.docPath, opts.title)

@@ -46,7 +46,7 @@ describe('prepareWeChatContent', () => {
 })
 
 describe('PublishManager', () => {
-  const tmp = mkdtempSync(join(tmpdir(), 'slothdown-test-'))
+  const tmp = mkdtempSync(join(tmpdir(), 'capydown-test-'))
   afterAll(() => rmSync(tmp, { recursive: true, force: true }))
 
   it('copies WeChat HTML to the clipboard and says so honestly', async () => {

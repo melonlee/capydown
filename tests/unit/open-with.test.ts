@@ -15,7 +15,7 @@ describe('isMarkdownPath', () => {
 
 describe.runIf(posixPaths)('extractMarkdownArgs', () => {
   it('finds markdown files in a packaged launch', () => {
-    expect(extractMarkdownArgs(['/Applications/Slothdown.app/Contents/MacOS/Slothdown', '/Users/me/文章.md'], '/')).toEqual(['/Users/me/文章.md'])
+    expect(extractMarkdownArgs(['/Applications/Capydown.app/Contents/MacOS/Capydown', '/Users/me/文章.md'], '/')).toEqual(['/Users/me/文章.md'])
   })
 
   it('skips the dev entry script, switches and non-markdown arguments', () => {
@@ -24,12 +24,12 @@ describe.runIf(posixPaths)('extractMarkdownArgs', () => {
   })
 
   it('converts file:// URLs and removes duplicates', () => {
-    const argv = ['Slothdown', 'file:///home/me/%E6%96%87.md', '/home/me/文.md']
+    const argv = ['Capydown', 'file:///home/me/%E6%96%87.md', '/home/me/文.md']
     expect(extractMarkdownArgs(argv, '/')).toEqual(['/home/me/文.md'])
   })
 
   it('returns nothing for a plain launch', () => {
-    expect(extractMarkdownArgs(['Slothdown'], '/')).toEqual([])
+    expect(extractMarkdownArgs(['Capydown'], '/')).toEqual([])
   })
 })
 

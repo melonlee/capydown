@@ -8,7 +8,7 @@ import { isSafeExternalUrl } from './security'
  */
 
 const isMac = process.platform === 'darwin'
-const isE2E = process.env.SLOTHDOWN_E2E === '1'
+const isE2E = process.env.CAPYDOWN_E2E === '1'
 
 function toElectron(items: ContextMenuItem[], ctx: EditorContext, target: WebContents): MenuItemConstructorOptions[] {
   return items.map((item): MenuItemConstructorOptions => {

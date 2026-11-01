@@ -6,13 +6,13 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { app } from 'electron';
 import { getStore, setStore } from './store';
+import { pickDefaultAppDir } from './user-data-migration';
 import DEFAULT_DOCUMENT_PATH from '../../resources/markdown.md?asset';
 
 const promiseFs = fs.promises;
 
-// 默认工作区：改名前的 ~/Documents/codes/LazyBox 存在就继续用（老用户的文章都在里面），新安装用 ~/Documents/Slothdown
-const legacyAppDir = path.join(app.getPath('documents'), 'codes', 'LazyBox');
-export const defaultAppDir = fs.existsSync(legacyAppDir) ? legacyAppDir : path.join(app.getPath('documents'), 'Slothdown');
+// 默认工作区：改名前的 ~/Documents/Slothdown 或 ~/Documents/codes/LazyBox 存在就继续用（老用户的文章都在里面），新安装用 ~/Documents/Capydown
+export const defaultAppDir = pickDefaultAppDir(app.getPath('documents'), fs.existsSync);
 export const defaultDocumentName = '探索 Markdown';
 export const defaultDocumentPath = path.join(defaultAppDir, `${defaultDocumentName}.md`);
 

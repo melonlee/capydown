@@ -1,4 +1,4 @@
 provider: github
 owner: melonlee
-repo: slothdown
-updaterCacheDirName: slothdown-updater
+repo: capydown
+updaterCacheDirName: capydown-updater

@@ -30,7 +30,7 @@ const BOOT_BACKGROUNDS = { light: '#ffffff', paper: '#f6f6f3', dark: '#1e1e1e' }
 type BootTheme = keyof typeof BOOT_BACKGROUNDS
 const BOOT_THEME_KEY = 'ui.bootTheme'
 
-// 「用 Slothdown 打开」：尽早监听 macOS 的 open-file，并保证只有一个实例（第二个实例把文件交给第一个后退出）
+// 「用 Capydown 打开」：尽早监听 macOS 的 open-file，并保证只有一个实例（第二个实例把文件交给第一个后退出）
 const isPrimaryInstance = setupOpenWith()
 if (!isPrimaryInstance)
   app.quit()
@@ -111,7 +111,7 @@ app.whenReady().then(() => {
   // Windows 任务栏分组 id：沿用改名前的值，已固定到任务栏的图标不受影响
   electronApp.setAppUserModelId('com.lazybox')
 
-  // 「关于」面板显示「Slothdown」（安装包 / 菜单栏应用名是 productName Slothdown）
+  // 「关于」面板显示「Capydown」（安装包 / 菜单栏应用名是 productName Capydown）
   app.setAboutPanelOptions({
     applicationName: APP_DISPLAY_NAME,
     applicationVersion: app.getVersion(),

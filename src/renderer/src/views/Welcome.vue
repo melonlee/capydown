@@ -123,7 +123,7 @@ const openInFinder = async (workspace: Workspace) => {
 
     <main class="lb-welcome-main">
       <header class="lb-welcome-brand">
-        <!-- 组合标志：树懒标志 + Slothdown 字标（和启动画面同一个组合，淡出后无缝衔接） -->
+        <!-- 组合标志：卡皮巴拉标志 + Capydown 字标（和启动画面同一个组合，淡出后无缝衔接） -->
         <h1 class="lb-welcome-lockup" :aria-label="APP_NAME">
           <BrandMark class="lb-welcome-logo" />
           <span class="lb-welcome-word" aria-hidden="true" v-html="wordmarkSvg" />
@@ -295,7 +295,7 @@ const openInFinder = async (workspace: Workspace) => {
 .lb-welcome-lockup {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   margin: 0;
   color: var(--lb-fg-strong);
   user-select: none;
@@ -306,11 +306,13 @@ const openInFinder = async (workspace: Workspace) => {
   height: 46px;
 }
 
-/* 字标是转曲的 SVG（Manrope），只用 currentColor：夜间主题自动反白 */
+/* 字标是转曲的 SVG（Manrope），只用 currentColor：夜间主题自动反白。
+ * 「Capydown」有降部（p y）：盒子中心比大写字母的中心低，下移 0.11 倍高度让大写区间和标志对齐 */
 .lb-welcome-word {
   display: inline-flex;
-  height: 28px;
+  height: 32px;
   line-height: 0;
+  transform: translateY(3.5px);
 }
 
 .lb-welcome-word :deep(svg) {

@@ -1,9 +1,9 @@
 {
   "type": "module",
-  "name": "slothdown",
-  "productName": "Slothdown",
-  "version": "0.3.1",
-  "description": "Slothdown：给公众号作者的 Markdown 桌面编辑器，像 Typora 一样专心写，一键排成公众号",
+  "name": "capydown",
+  "productName": "Capydown",
+  "version": "0.4.0",
+  "description": "Capydown：给公众号作者的 Markdown 桌面编辑器，像 Typora 一样专心写，一键排成公众号",
   "main": "./out/main/index.cjs",
   "author": "melonlee",
   "scripts": {
@@ -122,13 +122,13 @@
     "wxt": "^0.19.25",
     "yup": "^1.6.1"
   },
-  "homepage": "https://github.com/melonlee/slothdown",
+  "homepage": "https://github.com/melonlee/capydown",
   "repository": {
     "type": "git",
-    "url": "https://github.com/melonlee/slothdown.git"
+    "url": "https://github.com/melonlee/capydown.git"
   },
   "bugs": {
-    "url": "https://github.com/melonlee/slothdown/issues"
+    "url": "https://github.com/melonlee/capydown/issues"
   },
   "license": "MIT",
   "pnpm": {
