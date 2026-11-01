@@ -2,10 +2,6 @@
 
 本项目遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
-## [Unreleased]
-
-- **新图标**：树懒换成吉祥物家族的样子（和 喵想 · FantasyAI Lab 同一家族）：深色圆角方形里，半眯着眼的白色树懒从底边升起，三爪搭在边上；16–48px 用只有头部的简化版，应用内标志是单色的树懒头。宣传图、官网和欢迎页截图一并更新
-
 ## [0.3.0] - 2026-11-01
 
 ### 改名：懒得排 · Slothdown
@@ -13,7 +9,7 @@
 LazyBox · 懒排 改名为 **懒得排 · Slothdown**，换上一只黑白树懒。
 
 - **名字**：Slothdown = Markdown + sloth（树懒），也是 slow down——慢下来，专心写；懒得排 = 懒得排版？交给它
-- **吉祥物与图标**：大尺寸是从圆角方形左下角探出头的树懒（Dock、安装包、≥64px），小尺寸和应用内标志是正脸树懒（菜单栏、favicon、16–48px）；仍然只有黑白灰
+- **吉祥物与图标**：和 喵想 · FantasyAI Lab 同一个吉祥物家族——深色圆角方形里，半眯着眼的白色树懒从底边升起，三爪搭在边上；16–48px 用只有头部的简化版，应用内标志是单色的树懒头；仍然只有黑白灰
 - 启动画面 `# 懒得排` → 宋体标题 → 标语 → `SLOTHDOWN`；欢迎页和「关于」面板同步改名
 - 安装包与可执行文件改名为 `Slothdown`（`Slothdown-0.3.0-mac-arm64.dmg` 等），仓库与官网迁到 `github.com/melonlee/slothdown`、`melonlee.github.io/slothdown`
 - **老用户无需操作**：首次启动时把旧版（LazyBox）的配置目录复制到新目录——偏好设置、AI 配置、工作区列表都会带过来；旧目录不删除。应用 ID 保持 `com.lazybox.app`，macOS 权限与「打开方式」不受影响；默认工作区仍是 `~/Documents/codes/LazyBox`（如果存在）
