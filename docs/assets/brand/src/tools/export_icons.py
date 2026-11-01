@@ -55,7 +55,7 @@ ICO_SIZES = (16, 24, 32, 48, 64, 128, 256)
 for s in ICO_SIZES:
     job(f'{SRC}/app-icon-flat.svg', f'{TMP}/ico-{s}.png', s)
 job(f'{SRC}/app-icon-flat.svg', f'{TMP}/flat-1024.png', 1024)
-job(f'{BRAND}/logo-mark.svg', f'{TMP}/favicon.png', 100)
+job(f'{SRC}/app-icon-flat.svg', f'{TMP}/favicon.png', 100)  # 黑底白 #：浅色、深色主题下都看得清
 
 jobs_file = os.path.join(TMP, 'jobs.json')
 json.dump(jobs, open(jobs_file, 'w'))
