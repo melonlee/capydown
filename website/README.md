@@ -38,7 +38,7 @@ python3 -m http.server 8080      # 或 npx serve .
 
 ## 品牌素材
 
-`assets/favicon.svg` / `favicon-32.png` 是正脸树懒 C（小尺寸），`apple-touch-icon.png` / `icon-512.png` 是探头树懒 A，`sloth-peek.svg` 是首屏和结尾处探头的树懒（来自 `docs/assets/brand/`，由 `build_sloth.py` 生成）。
+`assets/favicon.svg` / `favicon-32.png` 是只有头部的小图标（裁到圆角方形主体），`apple-touch-icon.png` / `icon-512.png` 是完整的应用图标（树懒从底边升起，和 喵想 · FantasyAI Lab 同一家族），`sloth-peek.svg` 是首屏和结尾处从边上升起的树懒（来自 `docs/assets/brand/`，由 `build_sloth.py` 生成）。
 
 ## 更新截图
 

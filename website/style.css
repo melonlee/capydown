@@ -94,9 +94,9 @@ h1, h2, h3 { margin: 0; font-weight: 700; }
 .hero-cta { display: flex; justify-content: center; gap: 12px; margin-top: 38px; flex-wrap: wrap; }
 .hero-note { margin-top: 18px; font-size: 13px; color: var(--faint); letter-spacing: 0.02em; }
 .hero-note span + span::before { content: " · "; }
-/* the app window, with the sloth peeking over its top edge */
+/* the app window, with the sloth rising over its top edge, paws resting on it (as in the app icon); it rises from behind the window */
 .hero-stage { position: relative; margin-top: 96px; }
-.hero-stage .peek { position: absolute; right: 7%; bottom: 100%; width: 210px; height: auto; margin-bottom: -26px; z-index: 0; pointer-events: none; }
+.hero-stage .peek { position: absolute; right: 7%; bottom: 100%; width: 240px; height: auto; margin-bottom: -3px; z-index: 0; pointer-events: none; }
 .hero-shot { position: relative; z-index: 1; }
 
 /* splash-like intro: # 懒得排 (source) is "typeset" into the serif heading, then the SLOTHDOWN word */
@@ -213,7 +213,7 @@ code { font: 0.9em var(--mono); background: var(--paper-2); padding: 0.1em 0.35e
 
 /* closing */
 .closing { position: relative; overflow: hidden; padding: 200px 0 196px; text-align: center; }
-.closing-peek { position: absolute; left: 50%; bottom: 0; width: 280px; height: auto; transform: translateX(-50%); pointer-events: none; }
+.closing-peek { position: absolute; left: 50%; bottom: 0; width: 320px; height: auto; transform: translateX(-50%); pointer-events: none; }
 .closing h2 { font: 700 56px/1.3 var(--serif); letter-spacing: 0.04em; }
 .closing p { margin-top: 18px; color: var(--muted); }
 .closing .hero-cta { margin-top: 36px; }
@@ -251,8 +251,8 @@ code { font: 0.9em var(--mono); background: var(--paper-2); padding: 0.1em 0.35e
   .hero-note span { display: block; }
   .hero-note span + span::before { content: none; }
   .hero-stage { margin-top: 64px; }
-  .hero-stage .peek { width: 120px; margin-bottom: -15px; }
-  .closing-peek { width: 200px; }
+  .hero-stage .peek { width: 150px; margin-bottom: -2px; }
+  .closing-peek { width: 240px; }
   .win { border-radius: 8px; }
   .section { padding-top: 112px; }
   .section-head h2 { font-size: 32px; }
