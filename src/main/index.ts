@@ -8,6 +8,7 @@ import { initIpcMain } from './ipc'
 import { initAIIpcHandlers } from './ipc-ai'
 import { initPublishIPCHandlers } from './ipc-publish'
 import { initExportIPCHandlers } from './ipc-export'
+import { initOpenWithIPC, setupOpenWith } from './open-with-runtime'
 import { initImageIPCHandlers } from './ipc-image'
 import { initTemplateIPCHandlers } from './ipc-template'
 import { initVectorIPCHandlers } from './ipc-vector'
@@ -29,6 +30,11 @@ const BOOT_THEME_KEY = 'ui.bootTheme'
 // 端到端测试使用独立的用户数据目录，不碰真实的偏好与工作区记录
 if (process.env.LAZYBOX_E2E === '1' && process.env.LAZYBOX_USER_DATA)
   app.setPath('userData', process.env.LAZYBOX_USER_DATA)
+
+// 「用 LazyBox 打开」：尽早监听 macOS 的 open-file，并保证只有一个实例（第二个实例把文件交给第一个后退出）
+const isPrimaryInstance = setupOpenWith()
+if (!isPrimaryInstance)
+  app.quit()
 
 function bootBackground(): string {
   const saved = getStore(BOOT_THEME_KEY) as BootTheme | undefined
@@ -99,6 +105,9 @@ function createWindow(): void {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  if (!isPrimaryInstance)
+    return
+
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.lazybox')
 
@@ -161,6 +170,7 @@ app.whenReady().then(() => {
 
   initDocumentDir()
 
+  initOpenWithIPC(createWindow)
   createWindow()
 
   app.on('activate', function () {

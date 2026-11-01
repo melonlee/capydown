@@ -7,10 +7,12 @@ import { useStore, useWorkspaceStore } from '@renderer/stores'
 import { useWorkbenchStore } from '@renderer/stores/workbench'
 import { APP_DISPLAY_NAME } from '../../shared/brand'
 import { markAppReady } from './utils/boot'
+import { useOpenWith } from '@renderer/composables/useOpenWith'
 
 const store = useStore()
 const workspaceStore = useWorkspaceStore()
 const wb = useWorkbenchStore()
+const openWith = useOpenWith()
 
 // 编辑器主题（GitHub / Newsprint / Night，可跟随系统深色模式）作用于整个应用，欢迎页也一样
 watch(() => wb.effectiveTheme, (theme) => {
@@ -48,6 +50,11 @@ const handleMessageAction = (action: string, payload: any) => {
     case 'export-html':
       exportEditorContent2HTML();
       break;
+    // 系统「打开方式」/ 命令行交来的 Markdown 文件
+    case 'open-external-file':
+      if (typeof payload === 'string')
+        openWith.openExternalFile(payload);
+      break;
     case 'close-workspace':
       workspaceStore.closeCurrentWorkspace();
       break;
@@ -79,6 +86,9 @@ onMounted(async () => {
   
   // 更新窗口标题
   updateWindowTitle()
+
+  // 启动前（或页面载入期间）系统交来的文件
+  openWith.takePending()
 })
 </script>
 

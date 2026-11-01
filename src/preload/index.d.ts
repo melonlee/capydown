@@ -60,6 +60,10 @@ interface LazyBoxAPI {
   updateMenuState: (state: Record<string, unknown>) => void
   setBootTheme?: (theme: 'light' | 'paper' | 'dark') => void
 
+  // 用 LazyBox 打开：取走启动前排队的文件；判断在哪个工作区打开
+  takePendingOpenFiles: () => Promise<string[]>
+  resolveOpenTarget: (file: string, workspace?: string | null) => Promise<{ switchWorkspace: boolean; workspace: string; file: string } | null>
+
   // 导出 PDF / Word：返回导出的路径；用户取消时 canceled = true
   exportPdf: (html: string, docPath?: string, title?: string) => Promise<{ canceled?: boolean; filePath?: string; error?: string }>
   exportDocx: (markdown: string, docPath?: string, title?: string) => Promise<{ canceled?: boolean; filePath?: string; error?: string }>

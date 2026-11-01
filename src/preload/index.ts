@@ -73,6 +73,11 @@ const api = {
   setBootTheme: (theme: 'light' | 'paper' | 'dark') =>
     ipcRenderer.send('app:set-boot-theme', theme),
 
+  // 用 LazyBox 打开（系统「打开方式」/ 命令行参数）
+  takePendingOpenFiles: () => ipcRenderer.invoke('app:take-pending-open-files'),
+  resolveOpenTarget: (file: string, workspace?: string | null) =>
+    ipcRenderer.invoke('app:resolve-open-target', { file, workspace }),
+
   // 导出 PDF / Word
   exportPdf: (html: string, docPath?: string, title?: string) =>
     ipcRenderer.invoke('export:pdf', { html, docPath, title }),
