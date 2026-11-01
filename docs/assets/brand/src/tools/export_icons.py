@@ -1,11 +1,14 @@
-# 把 build_brand.py 生成的 SVG 导出为 PNG，并生成全部应用图标：
-#   docs/assets/brand/*.png            标志 / 字标 / 组合标志 / app-icon-1024.png
-#   build/icon.icns                    macOS（iconutil，16–1024 含 @2x）
-#   build/icon.ico                     Windows（16 24 32 48 64 128 256）
-#   build/icon.png, resources/icon.png Linux / 窗口图标（1024）
-#   src/renderer/src/assets/images/favicon.png  运行中提示的小标志
+# 把 build_sloth.py 生成的树懒图标导出为全部应用图标，以及品牌 PNG：
+#   build/icon.icns                    macOS（iconutil）：16 / 16@2x / 32 用小图标 C，32@2x(64) 及以上用大图标 A
+#   build/icon.ico                     Windows：16 24 32 48 用 C，64 128 256 用 A
+#   build/icons/NxN.png                Linux 图标组（electron-builder linux.icon）：≤48 用 C，其余用 A
+#   build/icon.png, resources/icon.png 大图标 A（1024，窗口图标 / 兜底）
+#   src/renderer/src/assets/images/favicon.png  启动中提示的小标志（C）
+#   docs/assets/brand/app-icon-1024.png, logo-mark*.png 以及字标 / 组合标志 PNG
+# Windows / Linux 用「无系统留白」的版本：把 viewBox 裁到圆角方形主体（100..924），图标铺满。
 # 依赖：Pillow；macOS 的 iconutil；以及 render-batch.mjs（需要能解析到 playwright-core 与本机 Chrome）。
-# 用法（仓库根目录）：LB_RENDER=/path/to/render-batch.mjs python3 docs/assets/brand/src/tools/export_icons.py
+# 用法（仓库根目录）：python3 docs/assets/brand/src/tools/build_sloth.py
+#                    LB_RENDER=/path/to/render-batch.mjs python3 docs/assets/brand/src/tools/export_icons.py
 import json
 import os
 import re
@@ -19,7 +22,19 @@ ROOT = os.getcwd()
 BRAND = os.path.join(ROOT, 'docs/assets/brand')
 SRC = os.path.join(BRAND, 'src')
 RENDER = os.environ.get('LB_RENDER', os.path.join(SRC, 'tools/render-batch.mjs'))
-TMP = tempfile.mkdtemp(prefix='lb-icons-')
+TMP = tempfile.mkdtemp(prefix='sd-icons-')
+
+LARGE = os.path.join(SRC, 'app-icon-large.svg')  # A 探头树懒
+SMALL = os.path.join(SRC, 'app-icon-small.svg')  # C 正脸树懒（小尺寸简化版）
+SMALL_MAX = 48  # Windows / Linux 不大于这个像素的图标用 C（macOS iconset 里最大的 C 是 32px）
+
+
+def flat(src):
+    """无留白版本：viewBox 裁到圆角方形主体。"""
+    text = open(src, encoding='utf-8').read().replace('viewBox="0 0 1024 1024"', 'viewBox="100 100 824 824"', 1)
+    out = os.path.join(TMP, os.path.basename(src).replace('.svg', '-flat.svg'))
+    open(out, 'w', encoding='utf-8').write(text)
+    return out
 
 
 def viewbox(path):
@@ -39,33 +54,44 @@ for name in ('logo-mark', 'logo-mark-dark'):
     job(f'{BRAND}/{name}.svg', f'{BRAND}/{name}.png', 512)
 for name in ('logo-wordmark-light', 'logo-wordmark-dark', 'logo-wordmark-zh-light', 'logo-wordmark-zh-dark',
              'logo-lockup-light', 'logo-lockup-dark'):
-    w, h = viewbox(f'{BRAND}/{name}.svg')
-    job(f'{BRAND}/{name}.svg', f'{BRAND}/{name}.png', w * 2, h * 2)
-job(f'{SRC}/app-icon.svg', f'{BRAND}/app-icon-1024.png', 1024)
+    if os.path.exists(f'{BRAND}/{name}.svg'):
+        w, h = viewbox(f'{BRAND}/{name}.svg')
+        job(f'{BRAND}/{name}.svg', f'{BRAND}/{name}.png', w * 2, h * 2)
+job(LARGE, f'{BRAND}/app-icon-1024.png', 1024)
 
 # macOS iconset：每个尺寸都直接从矢量渲染（比缩小 1024 更清晰）
 iconset = os.path.join(TMP, 'icon.iconset')
 os.makedirs(iconset)
 for base in (16, 32, 128, 256, 512):
-    job(f'{SRC}/app-icon.svg', f'{iconset}/icon_{base}x{base}.png', base)
-    job(f'{SRC}/app-icon.svg', f'{iconset}/icon_{base}x{base}@2x.png', base * 2)
+    for scale, suffix in ((1, ''), (2, '@2x')):
+        px = base * scale
+        job(SMALL if px <= 32 else LARGE, f'{iconset}/icon_{base}x{base}{suffix}.png', px)
 
 # Windows / Linux：无留白的版本
+LARGE_FLAT, SMALL_FLAT = flat(LARGE), flat(SMALL)
 ICO_SIZES = (16, 24, 32, 48, 64, 128, 256)
-for s in ICO_SIZES:
-    job(f'{SRC}/app-icon-flat.svg', f'{TMP}/ico-{s}.png', s)
-job(f'{SRC}/app-icon-flat.svg', f'{TMP}/flat-1024.png', 1024)
-job(f'{SRC}/app-icon-flat.svg', f'{TMP}/favicon.png', 100)  # 黑底白 #：浅色、深色主题下都看得清
+LINUX_SIZES = (16, 24, 32, 48, 64, 128, 256, 512, 1024)
+for s in sorted(set(ICO_SIZES + LINUX_SIZES)):
+    job(SMALL_FLAT if s <= SMALL_MAX else LARGE_FLAT, f'{TMP}/flat-{s}.png', s)
+job(SMALL_FLAT, f'{TMP}/favicon.png', 100)
 
 jobs_file = os.path.join(TMP, 'jobs.json')
 json.dump(jobs, open(jobs_file, 'w'))
 subprocess.run(['node', RENDER, jobs_file], check=True, timeout=300)
 
 subprocess.run(['iconutil', '-c', 'icns', iconset, '-o', os.path.join(ROOT, 'build/icon.icns')], check=True, timeout=60)
-imgs = [Image.open(f'{TMP}/ico-{s}.png').convert('RGBA') for s in ICO_SIZES]
+imgs = [Image.open(f'{TMP}/flat-{s}.png').convert('RGBA') for s in ICO_SIZES]
 imgs[-1].save(os.path.join(ROOT, 'build/icon.ico'), format='ICO', sizes=[(s, s) for s in ICO_SIZES], append_images=imgs[:-1])
+linux_dir = os.path.join(ROOT, 'build/icons')
+shutil.rmtree(linux_dir, ignore_errors=True)
+os.makedirs(linux_dir)
+for s in LINUX_SIZES:
+    shutil.copy(f'{TMP}/flat-{s}.png', os.path.join(linux_dir, f'{s}x{s}.png'))
 shutil.copy(f'{TMP}/flat-1024.png', os.path.join(ROOT, 'build/icon.png'))
 shutil.copy(f'{TMP}/flat-1024.png', os.path.join(ROOT, 'resources/icon.png'))
 shutil.copy(f'{TMP}/favicon.png', os.path.join(ROOT, 'src/renderer/src/assets/images/favicon.png'))
+if os.environ.get('SD_KEEP_ICONSET'):  # 留一份 iconset 供检查
+    shutil.rmtree(os.environ['SD_KEEP_ICONSET'], ignore_errors=True)
+    shutil.copytree(iconset, os.environ['SD_KEEP_ICONSET'])
 shutil.rmtree(TMP)
-print('icons: build/icon.icns build/icon.ico build/icon.png resources/icon.png favicon.png')
+print('icons: build/icon.icns build/icon.ico build/icons/ build/icon.png resources/icon.png favicon.png')

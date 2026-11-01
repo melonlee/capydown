@@ -16,5 +16,5 @@ body{margin:0;font:12px -apple-system,sans-serif;color:#888}
 const sizes=[16,32,64,128,512]
 for (const [id,f] of [['l','../logo-mark.svg'],['d','../logo-mark-dark.svg']])
   document.getElementById(id).innerHTML=sizes.map(s=>`<div><img src="${f}" width="${s}" height="${s}"><div class="cap">${s}</div></div>`).join('')
-document.getElementById('i').innerHTML=[16,32,64,128,256].map(s=>`<div><img src="app-icon.svg" width="${s}" height="${s}"><div class="cap">mac ${s}</div></div>`).join('')+[16,32,48].map(s=>`<div><img src="app-icon-flat.svg" width="${s}" height="${s}"><div class="cap">win ${s}</div></div>`).join('')
+document.getElementById('i').innerHTML=[16,32,64,128,256].map(s=>`<div><img src="app-icon-large.svg" width="${s}" height="${s}"><div class="cap">mac ${s}</div></div>`).join('')+[16,32,48].map(s=>`<div><img src="app-icon-flat.svg" width="${s}" height="${s}"><div class="cap">win ${s}</div></div>`).join('')
 </script></body></html>

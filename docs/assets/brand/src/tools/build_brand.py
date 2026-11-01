@@ -1,4 +1,5 @@
-# LazyBox · 懒排 黑白品牌：生成全部标志 SVG（标志、字标、组合标志、应用图标源文件）。
+# 旧品牌（LazyBox · 懒排）的字标与组合标志生成器。应用图标与标志已换成树懒，见 build_sloth.py；
+# 字标 / 组合标志等宣传素材待品牌宣传任务更新为「懒得排 · Slothdown」。
 #
 # 标志概念：Markdown 的「#」向右延伸，上面一横变成粗重的标题，下面一横变成标题下的细线——
 # 正是启动画面里「# 懒排」排成标题的那一刻。外框是一个方块（Box）。
@@ -23,7 +24,6 @@ from shapely.ops import unary_union
 ROOT = os.getcwd()
 BRAND = os.path.join(ROOT, 'docs/assets/brand')
 SRC = os.path.join(BRAND, 'src')
-APP_MARK = os.path.join(ROOT, 'src/renderer/src/assets/images/logo-mark.svg')
 FONT_LATIN = os.environ.get('LB_FONT_LATIN', 'Manrope.ttf')
 FONT_CJK = os.environ.get('LB_FONT_CJK', 'SourceHanSerifCN-Bold.otf')
 
@@ -165,11 +165,7 @@ def main():
     mark = mark_paths()
     note = 'LazyBox · 懒排 标志：Markdown 的 # 排成标题（粗横）与细线，装在一个方块里。由 docs/assets/brand/src/tools/build_brand.py 生成'
 
-    # 应用内标志：只用 currentColor（内联时跟随文字颜色，夜间主题自动反白）
-    write(APP_MARK, svg(64, 64, f'  <path fill="currentColor" fill-rule="evenodd" d="{mark}"/>', note))
-    for name, color in (('logo-mark', INK), ('logo-mark-dark', PAPER)):
-        write(os.path.join(BRAND, f'{name}.svg'),
-              svg(64, 64, f'  <path fill="{color}" fill-rule="evenodd" d="{mark}"/>', note))
+    # 应用内标志、logo-mark*.svg 与应用图标源文件已改由 build_sloth.py（树懒）生成，这里只生成字标与组合标志。
 
     # 字标：LazyBox（Manrope）与 懒排（思源宋体，和启动画面的宋体标题呼应）
     d, b = latin(200)
@@ -202,42 +198,6 @@ def main():
             f'  <path fill="{color}" transform="translate(0 {num(zh_dy)})" d="{zh_d}"/>',
         ])
         write(os.path.join(BRAND, f'logo-lockup-{suffix}.svg'), svg(W, M, body, 'LazyBox · 懒排 组合标志（已转曲）'))
-
-    # 应用图标（macOS 网格：1024 画布，824 圆角方形主体，柔和投影）。黑底白 #：在 Dock 里与 Typora 的白色图标区分开。
-    hs = 824 / 56 * 0.87  # # 在图标里略收小，留出更从容的边距
-    hx = 512 - 32 * hs
-    defs = '''  <defs>
-    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#262626"/>
-      <stop offset="1" stop-color="#0E0E0E"/>
-    </linearGradient>
-    <linearGradient id="edge" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.22"/>
-      <stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0.06"/>
-      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.10"/>
-    </linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000" flood-opacity="0.30"/>
-      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.18"/>
-    </filter>
-  </defs>'''
-    body_mac = squircle(512, 512, 824, k=24)
-    write(os.path.join(SRC, 'app-icon.svg'), svg(1024, 1024, '\n'.join([
-        defs,
-        f'  <path fill="url(#body)" filter="url(#shadow)" d="{body_mac}"/>',
-        f'  <path fill="none" stroke="url(#edge)" stroke-width="3" d="{squircle(512, 512, 821)}"/>',
-        f'  <path fill="#FAFAFA" d="{poly_path(HASH, hs, hx, hx)}"/>',
-    ]), 'macOS 应用图标源文件（1024 网格，主体 824）。由 build_brand.py 生成'))
-
-    # Windows / Linux 图标：无系统留白，直接用标志比例（小尺寸也清楚）
-    fs = 1024 / 64
-    write(os.path.join(SRC, 'app-icon-flat.svg'), svg(1024, 1024, '\n'.join([
-        defs.split('<filter')[0].rstrip() + '\n  </defs>',
-        f'  <path fill="url(#body)" d="{squircle(512, 512, 56 * fs)}"/>',
-        f'  <path fill="none" stroke="url(#edge)" stroke-width="3" d="{squircle(512, 512, 56 * fs - 3)}"/>',
-        f'  <path fill="#FAFAFA" d="{poly_path(HASH, fs)}"/>',
-    ]), 'Windows / Linux 应用图标源文件。由 build_brand.py 生成'))
-
 
 if __name__ == '__main__':
     main()
