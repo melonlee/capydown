@@ -38,14 +38,14 @@ function mainWindow(): BrowserWindow | undefined {
   return BrowserWindow.getAllWindows().find(w => !w.isDestroyed())
 }
 
-function focus(win: BrowserWindow) {
+function focus(win: BrowserWindow): void {
   if (win.isMinimized())
     win.restore()
   win.show()
   win.focus()
 }
 
-export function requestOpenFile(file: string) {
+export function requestOpenFile(file: string): void {
   if (!isMarkdownPath(file) || !isFile(file))
     return
   console.log('[open-with] open', file)
@@ -97,7 +97,7 @@ export function setupOpenWith(): boolean {
 }
 
 /** ready 之后调用：注册 IPC，记住创建窗口的方法 */
-export function initOpenWithIPC(create: () => void) {
+export function initOpenWithIPC(create: () => void): void {
   createWindow = create
 
   ipcMain.handle('app:take-pending-open-files', (event) => {

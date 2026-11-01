@@ -18,7 +18,7 @@ async function waitFor(check: () => boolean, timeout = 10000): Promise<boolean> 
   return true
 }
 
-export function useOpenWith() {
+export function useOpenWith(): { openExternalFile: (file: string) => Promise<void>, takePending: () => Promise<void> } {
   const store = useStore()
   const workspace = useWorkspaceStore()
   const fileTree = useFileTreeStore()
@@ -27,7 +27,7 @@ export function useOpenWith() {
 
   let queue = Promise.resolve()
 
-  async function open(file: string) {
+  async function open(file: string): Promise<void> {
     const target = await window.$api.resolveOpenTarget(file, workspace.currentWorkspace?.path ?? null)
     if (!target) {
       toast.error(`无法打开：${file}`)
@@ -53,14 +53,14 @@ export function useOpenWith() {
   }
 
   /** 依次处理，避免同时打开多个文件时互相打断 */
-  function openExternalFile(file: string) {
+  function openExternalFile(file: string): Promise<void> {
     queue = queue.then(() => open(file)).catch((e) => {
       console.error('[open-with]', e)
     })
     return queue
   }
 
-  async function takePending() {
+  async function takePending(): Promise<void> {
     const files: string[] = await window.$api.takePendingOpenFiles?.() ?? []
     for (const f of files)
       openExternalFile(f)

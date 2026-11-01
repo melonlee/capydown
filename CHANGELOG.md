@@ -2,6 +2,19 @@
 
 本项目遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.3.0] - 未发布
+
+### 导出
+
+- **导出 PDF**（文件 → 导出 → PDF…）：按当前编辑器主题排版（GitHub / Newsprint；Night 导出为浅色），A4、页脚页码；灰阶代码高亮、表格、任务列表、本地图片（相对路径按文章所在文件夹解析）、Mermaid 图表；标题不落在页尾，代码块和图片不跨页断开
+- **导出 Word (.docx)**（文件 → 导出 → Word…）：标题样式、粗体 / 斜体 / 删除线 / 行内代码、链接、嵌套的有序 / 无序 / 任务列表、引用、带底纹的代码块、带表头的表格、分割线；本地与网络图片嵌入并按页宽缩放，加载失败时以占位文字代替；中文使用宋体 / 黑体
+- 两种导出的默认位置都是文章所在文件夹、与文章同名，完成后可「在访达中显示」；命令面板里搜「导出」即可
+
+### 打开方式
+
+- 安装后登记为 `.md` / `.markdown` / `.mdown` / `.mkd` / `.mkdn` 的打开方式：macOS 访达右键 → 打开方式 → LazyBox（不抢默认应用），Windows「打开方式 → 选择其他应用」，Linux 登记 `text/markdown`
+- 文件在当前工作区内直接打开，否则把它所在的文件夹作为工作区打开；应用已运行时交给已有窗口（单实例）；打开文件不会改动文件
+
 ## [0.2.0] - 2026-11-01
 
 这一版把 LazyBox 改造成「LazyBox · 懒排」：一个以 Typora 为参照、黑白极简的 Markdown 写作工具，公众号排版收进一个面板，AI 只留发布前用得上的两件事。
@@ -77,5 +90,6 @@
 - 图床上传：GitHub、阿里云 OSS、腾讯云 COS、七牛云、MinIO、Cloudflare R2 等
 - 一键复制为公众号格式或 HTML，导出 Markdown / HTML
 
-[0.2.0]: https://github.com/melonlee/LazyBox/compare/v0.1.0...HEAD
+[0.3.0]: https://github.com/melonlee/LazyBox/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/melonlee/LazyBox/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/melonlee/LazyBox/releases/tag/v0.1.0

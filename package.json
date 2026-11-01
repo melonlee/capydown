@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "lazybox",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "给公众号作者的 Markdown 桌面编辑器：本地写作、主题排版、图床上传、一键复制到公众号",
   "main": "./out/main/index.cjs",
   "author": "melonlee",

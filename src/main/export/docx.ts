@@ -86,7 +86,9 @@ export function resolveImagePath(src: string, baseDir: string): string | null {
   try {
     p = decodeURI(p)
   }
-  catch {}
+  catch {
+    // 不是合法的 URI 编码，按原样使用
+  }
   p = p.replace(/[?#].*$/, '')
   return path.isAbsolute(p) ? p : path.join(baseDir, p)
 }
@@ -241,7 +243,7 @@ interface BlockOpts {
 
 const HEADINGS = [HeadingLevel.HEADING_1, HeadingLevel.HEADING_2, HeadingLevel.HEADING_3, HeadingLevel.HEADING_4, HeadingLevel.HEADING_5, HeadingLevel.HEADING_6]
 
-function quoteBorder(o: BlockOpts) {
+function quoteBorder(o: BlockOpts): { left: { style: typeof BorderStyle.SINGLE, size: number, color: string, space: number } } | undefined {
   return o.quote > 0 ? { left: { style: BorderStyle.SINGLE, size: 18, color: COLOR.border, space: 10 } } : undefined
 }
 
@@ -276,9 +278,9 @@ function codeBlock(code: string, o: BlockOpts): Paragraph {
 function table(t: Tokens.Table, o: BlockOpts, ctx: Ctx): Table {
   const cols = Math.max(1, t.header.length)
   const width = Math.floor((CONTENT_WIDTH_TWIPS - o.indent) / cols)
-  const align = (a: string | null) => a === 'center' ? AlignmentType.CENTER : a === 'right' ? AlignmentType.RIGHT : AlignmentType.LEFT
+  const align = (a: string | null): (typeof AlignmentType)[keyof typeof AlignmentType] => a === 'center' ? AlignmentType.CENTER : a === 'right' ? AlignmentType.RIGHT : AlignmentType.LEFT
   const border = { style: BorderStyle.SINGLE, size: 4, color: 'CCCCCC' }
-  const cell = (c: Tokens.TableCell, i: number, header: boolean) => new TableCell({
+  const cell = (c: Tokens.TableCell, i: number, header: boolean): TableCell => new TableCell({
     width: { size: width, type: WidthType.DXA },
     shading: header ? { type: ShadingType.CLEAR, fill: COLOR.headerBg, color: 'auto' } : undefined,
     margins: { top: 60, bottom: 60, left: 100, right: 100 },
@@ -407,7 +409,7 @@ export function blocks(tokens: Token[], o: BlockOpts, ctx: Ctx): Block[] {
 
 // ---------------------------------------------------------------------------- 文档
 
-const FRONT_MATTER = /^﻿?---\r?\n[\s\S]*?\r?\n---\r?\n?/
+const FRONT_MATTER = /^\uFEFF?---\r?\n[\s\S]*?\r?\n---\r?\n?/
 
 function collectImageSources(tokens: Token[]): string[] {
   const set = new Set<string>()
@@ -418,7 +420,7 @@ function collectImageSources(tokens: Token[]): string[] {
   return [...set]
 }
 
-function walk(tokens: Token[], cb: (t: Token) => void) {
+function walk(tokens: Token[], cb: (t: Token) => void): void {
   for (const t of tokens) {
     cb(t)
     if (t.type === 'table') {
@@ -439,7 +441,7 @@ function walk(tokens: Token[], cb: (t: Token) => void) {
   }
 }
 
-function headingStyle(sizeHalfPt: number, before: number, after: number) {
+function headingStyle(sizeHalfPt: number, before: number, after: number): { run: object, paragraph: object } {
   return {
     run: { font: FONTS.heading, size: sizeHalfPt, bold: true, color: COLOR.strong },
     paragraph: { spacing: { before, after, line: 300 }, keepNext: true, keepLines: true },

@@ -55,7 +55,7 @@ export interface OpenTarget {
 function relativeInside(child: string, parent: string, caseInsensitive: boolean): string | null {
   const c = path.resolve(child)
   const p = path.resolve(parent)
-  const norm = (x: string) => caseInsensitive ? x.toLowerCase() : x
+  const norm = (x: string): string => caseInsensitive ? x.toLowerCase() : x
   const rel = path.relative(norm(p), norm(c))
   if (!rel || rel.startsWith('..') || path.isAbsolute(rel))
     return null

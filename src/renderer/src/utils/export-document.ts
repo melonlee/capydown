@@ -11,9 +11,9 @@ import { loadLocalImage } from './local-image'
 
 export type PrintTheme = 'github' | 'newsprint'
 
-const FRONT_MATTER = /^﻿?---\r?\n[\s\S]*?\r?\n---\r?\n?/
+const FRONT_MATTER = /^\uFEFF?---\r?\n[\s\S]*?\r?\n---\r?\n?/
 
-function escapeHtml(s: string) {
+function escapeHtml(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
 
@@ -130,7 +130,9 @@ export async function buildPrintHtml(opts: PrintDocumentOptions): Promise<string
         return
       }
     }
-    catch {}
+    catch {
+      // 读取失败：下面换成占位文字
+    }
     const span = doc.createElement('span')
     span.className = 'lb-missing-image'
     span.textContent = `[图片无法加载：${img.getAttribute('alt') || src}]`

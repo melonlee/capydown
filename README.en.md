@@ -54,6 +54,8 @@ So LazyBox does three things: writing that feels close to Typora, 公众号 form
 - **Quick open** `⌘P` and a **command palette** `⇧⌘P` covering every menu command
 - **Editor themes**: GitHub, Newsprint and Night, optionally following the system dark mode
 - **Images**: pasted or dropped images are saved to an `assets/` folder next to the document with a relative path; if an image host is configured they are uploaded instead
+- **Export to PDF / Word**: PDF follows the editor theme (code highlighting, tables, local images, Mermaid); Word keeps headings, lists, tables and code blocks and embeds images
+- **Open with LazyBox**: after installing, right-click any `.md` file → Open With → LazyBox (it does not take over the default app)
 
 <table>
   <tr>
