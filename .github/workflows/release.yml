@@ -65,10 +65,13 @@ jobs:
         if: runner.os == 'macOS'
         shell: bash
         run: |
+          # 拷到项目目录之外再加载：否则 Node 会向上找到项目自己的 node_modules，掩盖安装包里缺失的依赖
           APP=$(ls -d dist/mac*/LazyBox.app | head -1)
-          npx electron "$APP/Contents/Resources/app.asar" > smoke.log 2>&1 &
+          cp -R "$APP" "$RUNNER_TEMP/LazyBox.app"
+          npx electron "$RUNNER_TEMP/LazyBox.app/Contents/Resources/app.asar" > smoke.log 2>&1 &
           PID=$!
           sleep 20
           kill $PID 2>/dev/null || true
           cat smoke.log
-          if grep -E -q "App threw an error|Cannot find module" smoke.log; then exit 1; fi
+          if grep -E -q "App threw an error|Cannot find module|ERR_REQUIRE_ESM" smoke.log; then exit 1; fi
+          grep -q "AI IPC handlers initialized" smoke.log

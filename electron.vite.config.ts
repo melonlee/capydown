@@ -3,7 +3,9 @@ import doocsViteConfig from './doocs.vite.config';
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()],
+    // 主进程的第三方依赖直接打进 out/main/index.cjs：electron-builder 在 pnpm 项目里会漏打间接依赖
+    // （如 electron-store → conf），打包后的应用会因 Cannot find module 而无法启动
+    plugins: [externalizeDepsPlugin({ exclude: ['electron-store', '@anthropic-ai/sdk', '@electron-toolkit/utils'] })],
     build: {
       rollupOptions: {
         input: {
