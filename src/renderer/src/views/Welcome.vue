@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useWorkspaceStore } from '@renderer/stores'
 import BrandMark from '@renderer/components/brand/BrandMark.vue'
+import wordmarkSvg from '@renderer/assets/images/logo-wordmark.svg?raw'
 import { Edit2, ExternalLink, FolderOpen, FolderPlus, MoreHorizontal, Trash2 } from 'lucide-vue-next'
 import type { Workspace } from '@renderer/types'
 import { APP_NAME, APP_TAGLINE } from '../../../shared/brand'
@@ -122,8 +123,11 @@ const openInFinder = async (workspace: Workspace) => {
 
     <main class="lb-welcome-main">
       <header class="lb-welcome-brand">
-        <BrandMark class="lb-welcome-logo" />
-        <h1 class="lb-welcome-word">{{ APP_NAME }}</h1>
+        <!-- 组合标志：树懒标志 + Slothdown 字标（和启动画面同一个组合，淡出后无缝衔接） -->
+        <h1 class="lb-welcome-lockup" :aria-label="APP_NAME">
+          <BrandMark class="lb-welcome-logo" />
+          <span class="lb-welcome-word" aria-hidden="true" v-html="wordmarkSvg" />
+        </h1>
         <p>{{ APP_TAGLINE }}</p>
       </header>
 
@@ -288,24 +292,34 @@ const openInFinder = async (workspace: Workspace) => {
   margin-bottom: 36px;
 }
 
-.lb-welcome-logo {
-  width: 52px;
-  height: 52px;
-  margin: 0 auto 18px;
+.lb-welcome-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
   color: var(--lb-fg-strong);
   user-select: none;
 }
 
-/* 名字只有 Slothdown：Manrope 风格的几何无衬线字标，和启动画面一致 */
+.lb-welcome-logo {
+  width: 46px;
+  height: 46px;
+}
+
+/* 字标是转曲的 SVG（Manrope），只用 currentColor：夜间主题自动反白 */
 .lb-welcome-word {
-  margin: 0;
-  font: 700 30px/1.15 'Manrope', 'Avenir Next', 'Helvetica Neue', 'Segoe UI', system-ui, sans-serif;
-  letter-spacing: -0.02em;
-  color: var(--lb-fg-strong);
+  display: inline-flex;
+  height: 28px;
+  line-height: 0;
+}
+
+.lb-welcome-word :deep(svg) {
+  height: 100%;
+  width: auto;
 }
 
 .lb-welcome-brand p {
-  margin: 12px 0 0;
+  margin: 14px 0 0;
   font-size: 14px;
   color: var(--lb-muted);
 }
