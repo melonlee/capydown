@@ -27,6 +27,7 @@
     "@anthropic-ai/sdk": "^0.74.0",
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
+    "docx": "^9.15.1",
     "electron-store": "^8.2.0",
     "electron-updater": "^6.3.9",
     "path-browserify": "^1.0.1"
