@@ -66,7 +66,9 @@ jobs:
       - name: Check packaged app bundle
         shell: bash
         run: |
-          ASAR=$(ls dist/*/resources/app.asar dist/mac*/*.app/Contents/Resources/app.asar 2>/dev/null | head -1)
+          # find instead of ls globs: the job shell runs with -e -o pipefail, so an unmatched glob would abort it
+          ASAR=$(find dist \( -path '*/resources/app.asar' -o -path '*/Resources/app.asar' \) -print -quit)
+          [ -n "$ASAR" ] || { echo "app.asar not found under dist/"; exit 1; }
           echo "checking $ASAR"
           npx --yes @electron/asar extract "$ASAR" "$RUNNER_TEMP/app"
           ELECTRON_RUN_AS_NODE=1 "$(node -p "require('electron')")" scripts/ci/check-bundle.mjs "$RUNNER_TEMP/app"
