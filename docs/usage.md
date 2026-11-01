@@ -192,7 +192,7 @@ AI 是可选的，不配置也不影响其它功能。它只做两件事：
 
 ## 快捷键
 
-macOS 下的 `⌘` 在 Windows / Linux 上是 `Ctrl`，`⌥` 是 `Alt`，`⌃` 是 `Ctrl`（`⌃⌘` 组合在 Windows / Linux 上即 `Ctrl`）。菜单里显示的快捷键与实际生效的一致。
+macOS 下的 `⌘` 在 Windows / Linux 上是 `Ctrl`，`⌥` 是 `Alt`。少数 `⌃⌘` 组合在 Windows / Linux 上换成了不冲突的按键（见下表）。菜单里显示的快捷键与实际生效的一致。
 
 ### 文件
 
@@ -237,9 +237,7 @@ macOS 下的 `⌘` 在 Windows / Linux 上是 `Ctrl`，`⌥` 是 `Alt`，`⌃` �
 | 删除线 | `⌘D` | `Ctrl+D` |
 | 行内代码 | `⌘E` | `Ctrl+E` |
 | 超链接 | `⌥⌘K` | `Ctrl+Alt+K` |
-| 插入图片 | `⌃⌘I` | `Ctrl+I`* |
-
-\* Windows / Linux 上 `⌃⌘I` 与斜体都落在 `Ctrl+I`，请用菜单「格式 → 插入图片…」。
+| 插入图片 | `⌃⌘I` | `Ctrl+Alt+I` |
 
 ### 视图与公众号
 
@@ -247,14 +245,12 @@ macOS 下的 `⌘` 在 Windows / Linux 上是 `Ctrl`，`⌥` 是 `Alt`，`⌃` �
 | --- | --- | --- |
 | 源代码模式 | `⌘/` | `Ctrl+/` |
 | 显示 / 隐藏侧边栏 | `⇧⌘L` | `Ctrl+Shift+L` |
-| 大纲 | `⌃⌘1` | `Ctrl+1`* |
-| 文件 | `⌃⌘3` | `Ctrl+3`* |
+| 大纲 | `⌃⌘1` | `Ctrl+Shift+1` |
+| 文件 | `⌃⌘3` | `Ctrl+Shift+3` |
 | 专注模式 | `F8` | `F8` |
 | 打字机模式 | `F9` | `F9` |
 | 公众号预览 | `⌥⌘P` | `Ctrl+Alt+P` |
 | 复制到公众号 | `⇧⌘C` | `Ctrl+Shift+C` |
-
-\* 与标题快捷键重叠，Windows / Linux 上请用菜单「视图」或侧边栏顶部切换。
 
 ## 已知差距
 

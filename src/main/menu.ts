@@ -1,6 +1,6 @@
 import { app, BrowserWindow, Menu, type MenuItemConstructorOptions, shell } from 'electron'
 import { APP_DISPLAY_NAME } from '../shared/brand'
-import { COMMAND_MAP, type MenuState } from '../shared/commands'
+import { acceleratorFor, COMMAND_MAP, type MenuState } from '../shared/commands'
 
 /**
  * Typora 式原生菜单：文件 / 编辑 / 段落 / 格式 / 视图 / 主题 / 窗口 / 帮助。
@@ -31,7 +31,7 @@ function cmd(id: string, extra: Partial<MenuItemConstructorOptions> = {}): MenuI
   const c = COMMAND_MAP[id]
   return {
     label: c?.label ?? id,
-    accelerator: c?.accelerator,
+    accelerator: c ? acceleratorFor(c, isMac) : undefined,
     click: () => send(id),
     ...extra,
   }

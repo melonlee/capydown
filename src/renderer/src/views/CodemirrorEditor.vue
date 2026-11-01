@@ -37,7 +37,7 @@ import mermaid from 'mermaid'
 import * as path from 'path-browserify'
 import { APP_DISPLAY_NAME } from '../../../shared/brand'
 import { markAppReady } from '@renderer/utils/boot'
-import { APP_COMMANDS, COMMAND_MAP, formatAccelerator, matchShortcut, parseAccelerator } from '../../../shared/commands'
+import { acceleratorFor, APP_COMMANDS, COMMAND_MAP, formatAccelerator, matchShortcut, parseAccelerator } from '../../../shared/commands'
 
 const store = useStore()
 const display = useDisplayStore()
@@ -331,7 +331,7 @@ const paletteCommands = computed<PaletteItem[]>(() => APP_COMMANDS
     id: c.id,
     label: c.label,
     group: c.category,
-    shortcut: c.accelerator ? formatAccelerator(c.accelerator, isMac) : undefined,
+    shortcut: acceleratorFor(c, isMac) ? formatAccelerator(acceleratorFor(c, isMac)!, isMac) : undefined,
   })))
 
 function onPaletteRun(id: string) {
@@ -467,7 +467,7 @@ function runCommand(id: string) {
 }
 
 // 快捷键：在捕获阶段统一处理，阻止默认行为后菜单不会再重复触发
-const SHORTCUTS = APP_COMMANDS.filter(c => c.accelerator).map(c => ({ id: c.id, spec: parseAccelerator(c.accelerator!) }))
+const SHORTCUTS = APP_COMMANDS.filter(c => acceleratorFor(c, isMac)).map(c => ({ id: c.id, spec: parseAccelerator(acceleratorFor(c, isMac)!) }))
 const lastHandled = new Map<string, number>()
 
 function onKeydown(e: KeyboardEvent) {

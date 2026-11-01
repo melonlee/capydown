@@ -12,6 +12,8 @@ export interface AppCommand {
   label: string
   category: CommandCategory
   accelerator?: string
+  /** Windows / Linux 专用快捷键；mac 的 ⌃⌘ 组合在这两个平台会塌缩成 Ctrl，与标题、斜体冲突 */
+  acceleratorOther?: string
   /** 是否出现在命令面板里（默认 true） */
   palette?: boolean
   /** 需要编辑器获得焦点（或至少存在）才执行的编辑类命令 */
@@ -59,14 +61,14 @@ export const APP_COMMANDS: AppCommand[] = [
   { id: 'fmt.strike', label: '删除线', category: '格式', accelerator: 'CmdOrCtrl+D', editor: true },
   { id: 'fmt.code', label: '行内代码', category: '格式', accelerator: 'CmdOrCtrl+E', editor: true },
   { id: 'fmt.link', label: '超链接', category: '格式', accelerator: 'Alt+CmdOrCtrl+K', editor: true },
-  { id: 'fmt.image', label: '插入图片…', category: '格式', accelerator: 'Ctrl+CmdOrCtrl+I', editor: true },
+  { id: 'fmt.image', label: '插入图片…', category: '格式', accelerator: 'Ctrl+CmdOrCtrl+I', acceleratorOther: 'Alt+CmdOrCtrl+I', editor: true },
   { id: 'fmt.uploadImage', label: '上传图片…', category: '格式' },
 
   // 视图
   { id: 'view.sourceMode', label: '源代码模式', category: '视图', accelerator: 'CmdOrCtrl+/' },
   { id: 'view.sidebar', label: '显示 / 隐藏侧边栏', category: '视图', accelerator: 'Shift+CmdOrCtrl+L' },
-  { id: 'view.outline', label: '大纲', category: '视图', accelerator: 'Ctrl+CmdOrCtrl+1' },
-  { id: 'view.files', label: '文件', category: '视图', accelerator: 'Ctrl+CmdOrCtrl+3' },
+  { id: 'view.outline', label: '大纲', category: '视图', accelerator: 'Ctrl+CmdOrCtrl+1', acceleratorOther: 'Shift+CmdOrCtrl+1' },
+  { id: 'view.files', label: '文件', category: '视图', accelerator: 'Ctrl+CmdOrCtrl+3', acceleratorOther: 'Shift+CmdOrCtrl+3' },
   { id: 'view.focus', label: '专注模式', category: '视图', accelerator: 'F8' },
   { id: 'view.typewriter', label: '打字机模式', category: '视图', accelerator: 'F9' },
   { id: 'view.statusBar', label: '显示 / 隐藏状态栏', category: '视图' },
@@ -88,6 +90,10 @@ export const APP_COMMANDS: AppCommand[] = [
 ]
 
 export const COMMAND_MAP: Record<string, AppCommand> = Object.fromEntries(APP_COMMANDS.map(c => [c.id, c]))
+
+export function acceleratorFor(c: AppCommand, isMac: boolean): string | undefined {
+  return isMac ? c.accelerator : (c.acceleratorOther ?? c.accelerator)
+}
 
 /** 菜单状态（勾选项），由渲染进程推送给主进程 */
 export interface MenuState {
