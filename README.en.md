@@ -1,45 +1,45 @@
 <div align="center">
 
-<img src="docs/assets/brand/banner.png" alt="Slothdown — write with Typora-like calm, format for WeChat in one click." width="100%">
+<img src="docs/assets/brand/banner.png" alt="Capydown — write with Typora-like calm, format for WeChat in one click." width="100%">
 
-<p><b>Slothdown</b> is a desktop Markdown editor for WeChat Official Account (公众号) writers:<br>write with Typora-like calm, format for 公众号 in one click, and let AI proofread before you publish.</p>
+<p><b>Capydown</b> is a desktop Markdown editor for WeChat Official Account (公众号) writers:<br>write with Typora-like calm, format for 公众号 in one click, and let AI proofread before you publish.</p>
 
-[![CI](https://img.shields.io/github/actions/workflow/status/melonlee/slothdown/ci.yml?style=flat-square&label=CI&color=111111)](https://github.com/melonlee/slothdown/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/melonlee/slothdown?style=flat-square&color=111111)](https://github.com/melonlee/slothdown/releases)
-[![License](https://img.shields.io/github/license/melonlee/slothdown?style=flat-square&color=111111)](./LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/melonlee/capydown/ci.yml?style=flat-square&label=CI&color=111111)](https://github.com/melonlee/capydown/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/melonlee/capydown?style=flat-square&color=111111)](https://github.com/melonlee/capydown/releases)
+[![License](https://img.shields.io/github/license/melonlee/capydown?style=flat-square&color=111111)](./LICENSE)
 [![Platform](https://img.shields.io/badge/platform-macOS%20%C2%B7%20Windows%20%C2%B7%20Linux-111111?style=flat-square)](#download)
 
-[简体中文](./README.md) · **English** · [Website](https://melonlee.github.io/slothdown/) · [Download](https://github.com/melonlee/slothdown/releases) · [User guide (zh)](./docs/usage.md) · [Changelog](./CHANGELOG.md) · [Roadmap](./docs/ROADMAP.md)
+[简体中文](./README.md) · **English** · [Website](https://melonlee.github.io/capydown/) · [Download](https://github.com/melonlee/capydown/releases) · [User guide (zh)](./docs/usage.md) · [Changelog](./CHANGELOG.md) · [Roadmap](./docs/ROADMAP.md)
 
 </div>
 
 > [!NOTE]
-> **Formerly LazyBox.** Renamed in v0.3.0. Existing users just install the new version: on first launch your preferences, AI settings and workspace list are copied over automatically (the old data is left untouched), and your articles stay in your own folders.
+> **Formerly LazyBox / Slothdown.** Renamed to Capydown in v0.4.0. Existing users just install the new version: on first launch the preferences, AI settings and workspace list of your previous version (Slothdown, or the older LazyBox) are copied over automatically (the old data is left untouched), and your articles stay in your own folders.
 
 **About the name**
 
-- **Slothdown** — Markdown with a sloth, and *slow down*: calm, focused writing.
-- Chinese slogan **懒得排版？交给树懒。** ("Too lazy to format? Leave it to the sloth.") — you write, it formats.
+- **Capydown** — Capybara + Markdown. Capybaras are famous for staying calm about everything, which is exactly the mood for focused writing.
+- Slogan: **Stay calm and write. Capydown does the formatting.** (Chinese: 淡定地写，排版交给卡皮巴拉。)
 
-<img src="docs/assets/screenshots/01-writing.png" alt="Slothdown writing view with live preview" width="100%">
+<img src="docs/assets/screenshots/01-writing.png" alt="Capydown writing view with live preview" width="100%">
 
-> The UI is in Chinese, since Slothdown is built for writers publishing on WeChat.
+> The UI is in Chinese, since Capydown is built for writers publishing on WeChat.
 
 ## Download
 
-Get the latest build from **[GitHub Releases](https://github.com/melonlee/slothdown/releases)**.
+Get the latest build from **[GitHub Releases](https://github.com/melonlee/capydown/releases)**.
 
 | OS | Package | Notes |
 | --- | --- | --- |
-| macOS (Apple silicon / Intel) | `Slothdown-<version>-mac-arm64.dmg` / `-mac-x64.dmg` | Primary development and test platform |
-| Windows 10 / 11 | `Slothdown-<version>-win-x64-setup.exe` | Built automatically with each release; lightly tested |
-| Linux | `Slothdown-<version>-linux-<arch>.AppImage` / `.deb` | Built automatically with each release; lightly tested |
+| macOS (Apple silicon / Intel) | `Capydown-<version>-mac-arm64.dmg` / `-mac-x64.dmg` | Primary development and test platform |
+| Windows 10 / 11 | `Capydown-<version>-win-x64-setup.exe` | Built automatically with each release; lightly tested |
+| Linux | `Capydown-<version>-linux-<arch>.AppImage` / `.deb` | Built automatically with each release; lightly tested |
 
 > [!IMPORTANT]
 > The macOS build is **not signed or notarized** yet. If macOS says the app is "damaged" or from an unidentified developer, move it to Applications and run:
 >
 > ```bash
-> xattr -cr /Applications/Slothdown.app
+> xattr -cr /Applications/Capydown.app
 > ```
 
 ## Why
@@ -48,7 +48,7 @@ Get the latest build from **[GitHub Releases](https://github.com/melonlee/slothd
 
 And once an article is published, WeChat lets you change **at most 20 characters** of the body. A typo that ships stays shipped.
 
-So Slothdown does three things: writing that feels close to Typora, 公众号 formatting tucked into one panel, and an AI proofread right before you hit publish. The interface is strictly black and white — colour is left to your article.
+So Capydown does three things: writing that feels close to Typora, 公众号 formatting tucked into one panel, and an AI proofread right before you hit publish. The interface is strictly black and white — colour is left to your article.
 
 <img src="docs/assets/brand/workflow.png" alt="Write → proofread → format → copy to 公众号 / export PDF · Word" width="100%">
 
@@ -116,9 +116,9 @@ No permanent toolbar, but the common actions are at hand. They all run the same 
   </tr>
 </table>
 
-## Open with Slothdown <sup>v0.3.0</sup>
+## Open with Capydown <sup>v0.3.0</sup>
 
-After installing, Slothdown registers as an "Open With" handler for `.md`, `.markdown` and friends without taking over the default app: right-click a file → Open With → Slothdown (Windows: "Open with → Choose another app"; Linux registers `text/markdown`). A file inside the current workspace opens directly; otherwise its folder opens as the workspace. If the app is already running, the existing window takes it. Opening never modifies the file.
+After installing, Capydown registers as an "Open With" handler for `.md`, `.markdown` and friends without taking over the default app: right-click a file → Open With → Capydown (Windows: "Open with → Choose another app"; Linux registers `text/markdown`). A file inside the current workspace opens directly; otherwise its folder opens as the workspace. If the app is already running, the existing window takes it. Opening never modifies the file.
 
 ## Two AI helpers
 
@@ -144,7 +144,7 @@ AI does exactly two things, both right before publishing. It is off until you br
 3. **API key** and **model**, e.g. `deepseek-chat`, `qwen-plus`, `claude-sonnet-4-6`
 4. Click **Test connection**, then save
 
-> **Privacy**: article text is sent to your provider only when you start a proofread or ask for titles. Slothdown has no server of its own and never sees your text or key.
+> **Privacy**: article text is sent to your provider only when you start a proofread or ask for titles. Capydown has no server of its own and never sees your text or key.
 
 ## Local first
 
@@ -169,7 +169,7 @@ AI does exactly two things, both right before publishing. It is off until you br
 
 ## Known gaps
 
-Slothdown is Typora-style, not Typora:
+Capydown is Typora-style, not Typora:
 
 - Tables are edited as Markdown source when the cursor enters them
 - Math and HTML blocks are shown as source, not rendered
@@ -180,15 +180,15 @@ Slothdown is Typora-style, not Typora:
 
 ## FAQ
 
-**I use LazyBox — what do I need to do?** Nothing. LazyBox is Slothdown's old name. On first launch the new version copies your old preferences, AI settings and workspace list into its new profile (the old one is kept). Your articles live in your own folders and are unaffected. Once everything looks right you can delete the old `LazyBox.app`.
+**I use Slothdown or LazyBox — what do I need to do?** Nothing. Both are Capydown's old names. On first launch the new version copies the preferences, AI settings and workspace list of your most recent old version (Slothdown first, otherwise LazyBox) into its new profile (the old one is kept). Your articles live in your own folders and are unaffected, and the default workspace keeps its old folder. Once everything looks right you can delete the old `Slothdown.app` / `LazyBox.app`.
 
-**Is this affiliated with Typora?** No. Slothdown is an independent open-source project that uses Typora as its reference for the writing experience.
+**Is this affiliated with Typora?** No. Capydown is an independent open-source project that uses Typora as its reference for the writing experience.
 
 **Images disappear after pasting into WeChat?** WeChat cannot read files on your computer. Re-upload them in the backend, or configure an image host (GitHub, Aliyun OSS, Tencent COS, Qiniu, MinIO, Cloudflare R2 …) so new images are uploaded on paste.
 
 **Do I need AI?** No. Writing, formatting, copying and PDF / Word export work without it.
 
-**How is it different from doocs/md?** The 公众号 formatting comes from [doocs/md](https://github.com/doocs/md). Slothdown wraps it in a local-first desktop editor with live preview, workspaces, pre-publish proofreading and PDF / Word export.
+**How is it different from doocs/md?** The 公众号 formatting comes from [doocs/md](https://github.com/doocs/md). Capydown wraps it in a local-first desktop editor with live preview, workspaces, pre-publish proofreading and PDF / Word export.
 
 ## Roadmap
 
@@ -206,7 +206,7 @@ pnpm test         # unit tests (Vitest)
 pnpm build:mac    # package; also build:win / build:linux
 ```
 
-Stack: Electron · Vue 3 · electron-vite · TypeScript · CodeMirror 6 · Pinia · Tailwind / UnoCSS. See [CLAUDE.md](./CLAUDE.md) and [docs/dev/](./docs/dev/); brand assets and their generators live in [docs/assets/brand/](./docs/assets/brand/). Website: <https://melonlee.github.io/slothdown/> (source in [`website/`](./website/), auto-deployed to GitHub Pages).
+Stack: Electron · Vue 3 · electron-vite · TypeScript · CodeMirror 6 · Pinia · Tailwind / UnoCSS. See [CLAUDE.md](./CLAUDE.md) and [docs/dev/](./docs/dev/); brand assets and their generators live in [docs/assets/brand/](./docs/assets/brand/). Website: <https://melonlee.github.io/capydown/> (source in [`website/`](./website/), auto-deployed to GitHub Pages).
 
 ## Contributing
 
@@ -214,7 +214,7 @@ Issues and pull requests are welcome. Please run `pnpm test` and `pnpm build` be
 
 ## Acknowledgements
 
-- [doocs/md](https://github.com/doocs/md) — Markdown rendering and 公众号 formatting; Slothdown is a fork
+- [doocs/md](https://github.com/doocs/md) — Markdown rendering and 公众号 formatting; Capydown is a fork
 - [electron-vite](https://github.com/alex8088/electron-vite)
 - [CodeMirror](https://codemirror.net/)
 - Sample photos in screenshots from [Unsplash](https://unsplash.com/)
@@ -225,11 +225,11 @@ Issues and pull requests are welcome. Please run `pnpm test` and `pnpm build` be
 
 ## Star History
 
-<a href="https://www.star-history.com/#melonlee/slothdown&Date">
+<a href="https://www.star-history.com/#melonlee/capydown&Date">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=melonlee/slothdown&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=melonlee/slothdown&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=melonlee/slothdown&type=Date" width="600" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=melonlee/capydown&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=melonlee/capydown&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=melonlee/capydown&type=Date" width="600" />
  </picture>
 </a>
 
@@ -238,7 +238,7 @@ Issues and pull requests are welcome. Please run `pnpm test` and `pnpm build` be
 <div align="center">
   <img src="docs/assets/brand/logo-mark.png" width="36" alt="">
   <br>
-  <sub>The icon is a sloth dozing off while hugging a fountain pen — same mascot family as 喵想 · FantasyAI Lab</sub>
+  <sub>The icon is a capybara deep in thought, a Markdown # in its thought bubble — same mascot family as 喵想 · FantasyAI Lab</sub>
   <br>
-  <sub>Slothdown · Made by <a href="https://github.com/melonlee">Melon</a> · <a href="https://fantasyailab.com/">FantasyAI Lab</a></sub>
+  <sub>Capydown · Made by <a href="https://github.com/melonlee">Melon</a> · <a href="https://fantasyailab.com/">FantasyAI Lab</a></sub>
 </div>

@@ -1,10 +1,10 @@
-# Slothdown 使用指南
+# Capydown 使用指南
 
-Slothdown 是给公众号作者的 Markdown 桌面编辑器：像 Typora 一样专心写，一键排成公众号，发布前让 AI 再校对一遍。
+Capydown 是给公众号作者的 Markdown 桌面编辑器：像 Typora 一样专心写，一键排成公众号，发布前让 AI 再校对一遍。
 
 - [安装](#安装)
 - [工作区：文章就是文件夹里的 .md](#工作区文章就是文件夹里的-md)
-- [用 Slothdown 打开 .md 文件（打开方式）](#用-slothdown-打开-md-文件打开方式)
+- [用 Capydown 打开 .md 文件（打开方式）](#用-capydown-打开-md-文件打开方式)
 - [写作](#写作)
 - [编辑区操作：浮动工具栏、右键菜单、「+」插入](#编辑区操作浮动工具栏右键菜单插入)
 - [视图：侧边栏、专注、打字机、源代码](#视图侧边栏专注打字机源代码)
@@ -20,26 +20,26 @@ Slothdown 是给公众号作者的 Markdown 桌面编辑器：像 Typora 一样�
 
 ## 安装
 
-到 [Releases 页面](https://github.com/melonlee/slothdown/releases) 下载对应系统的安装包：
+到 [Releases 页面](https://github.com/melonlee/capydown/releases) 下载对应系统的安装包：
 
 | 系统 | 文件 |
 | --- | --- |
-| macOS（Apple 芯片） | `Slothdown-<版本>-mac-arm64.dmg` |
-| macOS（Intel） | `Slothdown-<版本>-mac-x64.dmg` |
-| Windows | `Slothdown-<版本>-win-x64-setup.exe` |
-| Linux | `Slothdown-<版本>-linux-<架构>.AppImage` 或 `.deb` |
+| macOS（Apple 芯片） | `Capydown-<版本>-mac-arm64.dmg` |
+| macOS（Intel） | `Capydown-<版本>-mac-x64.dmg` |
+| Windows | `Capydown-<版本>-win-x64-setup.exe` |
+| Linux | `Capydown-<版本>-linux-<架构>.AppImage` 或 `.deb` |
 
-macOS 是主要开发与测试平台；Windows 与 Linux 安装包从 v0.2.0 起随版本自动构建，实机测试较少，遇到问题欢迎提 [Issue](https://github.com/melonlee/slothdown/issues)。
+macOS 是主要开发与测试平台；Windows 与 Linux 安装包从 v0.2.0 起随版本自动构建，实机测试较少，遇到问题欢迎提 [Issue](https://github.com/melonlee/capydown/issues)。
 
 > 安装包**没有代码签名**。macOS 首次打开如果提示「无法验证开发者」或「已损坏」，把应用拖进「应用程序」后在终端执行：
 >
 > ```bash
-> xattr -cr /Applications/Slothdown.app
+> xattr -cr /Applications/Capydown.app
 > ```
 >
 > Windows 可能弹出 SmartScreen 提示，点「更多信息 → 仍要运行」。
 
-**从 LazyBox 升级**：Slothdown 原名 LazyBox（v0.3.0 起改名）。安装新版后第一次启动，会把旧版的偏好设置、AI 配置和工作区列表复制到新的配置目录（旧目录原样保留，不删除），文章文件本来就在你自己的文件夹里，不受影响。旧的 `LazyBox.app` 确认无误后可以删掉。
+**从 Slothdown / LazyBox 升级**：Capydown 原名 LazyBox / Slothdown（v0.3.0 改名 Slothdown，v0.4.0 改名 Capydown）。安装新版后第一次启动，会把最近一个旧版本（先找 Slothdown，没有再找 LazyBox）的偏好设置、AI 配置和工作区列表复制到新的配置目录（旧目录原样保留，不删除，并在新目录里留一个 `migrated-from-*.json` 记录来源），文章文件本来就在你自己的文件夹里，不受影响；默认工作区也继续用原来的 `~/Documents/Slothdown` 或 `~/Documents/codes/LazyBox`。旧的 `Slothdown.app` / `LazyBox.app` 确认无误后可以删掉。
 
 ## 工作区：文章就是文件夹里的 .md
 
@@ -50,17 +50,17 @@ macOS 是主要开发与测试平台；Windows 与 Linux 安装包从 v0.2.0 起
 - 修改自动保存（也可以 `⌘S`）；**只打开、不修改的文件不会被写盘**
 - `⇧⌘W` 关闭工作区，回到欢迎页
 
-所有文章都是普通的 `.md` 文件。你可以用 Git、iCloud、坚果云等任何方式同步或备份这个文件夹，Slothdown 不会上传你的文章。
+所有文章都是普通的 `.md` 文件。你可以用 Git、iCloud、坚果云等任何方式同步或备份这个文件夹，Capydown 不会上传你的文章。
 
-## 用 Slothdown 打开 .md 文件（打开方式）
+## 用 Capydown 打开 .md 文件（打开方式）
 
-安装后，Slothdown 会登记为 Markdown 文件（`.md`、`.markdown`、`.mdown`、`.mkd`、`.mkdn`）的打开方式，但**不会抢走默认应用**：
+安装后，Capydown 会登记为 Markdown 文件（`.md`、`.markdown`、`.mdown`、`.mkd`、`.mkdn`）的打开方式，但**不会抢走默认应用**：
 
-- **macOS**：在访达里右键 `.md` 文件 →「打开方式」→「Slothdown」。想以后都用 Slothdown 打开：选中文件按 `⌘I`，在「打开方式」里选 Slothdown 并点「全部更改…」
-- **Windows**：右键 `.md` 文件 →「打开方式」→「选择其他应用」→ Slothdown（勾选「始终使用此应用」即设为默认）
-- **Linux**：文件管理器里右键 →「用其他应用打开」→ Slothdown（`.deb` 安装后登记 `text/markdown`）
+- **macOS**：在访达里右键 `.md` 文件 →「打开方式」→「Capydown」。想以后都用 Capydown 打开：选中文件按 `⌘I`，在「打开方式」里选 Capydown 并点「全部更改…」
+- **Windows**：右键 `.md` 文件 →「打开方式」→「选择其他应用」→ Capydown（勾选「始终使用此应用」即设为默认）
+- **Linux**：文件管理器里右键 →「用其他应用打开」→ Capydown（`.deb` 安装后登记 `text/markdown`）
 
-打开时的规则和 Typora 一样：文件在当前工作区里就直接打开；不在的话，把它所在的文件夹作为工作区打开（之后在欢迎页的「最近」里也能找到）。Slothdown 已经在运行时，文件会交给已有的窗口，不会再开一个应用。打开文件只读取，不会改动文件。
+打开时的规则和 Typora 一样：文件在当前工作区里就直接打开；不在的话，把它所在的文件夹作为工作区打开（之后在欢迎页的「最近」里也能找到）。Capydown 已经在运行时，文件会交给已有的窗口，不会再开一个应用。打开文件只读取，不会改动文件。
 
 > macOS 安装包未签名，第一次通过「打开方式」启动若被拦截，先按[安装](#安装)里的说明处理一次。
 
@@ -80,7 +80,7 @@ macOS 是主要开发与测试平台；Windows 与 Linux 安装包从 v0.2.0 起
 | ` ```mermaid ` … ` ``` ` | Mermaid 流程图 |
 | `---` | 分割线 |
 
-**文件原样保存**：Slothdown 直接编辑 Markdown 文本，预览只是「装饰」，所以不会重排你的格式——换行符（LF / CRLF）、缩进、表格对齐、Front Matter 都保持原样。
+**文件原样保存**：Capydown 直接编辑 Markdown 文本，预览只是「装饰」，所以不会重排你的格式——换行符（LF / CRLF）、缩进、表格对齐、Front Matter 都保持原样。
 
 常用操作都在菜单「段落」「格式」里，也可以用快捷键，见[快捷键](#快捷键)。`⌥⇧F` 可以格式化整篇文档（这一步会改动格式，按需使用）。
 
@@ -134,7 +134,7 @@ macOS 是主要开发与测试平台；Windows 与 Linux 安装包从 v0.2.0 起
 
 ## 图片
 
-**粘贴或拖入图片**时，Slothdown 默认像 Typora 一样把图片保存到当前文档旁边的 `assets/` 文件夹，并写入相对路径，例如 `![](assets/photo.png)`。整篇文章连同图片就是一个普通文件夹，换台电脑、换个编辑器都能正常显示。
+**粘贴或拖入图片**时，Capydown 默认像 Typora 一样把图片保存到当前文档旁边的 `assets/` 文件夹，并写入相对路径，例如 `![](assets/photo.png)`。整篇文章连同图片就是一个普通文件夹，换台电脑、换个编辑器都能正常显示。
 
 如果配置了**图床**，粘贴 / 拖入的图片会改为上传到图床并插入网络地址。菜单「格式 → 上传图片…」可以选择图床并填写配置，支持 GitHub、阿里云 OSS、腾讯云 COS、七牛云、MinIO、Cloudflare R2、公众号图床以及自定义上传代码，配置方法可参考 [doocs/md 的说明](https://github.com/doocs/md#支持的图床服务)。
 
@@ -157,9 +157,9 @@ macOS 是主要开发与测试平台；Windows 与 Linux 安装包从 v0.2.0 起
 
 然后打开 [公众号后台](https://mp.weixin.qq.com/) →「新的创作 → 文章」，在正文区域粘贴（`⌘V` / `Ctrl+V`）。标题、作者、摘要和封面需要在后台单独填写。
 
-如果文章里有本地图片、相对路径或 base64 图片，Slothdown 会提醒你：这些图片粘贴后不会显示，需要在公众号后台重新上传（或先配置图床）。
+如果文章里有本地图片、相对路径或 base64 图片，Capydown 会提醒你：这些图片粘贴后不会显示，需要在公众号后台重新上传（或先配置图床）。
 
-> Slothdown **不会**替你自动发文或存草稿。通过公众号官方接口直接存进草稿箱在[路线图](./ROADMAP.md)中。
+> Capydown **不会**替你自动发文或存草稿。通过公众号官方接口直接存进草稿箱在[路线图](./ROADMAP.md)中。
 
 ### 导出
 
@@ -215,7 +215,7 @@ AI 是可选的，不配置也不影响其它功能。它只做两件事：
 1. **服务商**
    - **Claude（Anthropic）**：填 API Key，选择模型（Opus 4.7 / Sonnet 4.6 / Haiku 4.5）
    - **OpenAI 兼容**：DeepSeek、Kimi、通义千问、OpenAI，以及任何兼容 `chat/completions` 的网关。点「快速填写」里的服务名可以一键预填 Base URL 和常用模型
-2. **Base URL**（OpenAI 兼容）：通常以 `/v1` 结尾，Slothdown 会在后面拼上 `/chat/completions`
+2. **Base URL**（OpenAI 兼容）：通常以 `/v1` 结尾，Capydown 会在后面拼上 `/chat/completions`
 
    | 服务 | Base URL | 模型示例 |
    | --- | --- | --- |
@@ -237,7 +237,7 @@ AI 是可选的，不配置也不影响其它功能。它只做两件事：
    - **忽略**：从列表里移除
 4. **全部接受**：一次写入所有剩余建议，一次 `⌘Z` 就能全部还原
 
-校对**只挑确定的错误，不改写文风**。代码块、行内代码、链接地址、图片、Front Matter、HTML 不会被改动；改动过大、增删换行、改动 Markdown 标记的建议会被直接丢弃。校对后你又改了文章也没关系，Slothdown 会按原文和上下文重新定位；找不到的条目标记为「原文已改动」。
+校对**只挑确定的错误，不改写文风**。代码块、行内代码、链接地址、图片、Front Matter、HTML 不会被改动；改动过大、增删换行、改动 Markdown 标记的建议会被直接丢弃。校对后你又改了文章也没关系，Capydown 会按原文和上下文重新定位；找不到的条目标记为「原文已改动」。
 
 **风格建议（可选）**：中文与英文、数字之间是否加空格属于风格问题，默认不报。需要的话，在校对面板首屏或「偏好设置 → AI」里勾选「校对时包含风格建议」，这类建议会单独列为一组。
 
@@ -248,7 +248,7 @@ AI 是可选的，不配置也不影响其它功能。它只做两件事：
 ### 隐私与费用
 
 - 只有你主动点击校对或拟标题时，文章内容才会从你的电脑直接发到你配置的服务商
-- Slothdown 没有自己的服务器，不经手你的文章和 Key；Key 只保存在本机的应用配置里
+- Capydown 没有自己的服务器，不经手你的文章和 Key；Key 只保存在本机的应用配置里
 - 费用由你的服务商按用量计算
 
 ## 快捷键
@@ -316,7 +316,7 @@ macOS 下的 `⌘` 在 Windows / Linux 上是 `Ctrl`，`⌥` 是 `Alt`。少数 
 
 ## 已知差距
 
-Slothdown 以 Typora 为参照，但还有这些不足：
+Capydown 以 Typora 为参照，但还有这些不足：
 
 - 表格在光标进入后以 Markdown 源码编辑，没有表格控件（`⌥⌘T` 可插入表格模板）
 - 数学公式和 HTML 块按源码显示，不做渲染
@@ -339,7 +339,7 @@ Slothdown 以 Typora 为参照，但还有这些不足：
 AI 校对不能保证百分之百，它是发布前的最后一道帮手，不是唯一一道。
 
 **文章存在哪里？**
-就在你打开的工作区文件夹里，Slothdown 不会另存副本。
+就在你打开的工作区文件夹里，Capydown 不会另存副本。
 
 **想用 Typora / Obsidian 打开同一个文件夹？**
-可以。Slothdown 写的是标准 Markdown，图片是相对路径，互不影响。
+可以。Capydown 写的是标准 Markdown，图片是相对路径，互不影响。

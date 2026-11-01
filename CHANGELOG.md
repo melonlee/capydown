@@ -2,6 +2,38 @@
 
 本项目遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.4.0] - 未发布
+
+### 改名：Capydown
+
+Slothdown 改名为 **Capydown**（Capybara 卡皮巴拉 + Markdown；原名 LazyBox / Slothdown）。卡皮巴拉以情绪稳定、什么都不慌出名——就像写作时该有的状态：安静、专注。
+
+- 窗口标题、「关于」、菜单、欢迎页、启动画面、Dock、安装包（`Capydown-<版本>-…`）、README、使用指南和官网统一为 Capydown；中文场合需要说明时写作「Capydown · 给公众号作者的 Markdown 编辑器」
+- 新标语「淡定地写，排版交给卡皮巴拉。」（英文 “Stay calm and write. Capydown does the formatting.”），替换「懒得排版？交给树懒。」；一句话介绍不变
+- GitHub 仓库与官网地址改为 `melonlee/capydown`、<https://melonlee.github.io/capydown/>
+- 应用 ID（`com.lazybox.app`）和存储键不变：macOS 的权限授权、文件关联不用重来
+
+### 新图标：托腮思考的卡皮巴拉
+
+- 同一个吉祥物家族（喵想 · FantasyAI Lab：深色圆角方形、左上主光），换成一只暖褐色的卡皮巴拉，一只爪托着下巴想事情，头顶的思考泡泡里是 Markdown 的 `#`；这是界面里唯一带颜色的地方
+- macOS 16 / 32px、Windows 和 Linux 48px 及以下用「头 + 托腮的爪」的小尺寸版，五官放大
+- 应用内标志换成单色的卡皮巴拉侧面头像（16–20px 也清楚），夜间主题自动反白；欢迎页是同一个标志 + Capydown 字标
+- 母版由 `docs/assets/brand/src/tools/capybara.py` 参数化生成；树懒的图标、插画和源文件全部移除
+- 组合标志、横幅、社交预览、分享卡片、海报、流程图和官网的首屏 / 结尾插画同步更新
+
+### 启动画面
+
+- 卡皮巴拉标志落定 → 两个思考小点从头顶依次升起 → 第三个长成带 `#` 的小泡泡 → Capydown 字标滑入 → 一句话介绍淡入，约 1 秒后交叉淡入到应用；应用就绪得晚就停在最后一帧，不拖慢启动
+- 跟随深色主题；系统开启「减弱动态效果」时只做淡入淡出
+
+### 从 Slothdown / LazyBox 升级
+
+- 第一次启动时，如果 Capydown 的配置目录还没有数据，就从**最近的**旧版本复制偏好设置、AI 配置和工作区列表：先找 `Slothdown`，没有再找 `LazyBox` / `lazybox`
+- 只复制、不删除旧目录；跳过缓存和单实例锁；在新目录写 `migrated-from-<旧名>.json` 记录来源
+- 默认工作区继续用已有的 `~/Documents/Slothdown` 或 `~/Documents/codes/LazyBox`，新安装用 `~/Documents/Capydown`
+- 迁移逻辑拆到不依赖 Electron 的 `src/main/user-data-migration.ts`，补了单元测试（来源选择顺序、跳过规则、已有数据 / 自定义目录 / 全新安装）
+- 端到端测试的环境变量改为 `CAPYDOWN_E2E`、`CAPYDOWN_USER_DATA`、`CAPYDOWN_E2E_EXPORT_DIR`
+
 ## [0.3.1] - 2026-11-01
 
 ### 名字只留 Slothdown
