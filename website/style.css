@@ -89,7 +89,7 @@ h1, h2, h3 { margin: 0; font-weight: 700; }
 .hero-cta { display: flex; justify-content: center; gap: 12px; margin-top: 38px; flex-wrap: wrap; }
 .hero-note { margin-top: 18px; font-size: 13px; color: var(--faint); letter-spacing: 0.02em; }
 .hero-note span + span::before { content: " · "; }
-/* the app window, with the capybara (yuzu on its head) peeking up from behind its top edge */
+/* the app window, with the capybara (a pup lying on its head) peeking up from behind its top edge */
 .hero-stage { position: relative; margin-top: 96px; }
 .hero-stage .peek { position: absolute; right: 7%; bottom: 100%; width: 220px; height: auto; margin-bottom: -64px; z-index: 0; pointer-events: none; }
 .hero-shot { position: relative; z-index: 1; }
