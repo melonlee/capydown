@@ -1,80 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="100 100 824 824" width="1024" height="1024">
-<!-- 官网 favicon：裁到圆角方形主体，无投影。 Capydown 应用图标小尺寸版：只留大头，五官放大，不带小卡皮巴拉（16–32px）。由 docs/assets/brand/src/tools/build_icon.py 生成（1024 网格，主体 100..924） -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="100 100 824 824">
+  <!-- 官网 favicon：裁到圆角方形主体，无投影。 Capydown 应用图标小尺寸版（16–48px）。由 docs/assets/brand/src/tools/letter_capy.py 生成 -->
 <defs>
   <filter id="tileDrop" x="-10%" y="-10%" width="120%" height="125%"><feGaussianBlur stdDeviation="14"/></filter>
   <path id="squircle" d="M924.0 512.0 L923.9 608.0 L923.8 638.6 L923.5 660.9 L923.1 679.0 L922.6 694.5 L922.0 708.2 L921.2 720.5 L920.4 731.8 L919.4 742.2 L918.3 751.9 L917.1 761.0 L915.8 769.6 L914.4 777.6 L912.8 785.3 L911.2 792.6 L909.4 799.5 L907.5 806.1 L905.4 812.4 L903.3 818.5 L901.0 824.2 L898.5 829.8 L896.0 835.1 L893.3 840.2 L890.5 845.1 L887.6 849.8 L884.5 854.3 L881.2 858.7 L877.9 862.8 L874.3 866.8 L870.7 870.7 L866.8 874.3 L862.8 877.9 L858.7 881.2 L854.3 884.5 L849.8 887.6 L845.1 890.5 L840.2 893.3 L835.1 896.0 L829.8 898.5 L824.2 901.0 L818.5 903.3 L812.4 905.4 L806.1 907.5 L799.5 909.4 L792.6 911.2 L785.3 912.8 L777.6 914.4 L769.6 915.8 L761.0 917.1 L751.9 918.3 L742.2 919.4 L731.8 920.4 L720.5 921.2 L708.2 922.0 L694.5 922.6 L679.0 923.1 L660.9 923.5 L638.6 923.8 L608.0 923.9 L512.0 924.0 L416.0 923.9 L385.4 923.8 L363.1 923.5 L345.0 923.1 L329.5 922.6 L315.8 922.0 L303.5 921.2 L292.2 920.4 L281.8 919.4 L272.1 918.3 L263.0 917.1 L254.4 915.8 L246.4 914.4 L238.7 912.8 L231.4 911.2 L224.5 909.4 L217.9 907.5 L211.6 905.4 L205.5 903.3 L199.8 901.0 L194.2 898.5 L188.9 896.0 L183.8 893.3 L178.9 890.5 L174.2 887.6 L169.7 884.5 L165.3 881.2 L161.2 877.9 L157.2 874.3 L153.3 870.7 L149.7 866.8 L146.1 862.8 L142.8 858.7 L139.5 854.3 L136.4 849.8 L133.5 845.1 L130.7 840.2 L128.0 835.1 L125.5 829.8 L123.0 824.2 L120.7 818.5 L118.6 812.4 L116.5 806.1 L114.6 799.5 L112.8 792.6 L111.2 785.3 L109.6 777.6 L108.2 769.6 L106.9 761.0 L105.7 751.9 L104.6 742.2 L103.6 731.8 L102.8 720.5 L102.0 708.2 L101.4 694.5 L100.9 679.0 L100.5 660.9 L100.2 638.6 L100.1 608.0 L100.0 512.0 L100.1 416.0 L100.2 385.4 L100.5 363.1 L100.9 345.0 L101.4 329.5 L102.0 315.8 L102.8 303.5 L103.6 292.2 L104.6 281.8 L105.7 272.1 L106.9 263.0 L108.2 254.4 L109.6 246.4 L111.2 238.7 L112.8 231.4 L114.6 224.5 L116.5 217.9 L118.6 211.6 L120.7 205.5 L123.0 199.8 L125.5 194.2 L128.0 188.9 L130.7 183.8 L133.5 178.9 L136.4 174.2 L139.5 169.7 L142.8 165.3 L146.1 161.2 L149.7 157.2 L153.3 153.3 L157.2 149.7 L161.2 146.1 L165.3 142.8 L169.7 139.5 L174.2 136.4 L178.9 133.5 L183.8 130.7 L188.9 128.0 L194.2 125.5 L199.8 123.0 L205.5 120.7 L211.6 118.6 L217.9 116.5 L224.5 114.6 L231.4 112.8 L238.7 111.2 L246.4 109.6 L254.4 108.2 L263.0 106.9 L272.1 105.7 L281.8 104.6 L292.2 103.6 L303.5 102.8 L315.8 102.0 L329.5 101.4 L345.0 100.9 L363.1 100.5 L385.4 100.2 L416.0 100.1 L512.0 100.0 L608.0 100.1 L638.6 100.2 L660.9 100.5 L679.0 100.9 L694.5 101.4 L708.2 102.0 L720.5 102.8 L731.8 103.6 L742.2 104.6 L751.9 105.7 L761.0 106.9 L769.6 108.2 L777.6 109.6 L785.3 111.2 L792.6 112.8 L799.5 114.6 L806.1 116.5 L812.4 118.6 L818.5 120.7 L824.2 123.0 L829.8 125.5 L835.1 128.0 L840.2 130.7 L845.1 133.5 L849.8 136.4 L854.3 139.5 L858.7 142.8 L862.8 146.1 L866.8 149.7 L870.7 153.3 L874.3 157.2 L877.9 161.2 L881.2 165.3 L884.5 169.7 L887.6 174.2 L890.5 178.9 L893.3 183.8 L896.0 188.9 L898.5 194.2 L901.0 199.8 L903.3 205.5 L905.4 211.6 L907.5 217.9 L909.4 224.5 L911.2 231.4 L912.8 238.7 L914.4 246.4 L915.8 254.4 L917.1 263.0 L918.3 272.1 L919.4 281.8 L920.4 292.2 L921.2 303.5 L922.0 315.8 L922.6 329.5 L923.1 345.0 L923.5 363.1 L923.8 385.4 L923.9 416.0 Z"/>
   <clipPath id="clip"><use href="#squircle"/></clipPath>
-  <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#3a3c42"/><stop offset="0.55" stop-color="#232429"/><stop offset="1" stop-color="#141519"/>
-  </linearGradient>
-  <linearGradient id="rim" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#fff" stop-opacity="0.22"/><stop offset="0.35" stop-color="#fff" stop-opacity="0.04"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
-  </linearGradient>
-  <radialGradient id="body" cx="0.30" cy="0.18" r="0.95">
-    <stop offset="0" stop-color="#f2dcbf"/><stop offset="0.38" stop-color="#d8b48b"/><stop offset="0.62" stop-color="#b88f67"/><stop offset="0.86" stop-color="#8c6849"/><stop offset="1" stop-color="#5e4533"/>
-  </radialGradient>
-  <radialGradient id="muzzle" cx="0.34" cy="0.22" r="0.9">
-    <stop offset="0" stop-color="#e3c29c"/><stop offset="0.55" stop-color="#c09670"/><stop offset="1" stop-color="#8d6a4b"/>
-  </radialGradient>
-  <linearGradient id="eye" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#050506"/><stop offset="1" stop-color="#26272c"/>
-  </linearGradient>
-  <linearGradient id="pad" x1="0" y1="0" x2="0.3" y2="1">
-    <stop offset="0" stop-color="#7f604a"/><stop offset="1" stop-color="#5f4636"/>
-  </linearGradient>
-  <radialGradient id="earIn" cx="0.5" cy="0.4" r="0.6">
-    <stop offset="0" stop-color="#7d604b"/><stop offset="1" stop-color="#a8876a" stop-opacity="0.2"/>
-  </radialGradient>
-  <filter id="sculpt" x="-20%" y="-20%" width="140%" height="140%">
-    <feGaussianBlur in="SourceAlpha" stdDeviation="30" result="b1"/>
-    <feOffset in="b1" dx="-34" dy="-26" result="o1"/>
-    <feComposite in="SourceAlpha" in2="o1" operator="out" result="edge1"/>
-    <feFlood flood-color="#3b2f26" flood-opacity="0.55"/>
-    <feComposite in2="edge1" operator="in" result="shade"/>
-    <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="b2"/>
-    <feOffset in="b2" dx="10" dy="12" result="o2"/>
-    <feComposite in="SourceAlpha" in2="o2" operator="out" result="edge2"/>
-    <feFlood flood-color="#fff4e6" flood-opacity="0.85"/>
-    <feComposite in2="edge2" operator="in" result="shine"/>
-    <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="shade"/><feMergeNode in="shine"/></feMerge>
-  </filter>
-  <filter id="sculptSoft" x="-20%" y="-20%" width="140%" height="140%">
-    <feGaussianBlur in="SourceAlpha" stdDeviation="20" result="b1"/>
-    <feOffset in="b1" dx="-20" dy="-16" result="o1"/>
-    <feComposite in="SourceAlpha" in2="o1" operator="out" result="edge1"/>
-    <feFlood flood-color="#3b2f26" flood-opacity="0.4"/>
-    <feComposite in2="edge1" operator="in" result="shade"/>
-    <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="b2"/>
-    <feOffset in="b2" dx="7" dy="9" result="o2"/>
-    <feComposite in="SourceAlpha" in2="o2" operator="out" result="edge2"/>
-    <feFlood flood-color="#fff4e6" flood-opacity="0.59"/>
-    <feComposite in2="edge2" operator="in" result="shine"/>
-    <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="shade"/><feMergeNode in="shine"/></feMerge>
-  </filter>
-  <filter id="cast" x="-20%" y="-20%" width="140%" height="140%">
-    <feGaussianBlur in="SourceAlpha" stdDeviation="22"/><feOffset dx="10" dy="6"/>
-    <feComponentTransfer><feFuncA type="linear" slope="0.7"/></feComponentTransfer>
-  </filter>
-  <filter id="muzzleDrop" x="-20%" y="-20%" width="140%" height="150%">
-    <feGaussianBlur in="SourceAlpha" stdDeviation="12"/><feOffset dx="4" dy="12"/>
-    <feComponentTransfer><feFuncA type="linear" slope="0.2"/></feComponentTransfer>
-  </filter>
-  <linearGradient id="muzzleFade" gradientUnits="userSpaceOnUse" x1="0" y1="500" x2="0" y2="640">
-    <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff"/>
-  </linearGradient>
-  <mask id="muzzleMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1100"><rect width="1024" height="1100" fill="url(#muzzleFade)"/></mask>
-  <filter id="softShadow" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="8"/></filter>
-  <filter id="padBlur" x="-30%" y="-50%" width="160%" height="200%"><feGaussianBlur stdDeviation="4"/></filter>
-  <filter id="eyeInset" x="-30%" y="-30%" width="160%" height="160%">
-    <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="b"/><feOffset in="b" dx="4" dy="7" result="o"/>
-    <feComposite in="SourceAlpha" in2="o" operator="out" result="e"/>
-    <feFlood flood-color="#000" flood-opacity="0.9"/><feComposite in2="e" operator="in" result="s"/>
-    <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="s"/></feMerge>
-  </filter>
 </defs>
-<use href="#squircle" fill="url(#bg)"/>
-<g clip-path="url(#clip)">
-<g transform="translate(512 1040) scale(1.1) translate(-512 -1000) rotate(-5 512 760)"><g fill="#000" filter="url(#cast)"><ellipse cx="286" cy="306" rx="48.1" ry="36.4" transform="rotate(-42 286 306)"/><ellipse cx="738" cy="306" rx="48.1" ry="36.4" transform="rotate(42 738 306)"/><path d="M 104 1110 C 104 936 150 846 238 806 C 212 724 206 622 212 528 C 220 394 268 282 396 262 C 452 254 572 254 628 262 C 756 282 804 394 812 528 C 818 622 812 724 786 806 C 874 846 920 936 920 1110 Z"/></g><g filter="url(#sculpt)"><g fill="url(#body)"><ellipse cx="286" cy="306" rx="48.1" ry="36.4" transform="rotate(-42 286 306)"/><ellipse cx="738" cy="306" rx="48.1" ry="36.4" transform="rotate(42 738 306)"/></g></g><ellipse cx="280" cy="300" rx="27" ry="16.8" transform="rotate(-42 280 300)" fill="#7d604b"/><ellipse cx="744" cy="300" rx="27" ry="16.8" transform="rotate(42 744 300)" fill="#7d604b"/><g filter="url(#sculpt)"><path d="M 104 1110 C 104 936 150 846 238 806 C 212 724 206 622 212 528 C 220 394 268 282 396 262 C 452 254 572 254 628 262 C 756 282 804 394 812 528 C 818 622 812 724 786 806 C 874 846 920 936 920 1110 Z" fill="url(#body)"/></g><path d="M 512 494 C 620 494 690 526 704 608 C 718 694 698 772 642 814 C 600 844 424 844 382 814 C 326 772 306 694 320 608 C 334 526 404 494 512 494 Z" fill="#000" filter="url(#muzzleDrop)"/><g filter="url(#sculptSoft)"><path d="M 512 494 C 620 494 690 526 704 608 C 718 694 698 772 642 814 C 600 844 424 844 382 814 C 326 772 306 694 320 608 C 334 526 404 494 512 494 Z" fill="url(#muzzle)"/></g><clipPath id="lids0"><path d="M 419.2 379.2 Q 350.0 374.4 280.8 384.4 L 280.8 531.0 L 419.2 531.0 Z"/></clipPath><g filter="url(#eyeInset)"><g clip-path="url(#lids0)"><rect x="294.8" y="358.5" width="110.4" height="115.0" rx="55.2" fill="url(#eye)"/></g></g><path d="M 395.0 377.9 L 391.5 377.8 L 388.1 377.7 L 384.6 377.7 L 381.1 377.6 L 377.7 377.6 L 374.2 377.6 L 370.8 377.6 L 367.3 377.6 L 363.8 377.7 L 360.4 377.7 L 356.9 377.8 L 353.5 377.9 L 350.0 378.1 L 346.5 378.2 L 343.1 378.3 L 339.6 378.5 L 336.2 378.7 L 332.7 378.9 L 329.2 379.2 L 325.8 379.4 L 322.3 379.7 L 318.9 380.0 L 315.4 380.3 L 311.9 380.6 L 308.5 380.9 L 305.0 381.3" fill="none" stroke="#5e4533" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.35"/><ellipse cx="366.6" cy="404.5" rx="13.8" ry="12.6" fill="#fff" opacity="0.92"/><circle cx="330.1" cy="443.6" r="5.8" fill="#fff" opacity="0.5"/><clipPath id="lids1"><path d="M 604.8 373.2 Q 674.0 374.4 743.2 404.4 L 743.2 531.0 L 604.8 531.0 Z"/></clipPath><g filter="url(#eyeInset)"><g clip-path="url(#lids1)"><rect x="618.8" y="358.5" width="110.4" height="115.0" rx="55.2" fill="url(#eye)"/></g></g><path d="M 632.5 374.8 L 635.9 375.1 L 639.4 375.6 L 642.9 376.0 L 646.3 376.5 L 649.8 377.0 L 653.2 377.5 L 656.7 378.1 L 660.2 378.7 L 663.6 379.4 L 667.1 380.1 L 670.5 380.8 L 674.0 381.6 L 677.5 382.3 L 680.9 383.2 L 684.4 384.1 L 687.8 385.0 L 691.3 385.9 L 694.8 386.9 L 698.2 387.9 L 701.7 388.9 L 705.1 390.0 L 708.6 391.2 L 712.1 392.3 L 715.5 393.5 L 719.0 394.7 L 722.4 396.0 L 725.9 397.3 L 729.4 398.6" fill="none" stroke="#5e4533" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.35"/><ellipse cx="690.6" cy="404.5" rx="13.8" ry="12.6" fill="#fff" opacity="0.92"/><circle cx="654.1" cy="443.6" r="5.8" fill="#fff" opacity="0.5"/><ellipse cx="468" cy="578" rx="40" ry="20" transform="rotate(36 468 578)" fill="#1a120c"/><ellipse cx="556" cy="578" rx="40" ry="20" transform="rotate(-36 556 578)" fill="#1a120c"/><path d="M 512 600 L 512 680 M 458 700 Q 492 716 512 680 Q 532 716 566 700" stroke="#1a120c" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.7"/></g>
-</g>
-<use href="#squircle" fill="none" stroke="url(#rim)" stroke-width="3"/>
+<use href="#squircle" fill="#FBF1E1"/>
+<g clip-path="url(#clip)"><g transform="translate(45.4 -1.7) scale(0.9239)"><path d="M642 860 H710 V900 A24 24 0 0 1 686 924 H666 A24 24 0 0 1 642 900 V860 Z" fill="#6E4630" /><path d="M724 860 H792 V900 A24 24 0 0 1 768 924 H748 A24 24 0 0 1 724 900 V860 Z" fill="#6E4630" /><circle cx="590" cy="658" r="38" fill="#9B6236" /><circle cx="593" cy="660" r="19" fill="#6F4329" /><mask id="c2s" maskUnits="userSpaceOnUse" x="-300" y="-300" width="1624" height="1624"><g fill="#fff" stroke="#fff"><path d="M690 300 L520 300 A240 240 0 0 0 520 780 L560 780" fill="none" stroke="#fff" stroke-width="224" stroke-linecap="round" stroke-linejoin="round" /><path d="M520 668.0 C590 668.0 610 648 680 648 L748 648 C806 648 840 682 840 740 L840 802 C840 866 796 906 732 906 L690 906 C620 906 600 892.0 520 892.0 Z" fill="#fff" /></g></mask><g mask="url(#c2s)"><path d="M690 300 L520 300 A240 240 0 0 0 520 780 L560 780" fill="none" stroke="#A9713F" stroke-width="224" stroke-linecap="round" stroke-linejoin="round" /><path d="M520 668.0 C590 668.0 610 648 680 648 L748 648 C806 648 840 682 840 740 L840 802 C840 866 796 906 732 906 L690 906 C620 906 600 892.0 520 892.0 Z" fill="#A9713F" /><g transform="translate(-18 -14)"><path d="M690 300 L520 300 A240 240 0 0 0 520 780 L560 780" fill="none" stroke="#C98B55" stroke-width="224" stroke-linecap="round" stroke-linejoin="round" /><path d="M520 668.0 C590 668.0 610 648 680 648 L748 648 C806 648 840 682 840 740 L840 802 C840 866 796 906 732 906 L690 906 C620 906 600 892.0 520 892.0 Z" fill="#C98B55" /></g></g><mask id="c2sh" maskUnits="userSpaceOnUse" x="-300" y="-300" width="1624" height="1624"><g fill="#fff" stroke="#fff"><path d="M520 668.0 C590 668.0 610 648 680 648 L748 648 C806 648 840 682 840 740 L840 802 C840 866 796 906 732 906 L690 906 C620 906 600 892.0 520 892.0 Z" fill="#fff" /></g></mask><g mask="url(#c2sh)"><ellipse cx="900" cy="774" rx="150" ry="190" fill="#9A6236" opacity='.45'/></g><circle cx="680" cy="746" r="26" fill="#3B2A22" /><circle cx="687.8" cy="738.2" r="7.8" fill="#fff" /><ellipse cx="800" cy="728" rx="17" ry="11" fill="#3B2A22" transform="rotate(-10 800 728)" /><ellipse cx="708" cy="820" rx="30" ry="17" fill="#F29A8E" opacity=".85"/></g></g>
 </svg>

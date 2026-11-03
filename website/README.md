@@ -38,7 +38,7 @@ python3 -m http.server 8080      # 或 npx serve .
 
 ## 品牌素材
 
-`assets/favicon.svg` / `favicon-32.png` 是小尺寸图标（只留卡皮巴拉的头，裁到圆角方形主体），`apple-touch-icon.png` / `icon-512.png` 是完整的应用图标（从底边探出头的卡皮巴拉，头顶趴着一只小卡皮巴拉；和 喵想 · FantasyAI Lab 同一吉祥物家族），都由 `docs/assets/brand/src/tools/export_icons.py` 生成；`capybara.svg` 是首屏和结尾处的吉祥物（`docs/assets/brand/capybara-art.svg` 的副本）。首屏的组合标志（标志 + 字标，232 × 56 网格）和应用启动画面是同一组路径。
+`assets/favicon.svg` / `favicon-32.png` 是小尺寸图标（去掉小卡皮巴拉和绒毛碎线、五官放大的字母 C，裁到圆角方形主体），`apple-touch-icon.png` / `icon-512.png` 是完整的应用图标（盘成大写 C 的卡皮巴拉，收笔上趴着一只小卡皮巴拉），都由 `docs/assets/brand/src/tools/export_icons.py` 生成；`capybara.svg` 是首屏和结尾处的吉祥物（`docs/assets/brand/capybara-art.svg` 的副本）。首屏的组合标志（彩色的字母 C + `apydown` 字标）和应用启动画面都由 `docs/assets/brand/src/tools/letter_capy.py` 写进 `style.css` / `index.html`，别手改标记之间的内容。
 
 ## 更新截图
 

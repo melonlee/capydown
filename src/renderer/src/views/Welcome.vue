@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useWorkspaceStore } from '@renderer/stores'
-import BrandMark from '@renderer/components/brand/BrandMark.vue'
-import wordmarkSvg from '@renderer/assets/images/logo-wordmark.svg?raw'
+import lockupSvg from '@renderer/assets/images/logo-lockup.svg?raw'
 import { Edit2, ExternalLink, FolderOpen, FolderPlus, MoreHorizontal, Trash2 } from 'lucide-vue-next'
 import type { Workspace } from '@renderer/types'
 import { APP_NAME, APP_TAGLINE } from '../../../shared/brand'
@@ -123,11 +122,8 @@ const openInFinder = async (workspace: Workspace) => {
 
     <main class="lb-welcome-main">
       <header class="lb-welcome-brand">
-        <!-- 组合标志：卡皮巴拉标志 + Capydown 字标（和启动画面同一个组合，淡出后无缝衔接） -->
-        <h1 class="lb-welcome-lockup" :aria-label="APP_NAME">
-          <BrandMark class="lb-welcome-logo" />
-          <span class="lb-welcome-word" aria-hidden="true" v-html="wordmarkSvg" />
-        </h1>
+        <!-- 组合标志：字母动物 C + apydown（和启动画面同一个组合，淡出后无缝衔接） -->
+        <h1 class="lb-welcome-lockup" :aria-label="APP_NAME" v-html="lockupSvg" />
         <p>{{ APP_TAGLINE }}</p>
       </header>
 
@@ -292,31 +288,17 @@ const openInFinder = async (workspace: Workspace) => {
   margin-bottom: 36px;
 }
 
+/* 组合标志是一整张转曲的 SVG（Nunito Black），只用 currentColor：夜间主题自动反白 */
 .lb-welcome-lockup {
   display: inline-flex;
-  align-items: center;
-  gap: 7px; /* 正面头像左右各留约 1/8 的空白，标志和字标的墨迹间距约 13px */
+  line-height: 0;
   margin: 0;
   color: var(--lb-fg-strong);
   user-select: none;
 }
 
-.lb-welcome-logo {
-  width: 46px;
-  height: 46px;
-}
-
-/* 字标是转曲的 SVG（Manrope），只用 currentColor：夜间主题自动反白。
- * 「Capydown」有降部（p y）：盒子中心比大写字母的中心低，下移 0.11 倍高度让大写区间和标志对齐 */
-.lb-welcome-word {
-  display: inline-flex;
-  height: 32px;
-  line-height: 0;
-  transform: translateY(3.5px);
-}
-
-.lb-welcome-word :deep(svg) {
-  height: 100%;
+.lb-welcome-lockup :deep(svg) {
+  height: 54px;
   width: auto;
 }
 

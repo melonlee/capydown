@@ -238,7 +238,7 @@ Issues and pull requests are welcome. Please run `pnpm test` and `pnpm build` be
 <div align="center">
   <img src="docs/assets/brand/logo-mark.png" width="36" alt="">
   <br>
-  <sub>The icon is a capybara from the same mascot family as 喵想 · FantasyAI Lab, peeking up from the bottom edge with a baby capybara lying on its head</sub>
+  <sub>The icon is a capybara coiled into a capital C — the C of Capydown — with a baby capybara perched on its top terminal</sub>
   <br>
   <sub>Capydown · Made by <a href="https://github.com/melonlee">Melon</a> · <a href="https://fantasyailab.com/">FantasyAI Lab</a></sub>
 </div>

@@ -42,3 +42,6 @@ Thumbs.db
 # Test coverage
 coverage/
 *.lcov
+
+# Python 缓存（品牌生成脚本）
+__pycache__/
